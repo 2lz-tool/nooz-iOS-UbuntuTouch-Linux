@@ -114,7 +114,7 @@ test('the generated lexicon is the same one the Android app compiles', async () 
   const repo = path.resolve(import.meta.dirname, '..', '..');
   const web = (await import('../js/topics-l10n.js')).default;
   const kotlin = fs.readFileSync(
-    path.join(repo, 'core/model/src/main/kotlin/xyz/mdhv/riverwip/model/TopicLexiconL10n.kt'),
+    path.join(repo, 'core/model/src/commonMain/kotlin/xyz/mdhv/riverwip/model/TopicLexiconL10n.kt'),
     'utf8',
   );
   for (const [topic, terms] of Object.entries(web)) {

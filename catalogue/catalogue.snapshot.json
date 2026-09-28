@@ -1,7 +1,7 @@
 {
   "version": 1,
   "generatedAt": "2026-08-31",
-  "note": "CI-side sentry state (brief P6) — see catalogue/README.md. Mirrors core/model/src/main/kotlin/xyz/mdhv/riverwip/model/Starters.kt.",
+  "note": "CI-side sentry state (brief P6) — see catalogue/README.md. Mirrors core/model/src/commonMain/kotlin/xyz/mdhv/riverwip/model/Starters.kt.",
   "services": [
     { "id": "bbc-top", "kind": "rss", "title": "BBC News", "tier": "A", "region": "global", "url": "https://feeds.bbci.co.uk/news/rss.xml", "verifiedAt": "2026-07-07", "lastProbe": { "checkedAt": null, "httpStatus": null, "rateLimited": false } },
     { "id": "bbc-world", "kind": "rss", "title": "BBC World", "tier": "A", "region": "global", "url": "https://feeds.bbci.co.uk/news/world/rss.xml", "verifiedAt": "2026-07-07", "lastProbe": { "checkedAt": null, "httpStatus": null, "rateLimited": false } },
