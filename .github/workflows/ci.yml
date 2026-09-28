@@ -74,7 +74,16 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - uses: android-actions/setup-android@v3
+      # The runner image already ships the Android SDK (ANDROID_HOME). This used
+      # to be android-actions/setup-android@v3, which runs `sdkmanager tools` and
+      # now dies with "Failed to find package 'tools'" (that legacy package is
+      # gone from Google's repository) before any project code is built. All
+      # that is actually needed is the licenses accepted so AGP can fetch the
+      # platform, build-tools and NDK it asks for.
+      - name: Accept Android SDK licenses
+        run: |
+          SDKM="$(command -v sdkmanager || ls -d "$ANDROID_HOME"/cmdline-tools/*/bin/sdkmanager | head -1)"
+          yes | "$SDKM" --licenses > /dev/null || true
       - uses: gradle/actions/setup-gradle@v4
 
       # `unitTests` discovers each module's own test task rather than naming
