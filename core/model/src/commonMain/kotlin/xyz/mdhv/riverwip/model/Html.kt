@@ -41,10 +41,10 @@ object Html {
             .replace("&rdquo;", "”")
         // Numeric entities &#NNN; and &#xHH;
         r = Regex("&#x([0-9a-fA-F]+);").replace(r) { m ->
-            m.groupValues[1].toIntOrNull(16)?.let { String(Character.toChars(it)) } ?: m.value
+            m.groupValues[1].toIntOrNull(16)?.let(CodePoints::toStringOrNull) ?: m.value
         }
         r = Regex("&#([0-9]+);").replace(r) { m ->
-            m.groupValues[1].toIntOrNull()?.let { String(Character.toChars(it)) } ?: m.value
+            m.groupValues[1].toIntOrNull()?.let(CodePoints::toStringOrNull) ?: m.value
         }
         return r
     }

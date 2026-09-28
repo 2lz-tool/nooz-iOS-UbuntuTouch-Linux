@@ -1,9 +1,9 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class LensGuardTest {
 
@@ -71,14 +71,14 @@ class LensGuardTest {
         var caught = 0
         for (c in corpus) {
             val v = FidelityGuard.check(c.source, c.badRewrite)
-            assertFalse("should reject: ${c.source} -> ${c.badRewrite}", v.accepted)
+            assertFalse(v.accepted, "should reject: ${c.source} -> ${c.badRewrite}")
             assertTrue(
-                "expected ${c.expected} among ${v.violations.map { it.kind }} for '${c.badRewrite}'",
                 v.violations.any { it.kind == c.expected },
+                "expected ${c.expected} among ${v.violations.map { it.kind }} for '${c.badRewrite}'",
             )
             caught++
         }
-        assertEquals("100% of seeded violations caught", corpus.size, caught)
+        assertEquals(corpus.size, caught, "100% of seeded violations caught")
     }
 
     // ---- precision: faithful neutralizations must pass ----
@@ -93,7 +93,7 @@ class LensGuardTest {
         )
         for ((src, rew) in faithful) {
             val v = FidelityGuard.check(src, rew)
-            assertTrue("should accept faithful rewrite: '$rew' (${v.reason})", v.accepted)
+            assertTrue(v.accepted, "should accept faithful rewrite: '$rew' (${v.reason})")
         }
     }
 

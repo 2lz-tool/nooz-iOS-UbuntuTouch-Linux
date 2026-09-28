@@ -1,9 +1,9 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 /**
  * Dedup must not silently delete real news written in scripts that use
@@ -31,11 +31,11 @@ class SimhashScriptTest {
     @Test fun normalizeKeepsTheVowelsThatCarryTheMeaning() {
         // The regression in one line: if the marks are gone, so is the word.
         val normalized = Simhash.normalize(hindiRain)
-        assertTrue("vowel sign AA survives: $normalized", normalized.contains('ा'))
-        assertTrue("vowel sign I survives: $normalized", normalized.contains('ि'))
-        assertTrue("anusvara survives: $normalized", normalized.contains('ं'))
+        assertTrue(normalized.contains('ा'), "vowel sign AA survives: $normalized")
+        assertTrue(normalized.contains('ि'), "vowel sign I survives: $normalized")
+        assertTrue(normalized.contains('ं'), "anusvara survives: $normalized")
         // ...and the text does not disintegrate into single consonants.
-        assertFalse("no consonant skeleton: $normalized", normalized.contains("ब र"))
+        assertFalse(normalized.contains("ब र"), "no consonant skeleton: $normalized")
     }
 
     @Test fun differentHindiHeadlinesAreNotTreatedAsDuplicates() {
@@ -43,9 +43,9 @@ class SimhashScriptTest {
         val b = Simhash.of(hindiUnemployment)
         val d = Simhash.distance(a, b)
         assertTrue(
+            d > Simhash.NEAR_DUP_THRESHOLD,
             "distinct Hindi stories must stay outside the threshold, was $d " +
                 "(threshold ${Simhash.NEAR_DUP_THRESHOLD})",
-            d > Simhash.NEAR_DUP_THRESHOLD,
         )
         assertFalse(Simhash.isNearDuplicate(a, b))
     }
@@ -54,14 +54,14 @@ class SimhashScriptTest {
         val chennaiRain = "சென்னையில் கனமழை பெய்தது"
         val chennaiTraffic = "சென்னையில் கடும் போக்குவரத்து நெரிசல்"
         val d = Simhash.distance(Simhash.of(chennaiRain), Simhash.of(chennaiTraffic))
-        assertTrue("distinct Tamil stories, distance was $d", d > Simhash.NEAR_DUP_THRESHOLD)
+        assertTrue(d > Simhash.NEAR_DUP_THRESHOLD, "distinct Tamil stories, distance was $d")
     }
 
     @Test fun differentBengaliHeadlinesAreNotTreatedAsDuplicates() {
         val a = "কলকাতায় ভারী বৃষ্টি"
         val b = "কলকাতায় ভারী যানজট"
         val d = Simhash.distance(Simhash.of(a), Simhash.of(b))
-        assertTrue("distinct Bengali stories, distance was $d", d > Simhash.NEAR_DUP_THRESHOLD)
+        assertTrue(d > Simhash.NEAR_DUP_THRESHOLD, "distinct Bengali stories, distance was $d")
     }
 
     @Test fun identicalNonLatinTitlesStillCollapse() {
@@ -78,7 +78,7 @@ class SimhashScriptTest {
         val composed = "क़िला की ख़बर"
         val decomposed = "क़िला की ख़बर"
         val d = Simhash.distance(Simhash.of(composed), Simhash.of(decomposed))
-        assertTrue("the same headline in two encodings must collapse, distance was $d", d <= Simhash.NEAR_DUP_THRESHOLD)
+        assertTrue(d <= Simhash.NEAR_DUP_THRESHOLD, "the same headline in two encodings must collapse, distance was $d")
     }
 
     @Test fun latinDedupIsUnchanged() {
@@ -88,12 +88,12 @@ class SimhashScriptTest {
         val suffixed = "Flash floods on the Nepal-Tibet border leave scores dead - Reuters"
         val unrelated = "Democratic states sue to block postal service over mail-in voting"
         assertTrue(
-            "syndication variant still collapses",
             Simhash.isNearDuplicate(Simhash.of(plain), Simhash.of(suffixed)),
+            "syndication variant still collapses",
         )
         assertFalse(
-            "unrelated headlines stay apart",
             Simhash.isNearDuplicate(Simhash.of(plain), Simhash.of(unrelated)),
+            "unrelated headlines stay apart",
         )
     }
 
@@ -107,10 +107,10 @@ class SimhashScriptTest {
         val a = "کراچی میں شدید بارش"
         val b = "کراچی میں شدید گرمی"
         val budget = Simhash.thresholdFor(a, b)
-        assertTrue("short titles earn a stricter budget, was $budget", budget < Simhash.NEAR_DUP_THRESHOLD)
+        assertTrue(budget < Simhash.NEAR_DUP_THRESHOLD, "short titles earn a stricter budget, was $budget")
         assertFalse(
-            "distinct short Urdu stories must survive dedup",
             Simhash.isNearDuplicate(Simhash.of(a), Simhash.of(b), budget),
+            "distinct short Urdu stories must survive dedup",
         )
     }
 
@@ -120,8 +120,8 @@ class SimhashScriptTest {
         val punctuated = "मुंबई में भारी बारिश!"
         val budget = Simhash.thresholdFor(title, punctuated)
         assertTrue(
-            "a punctuation-only variant still collapses",
             Simhash.isNearDuplicate(Simhash.of(title), Simhash.of(punctuated), budget),
+            "a punctuation-only variant still collapses",
         )
     }
 

@@ -1,8 +1,8 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 /**
  * The classifier, in the languages the catalogue actually publishes in.
@@ -44,7 +44,7 @@ class MultilingualClassifierTest {
             "क्रिकेट सामन्यात विजय" to Topic.SPORT,
         )
         for ((title, expected) in cases) {
-            assertEquals("\"$title\" should classify as $expected", expected, topicOf(title))
+            assertEquals(expected, topicOf(title), "\"$title\" should classify as $expected")
         }
     }
 
@@ -61,8 +61,8 @@ class MultilingualClassifierTest {
         // boundary construction itself, which is what was broken.
         for (term in listOf("चुनाव", "নির্বাচন", "தேர்தல்", "انتخابات", "ಚುನಾವಣೆ", "ਚੋਣ")) {
             val matcher = TopicLexicon.matcherFor(term)
-            assertTrue("$term must match on its own", matcher.containsMatchIn(term))
-            assertTrue("$term must match mid-sentence", matcher.containsMatchIn("आज $term हुआ"))
+            assertTrue(matcher.containsMatchIn(term), "$term must match on its own")
+            assertTrue(matcher.containsMatchIn("आज $term हुआ"), "$term must match mid-sentence")
         }
     }
 
@@ -80,10 +80,10 @@ class MultilingualClassifierTest {
         // word and matches an inflected form it should not — the same defect
         // fixed in ArticleSearch and Simhash.
         val matcher = TopicLexicon.matcherFor("चुनाव")
-        assertTrue("the bare word matches", matcher.containsMatchIn("चुनाव आज है"))
+        assertTrue(matcher.containsMatchIn("चुनाव आज है"), "the bare word matches")
         assertTrue(
-            "an inflected form must not count as the bare word",
             !matcher.containsMatchIn("चुनावों"),
+            "an inflected form must not count as the bare word",
         )
     }
 
@@ -94,10 +94,10 @@ class MultilingualClassifierTest {
         for ((_, terms) in TopicLexicon.allTerms) {
             for (term in terms) {
                 val matcher = TopicLexicon.matcherFor(term)
-                assertTrue("\"$term\" cannot match itself", matcher.containsMatchIn(term))
+                assertTrue(matcher.containsMatchIn(term), "\"$term\" cannot match itself")
                 checked++
             }
         }
-        assertTrue("the localized lexicon actually loaded: only $checked terms", checked > 900)
+        assertTrue(checked > 900, "the localized lexicon actually loaded: only $checked terms")
     }
 }

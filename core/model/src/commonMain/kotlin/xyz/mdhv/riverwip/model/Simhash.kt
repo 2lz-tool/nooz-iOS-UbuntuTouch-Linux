@@ -28,7 +28,7 @@ object Simhash {
      * Latin calibration below is unaffected either way, which is exactly why it
      * read as sound.
      */
-    private val NON_ALNUM = Regex("[^\\p{L}\\p{N}\\p{M}]+")
+    private val NON_ALNUM = Regex("[^\\p{L}\\p{Nd}\\p{Nl}\\p{No}\\p{M}]+") // \p{N} spelled out: Kotlin/Native has no one-letter N class
 
     /** Shingle width (characters). Char n-grams are robust for short titles: a
      *  small edit changes only the few shingles that span it, not whole tokens. */
@@ -44,7 +44,7 @@ object Simhash {
      * publisher's encoding of a headline would not dedup against another's.
      */
     fun normalize(text: String): String =
-        java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFC)
+        UnicodeNormalizer.nfc(text)
             .lowercase()
             .replace(NON_ALNUM, " ")
             .trim()
@@ -79,7 +79,7 @@ object Simhash {
     }
 
     /** Hamming distance between two simhashes (0 = identical, 64 = opposite). */
-    fun distance(a: Long, b: Long): Int = java.lang.Long.bitCount(a xor b)
+    fun distance(a: Long, b: Long): Int = (a xor b).countOneBits()
 
     /**
      * Default near-duplicate threshold (bits). Calibrated on char-4-gram

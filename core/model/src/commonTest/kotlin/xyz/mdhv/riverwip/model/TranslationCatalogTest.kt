@@ -1,34 +1,34 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class TranslationCatalogTest {
 
     @Test fun everyOptionIsWellFormedAndAddressable() {
-        assertTrue("catalogue is not empty", TranslationCatalog.options.isNotEmpty())
+        assertTrue(TranslationCatalog.options.isNotEmpty(), "catalogue is not empty")
         for (o in TranslationCatalog.options) {
-            assertEquals("id is source-target: ${o.id}", "${o.sourceLang}-${o.targetLang}", o.id)
-            assertTrue("https url: ${o.id}", o.downloadUrl.startsWith("https://"))
-            assertTrue("url ends in the pair: ${o.id}", o.downloadUrl.endsWith("/${o.id}.sqlite3"))
-            assertTrue("has a size: ${o.id}", o.approxSizeBytes > 0)
-            assertTrue("attributes its source: ${o.id}", o.license.contains("CC BY-SA"))
+            assertEquals("${o.sourceLang}-${o.targetLang}", o.id, "id is source-target: ${o.id}")
+            assertTrue(o.downloadUrl.startsWith("https://"), "https url: ${o.id}")
+            assertTrue(o.downloadUrl.endsWith("/${o.id}.sqlite3"), "url ends in the pair: ${o.id}")
+            assertTrue(o.approxSizeBytes > 0, "has a size: ${o.id}")
+            assertTrue(o.license.contains("CC BY-SA"), "attributes its source: ${o.id}")
             assertEquals(o, TranslationCatalog.byId(o.id))
         }
     }
 
     @Test fun idsAndUrlsAreUnique() {
         val ids = TranslationCatalog.options.map { it.id }
-        assertEquals("duplicate ids", ids.size, ids.toSet().size)
+        assertEquals(ids.size, ids.toSet().size, "duplicate ids")
         val urls = TranslationCatalog.options.map { it.downloadUrl }
-        assertEquals("duplicate urls", urls.size, urls.toSet().size)
+        assertEquals(urls.size, urls.toSet().size, "duplicate urls")
     }
 
     @Test fun neverPairsALanguageWithItself() {
         for (o in TranslationCatalog.options) {
-            assertTrue("${o.id} translates between two languages", o.sourceLang != o.targetLang)
+            assertTrue(o.sourceLang != o.targetLang, "${o.id} translates between two languages")
         }
     }
 
@@ -38,14 +38,14 @@ class TranslationCatalogTest {
         // would silently serve half the readers it looks like it serves.
         val ids = TranslationCatalog.options.map { it.id }.toSet()
         for (o in TranslationCatalog.options) {
-            assertTrue("reverse of ${o.id} is present", "${o.targetLang}-${o.sourceLang}" in ids)
+            assertTrue("${o.targetLang}-${o.sourceLang}" in ids, "reverse of ${o.id} is present")
         }
     }
 
     @Test fun lookupsByLanguageAndUnknownIds() {
         val fromEnglish = TranslationCatalog.fromLanguage("en")
-        assertTrue("English has outbound pairs", fromEnglish.isNotEmpty())
-        assertTrue("all start from English", fromEnglish.all { it.sourceLang == "en" })
+        assertTrue(fromEnglish.isNotEmpty(), "English has outbound pairs")
+        assertTrue(fromEnglish.all { it.sourceLang == "en" }, "all start from English")
         assertNull(TranslationCatalog.byId("no-such-pair"))
         assertNull(TranslationCatalog.byId(null))
     }
@@ -53,9 +53,9 @@ class TranslationCatalogTest {
     @Test fun labelsAndSizesAreReadable() {
         val es = TranslationCatalog.byId("en-es")!!
         assertEquals("English → Spanish", es.label)
-        assertTrue("megabytes for a big one: ${es.approxSizeHuman}", es.approxSizeHuman.endsWith("MB"))
+        assertTrue(es.approxSizeHuman.endsWith("MB"), "megabytes for a big one: ${es.approxSizeHuman}")
         val mg = TranslationCatalog.byId("mg-en")!!
-        assertTrue("kilobytes for a small one: ${mg.approxSizeHuman}", mg.approxSizeHuman.endsWith("KB"))
+        assertTrue(mg.approxSizeHuman.endsWith("KB"), "kilobytes for a small one: ${mg.approxSizeHuman}")
     }
 
     @Test fun transListIsSplitOnPipes() {

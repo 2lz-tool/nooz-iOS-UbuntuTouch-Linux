@@ -13,7 +13,7 @@ object Hashing {
     /** FNV-1a 64-bit over the UTF-8 bytes of [s]. Deterministic. */
     fun fnv1a64(s: String): Long {
         var hash = FNV64_OFFSET
-        val bytes = s.toByteArray(Charsets.UTF_8)
+        val bytes = s.encodeToByteArray()
         for (b in bytes) {
             hash = hash xor (b.toLong() and 0xff)
             hash *= FNV64_PRIME

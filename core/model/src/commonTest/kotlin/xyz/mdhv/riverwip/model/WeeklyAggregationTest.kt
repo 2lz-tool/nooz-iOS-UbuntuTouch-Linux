@@ -1,8 +1,8 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class WeeklyAggregationTest {
 
@@ -14,8 +14,8 @@ class WeeklyAggregationTest {
 
     @Test fun periodStartIsMondayUtcAndStable() {
         // 2024-10-02 is a Wednesday; the ISO week's Monday is 2024-09-30.
-        val wed = java.time.LocalDate.of(2024, 10, 2).atStartOfDay(java.time.ZoneOffset.UTC).toInstant().toEpochMilli()
-        val monday = java.time.LocalDate.of(2024, 9, 30).atStartOfDay(java.time.ZoneOffset.UTC).toInstant().toEpochMilli()
+        val wed = 1727827200000L /* 2024-10-02T00:00:00Z */
+        val monday = 1727654400000L /* 2024-09-30T00:00:00Z */
         assertEquals(monday, WeekBucketing.periodStart(wed))
         // Every timestamp within the week maps to the same start.
         val fri = wed + 2L * 24 * 60 * 60 * 1000
@@ -61,7 +61,7 @@ class WeeklyAggregationTest {
         for (week in a) {
             for ((topicKey, streamCount) in week.streamCountsByTopic) {
                 val readCount = week.readCountsByTopic[topicKey] ?: 0
-                assertTrue("read<=stream for $topicKey", readCount <= streamCount)
+                assertTrue(readCount <= streamCount, "read<=stream for $topicKey")
             }
         }
     }

@@ -1,9 +1,5 @@
 package xyz.mdhv.riverwip.model
 
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.temporal.ChronoUnit
-
 /**
  * Period bucketing for the river's weekly abstraction (brief §P4: "period is a
  * parameter; ship weekly" — daily-vs-weekly default is a logged open question,
@@ -24,8 +20,7 @@ object WeekBucketing {
      */
     fun periodStart(epochMillis: Long, periodDays: Int = DEFAULT_PERIOD_DAYS): Long {
         require(periodDays > 0) { "periodDays must be positive" }
-        val day = Instant.ofEpochMilli(epochMillis).atZone(ZoneOffset.UTC).toLocalDate()
-        val epochDay = day.toEpochDay() // days since 1970-01-01 (a Thursday)
+        val epochDay = CivilTime.floorDiv(epochMillis, CivilTime.MILLIS_PER_DAY) // days since 1970-01-01 (a Thursday), UTC
         // Align periods to ISO-week Mondays for periodDays == 7; for other
         // lengths, bucket from the epoch directly (still deterministic/stable).
         val bucketStartEpochDay = if (periodDays == 7) {
@@ -36,7 +31,7 @@ object WeekBucketing {
         } else {
             epochDay - (epochDay.floorModPositive(periodDays.toLong()))
         }
-        return Instant.EPOCH.plus(bucketStartEpochDay, ChronoUnit.DAYS).toEpochMilli()
+        return bucketStartEpochDay * CivilTime.MILLIS_PER_DAY
     }
 
     private fun Long.floorModPositive(m: Long): Long = ((this % m) + m) % m
@@ -44,7 +39,7 @@ object WeekBucketing {
     /** The [periodStart, periodEnd) half-open range containing [epochMillis]. */
     fun periodRange(epochMillis: Long, periodDays: Int = DEFAULT_PERIOD_DAYS): LongRange {
         val start = periodStart(epochMillis, periodDays)
-        val end = Instant.ofEpochMilli(start).plus(periodDays.toLong(), ChronoUnit.DAYS).toEpochMilli()
+        val end = start + periodDays.toLong() * CivilTime.MILLIS_PER_DAY
         return start until end
     }
 }

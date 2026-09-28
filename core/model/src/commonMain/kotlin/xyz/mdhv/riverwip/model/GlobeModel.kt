@@ -128,6 +128,8 @@ object GlobeModel {
         val distance: Double,
     )
 
+    private fun toRadians(deg: Double): Double = deg * 0.017453292519943295 // the constant java.lang.Math.toRadians uses
+
     /**
      * Orthographic projection with the view rotated by [yawDeg]/[pitchDeg]
      * (matching the reference's d3 `rotate([yaw, pitch])`: the view centre sits
@@ -135,9 +137,9 @@ object GlobeModel {
      * Output is unit-sphere coordinates: x right, y down, each in [-1, 1].
      */
     fun project(lonDeg: Double, latDeg: Double, yawDeg: Double, pitchDeg: Double): Projected? {
-        val lambda = Math.toRadians(lonDeg + yawDeg) // longitude relative to view centre
-        val phi = Math.toRadians(latDeg)
-        val phi0 = Math.toRadians(-pitchDeg)
+        val lambda = toRadians(lonDeg + yawDeg) // longitude relative to view centre
+        val phi = toRadians(latDeg)
+        val phi0 = toRadians(-pitchDeg)
         val cosC = sin(phi0) * sin(phi) + cos(phi0) * cos(phi) * cos(lambda)
         if (cosC <= 0.0) return null
         val x = cos(phi) * sin(lambda)

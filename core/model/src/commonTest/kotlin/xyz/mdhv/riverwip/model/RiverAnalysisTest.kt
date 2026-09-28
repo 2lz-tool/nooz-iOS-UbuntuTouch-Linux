@@ -1,8 +1,8 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 import kotlin.math.abs
 
 class RiverAnalysisTest {
@@ -38,8 +38,8 @@ class RiverAnalysisTest {
             read1 = m(Topic.CONFLICT to 40, Topic.SPORT to 20),
         )
         for (t in d) {
-            assertEquals("supply+selection==Δ for ${t.topic}", t.observedDelta, t.supply + t.selection, 1e-12)
-            assertTrue("residual ~0 for ${t.topic}", abs(t.residual) < 1e-12)
+            assertEquals(t.observedDelta, t.supply + t.selection, 1e-12, "supply+selection==Δ for ${t.topic}")
+            assertTrue(abs(t.residual) < 1e-12, "residual ~0 for ${t.topic}")
         }
         // Observed deltas across topics sum to ~0 (both are share distributions).
         assertEquals(0.0, d.sumOf { it.observedDelta }, 1e-12)
@@ -54,7 +54,7 @@ class RiverAnalysisTest {
             read1 = m(Topic.POLITICS to 10, Topic.TECH to 30),
         )
         for (t in d) {
-            assertEquals("Δ decomposes exactly for ${t.topic}", t.observedDelta, t.supply + t.selection, 1e-12)
+            assertEquals(t.observedDelta, t.supply + t.selection, 1e-12, "Δ decomposes exactly for ${t.topic}")
         }
     }
 
@@ -81,8 +81,8 @@ class RiverAnalysisTest {
             val d = RiverAnalysis.decompose(s0, r0, s1, r1)
             for (t in d) {
                 assertTrue(
-                    "residual too large for ${t.topic}: ${t.residual}",
                     abs(t.residual) < 1e-9,
+                    "residual too large for ${t.topic}: ${t.residual}",
                 )
             }
         }
@@ -98,7 +98,7 @@ class RiverAnalysisTest {
             read1 = m(Topic.CONFLICT to 40, Topic.CULTURE to 30),
         )
         val conflict = d.first { it.topic == Topic.CONFLICT }
-        assertTrue("conflict intake rose", conflict.observedDelta > 0)
+        assertTrue(conflict.observedDelta > 0, "conflict intake rose")
         val sp = conflict.supplyPercent!!
         val se = conflict.selectionPercent!!
         assertEquals(100.0, sp + se, 1e-9)

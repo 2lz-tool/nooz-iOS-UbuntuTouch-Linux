@@ -1,7 +1,5 @@
 package xyz.mdhv.riverwip.model
 
-import java.net.URI
-
 /**
  * Feed autodiscovery (brief §P1: "Add-by-URL with feed autodiscovery").
  *
@@ -47,7 +45,7 @@ object FeedAutodiscovery {
             val href = attr(tag, "href") ?: continue
             val resolved = resolve(pageUrl, href) ?: continue
             val title = attr(tag, "title")
-            out.putIfAbsent(resolved, DiscoveredFeed(resolved, title, feedType))
+            if (resolved !in out) out[resolved] = DiscoveredFeed(resolved, title, feedType)
         }
         return out.values.toList()
     }
@@ -70,7 +68,7 @@ object FeedAutodiscovery {
     }
 
     private fun siteRoot(url: String): String? = try {
-        val u = URI(if (url.contains("://")) url else "https://$url")
+        val u = Uri.parse(if (url.contains("://")) url else "https://$url")
         val scheme = u.scheme ?: "https"
         val host = u.host ?: return null
         val portPart = if (u.port == -1) "" else ":${u.port}"
@@ -78,8 +76,8 @@ object FeedAutodiscovery {
     } catch (_: Exception) { null }
 
     private fun resolve(base: String, href: String): String? = try {
-        val baseUri = URI(if (base.contains("://")) base else "https://$base")
-        baseUri.resolve(href.trim()).toString()
+        val baseUri = Uri.parse(if (base.contains("://")) base else "https://$base")
+        baseUri.resolve(href.trim())
     } catch (_: Exception) {
         if (href.startsWith("http")) href else null
     }

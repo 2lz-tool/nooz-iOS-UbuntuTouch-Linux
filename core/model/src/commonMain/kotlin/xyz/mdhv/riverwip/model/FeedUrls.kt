@@ -1,10 +1,5 @@
 package xyz.mdhv.riverwip.model
 
-import java.net.URLEncoder
-import java.time.Instant
-import java.time.ZoneOffset
-import java.time.format.DateTimeFormatter
-
 /**
  * Query builders for the parameterized source kinds (brief §P1). Pure string
  * construction so the sources UI can preview the exact URL it will fetch — total
@@ -13,7 +8,7 @@ import java.time.format.DateTimeFormatter
 object FeedUrls {
 
     private fun enc(s: String): String =
-        URLEncoder.encode(s, "UTF-8").replace("+", "%20")
+        UrlEncoding.encode(s)
 
     // ---- Google News RSS -------------------------------------------------
 
@@ -89,11 +84,8 @@ object FeedUrls {
     // sufficiently old day legitimately coming back empty is GDELT's own
     // limit, not a bug here.
 
-    private val GDELT_DATETIME_FMT: DateTimeFormatter =
-        DateTimeFormatter.ofPattern("yyyyMMddHHmmss").withZone(ZoneOffset.UTC)
-
     /** Format an instant as GDELT DOC 2.0's absolute-date query parameter value. */
-    fun gdeltDateTime(epochMillis: Long): String = GDELT_DATETIME_FMT.format(Instant.ofEpochMilli(epochMillis))
+    fun gdeltDateTime(epochMillis: Long): String = CivilTime.formatCompactUtc(epochMillis)
 
     /**
      * Rewrite an already-built GDELT DOC 2.0 URL — however it was produced:

@@ -50,7 +50,7 @@ data class TranslationOption(
     val approxSizeHuman: String
         get() {
             val mb = approxSizeBytes / (1024.0 * 1024.0)
-            return if (mb < 1.0) "${(approxSizeBytes / 1024.0).toInt()} KB" else "${Math.round(mb)} MB"
+            return if (mb < 1.0) "${(approxSizeBytes / 1024.0).toInt()} KB" else "${kotlin.math.round(mb).toLong()} MB"
         }
 
     companion object {

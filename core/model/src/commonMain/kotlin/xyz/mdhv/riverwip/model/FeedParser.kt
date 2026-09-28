@@ -4,22 +4,16 @@ import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonArray
 import kotlinx.serialization.json.JsonObject
 import kotlinx.serialization.json.jsonObject
-import org.w3c.dom.Element
-import org.w3c.dom.Node
-import java.io.StringReader
-import java.time.OffsetDateTime
-import java.time.ZonedDateTime
-import java.time.format.DateTimeFormatter
-import javax.xml.parsers.DocumentBuilderFactory
-import org.xml.sax.InputSource
 
 /**
  * Feed parsing (brief §P2 ingest). Turns a fetched feed body into normalized
  * [ParsedItem]s. Handles RSS 2.0, Atom, RDF (RSS 1.0), and the two JSON shapes we
- * ingest (Mastodon timelines, GDELT DOC). Pure and dependency-light (JDK DOM +
- * kotlinx JSON) so the whole ingest path is unit-tested without an Android SDK.
+ * ingest (Mastodon timelines, GDELT DOC). Pure and dependency-light (the
+ * in-module [XmlLite] reader + kotlinx JSON) so the whole ingest path is unit-tested
+ * without an Android SDK and runs unchanged on every platform.
  *
- * XML parsing is XXE-hardened (feeds are untrusted): no DTDs, no external entities.
+ * XML parsing is safe against untrusted feeds by construction: [XmlLite] rejects
+ * DTDs and supports no external or custom entities.
  */
 object FeedParser {
 
@@ -51,15 +45,11 @@ object FeedParser {
     // ---- XML (RSS / Atom / RDF) -----------------------------------------
 
     private fun parseXml(body: String): ParsedFeed {
-        val doc = try {
-            val f = DocumentBuilderFactory.newInstance()
-            f.isNamespaceAware = true
-            hardenXxe(f)
-            f.newDocumentBuilder().parse(InputSource(StringReader(body)))
-        } catch (_: Exception) {
+        val root = try {
+            XmlLite.parse(body)
+        } catch (_: XmlParseException) {
             return ParsedFeed(null, emptyList())
         }
-        val root = doc.documentElement ?: return ParsedFeed(null, emptyList())
         // Atom feeds have <entry>; RSS/RDF have <item>.
         val entryNodes = root.descendantsByLocal("entry")
         val itemNodes = root.descendantsByLocal("item")
@@ -70,7 +60,7 @@ object FeedParser {
         return ParsedFeed(feedTitle, items)
     }
 
-    private fun parseRssItem(item: Element): ParsedItem? {
+    private fun parseRssItem(item: XmlElement): ParsedItem? {
         val title = item.firstChildByLocal("title")?.textContent?.trim().orEmpty()
         val link = item.firstChildByLocal("link")?.textContent?.trim()
             ?: item.childrenByLocal("guid").firstOrNull { it.attrOrNull("isPermaLink") != "false" }?.textContent?.trim()
@@ -83,7 +73,7 @@ object FeedParser {
         val summaryRaw = item.firstChildByLocal("encoded")?.textContent // content:encoded
             ?: item.firstChildByLocal("description")?.textContent
         val categories = (item.childrenByLocal("category") + item.childrenByLocal("subject"))
-            .mapNotNull { it.textContent?.trim()?.ifBlank { null } }
+            .mapNotNull { it.textContent.trim().ifBlank { null } }
         return ParsedItem(
             title = Html.strip(title),
             link = link,
@@ -104,7 +94,7 @@ object FeedParser {
      * so only trust it when `medium` says image explicitly), and finally the
      * first `<img>` found in the item's own description/content:encoded HTML.
      */
-    private fun rssImageUrl(item: Element, rawHtml: String?): String? {
+    private fun rssImageUrl(item: XmlElement, rawHtml: String?): String? {
         item.childrenByLocal("enclosure")
             .firstOrNull { it.attrOrNull("type")?.startsWith("image/", ignoreCase = true) == true }
             ?.attrOrNull("url")?.trim()?.ifBlank { null }
@@ -119,7 +109,7 @@ object FeedParser {
         return rawHtml?.let(Html::firstImgSrc)
     }
 
-    private fun parseAtomEntry(entry: Element): ParsedItem? {
+    private fun parseAtomEntry(entry: XmlElement): ParsedItem? {
         val title = entry.firstChildByLocal("title")?.textContent?.trim().orEmpty()
         val links = entry.childrenByLocal("link")
         val link = (links.firstOrNull { it.attrOrNull("rel") == "alternate" } ?: links.firstOrNull { it.attrOrNull("rel") == null } ?: links.firstOrNull())
@@ -144,7 +134,7 @@ object FeedParser {
     }
 
     /** An Atom entry's image: an explicit `<link rel="enclosure" type="image/...">`, or the first `<img>` in its own summary/content HTML. */
-    private fun atomImageUrl(entry: Element, rawHtml: String?): String? {
+    private fun atomImageUrl(entry: XmlElement, rawHtml: String?): String? {
         entry.childrenByLocal("link")
             .firstOrNull { it.attrOrNull("rel") == "enclosure" && it.attrOrNull("type")?.startsWith("image/", ignoreCase = true) == true }
             ?.attrOrNull("href")?.trim()?.ifBlank { null }
@@ -163,7 +153,7 @@ object FeedParser {
      * that supplies neither element reads false — absence is exactly what
      * both specs themselves define as "not flagged," never a guess.
      */
-    private fun declaredNsfw(item: Element): Boolean {
+    private fun declaredNsfw(item: XmlElement): Boolean {
         item.firstChildByLocal("rating")?.textContent?.trim()?.let {
             if (it.equals("adult", ignoreCase = true)) return true
         }
@@ -226,61 +216,34 @@ object FeedParser {
     fun parseDate(raw: String?): Long? {
         val s = raw?.trim()?.ifBlank { null } ?: return null
         // RFC-822/1123 (RSS): "Wed, 02 Oct 2024 13:00:00 GMT"
-        runCatching { return ZonedDateTime.parse(s, DateTimeFormatter.RFC_1123_DATE_TIME).toInstant().toEpochMilli() }
+        CivilTime.parseRfc1123(s)?.let { return it }
         // RFC-3339 / ISO-8601 with offset (Atom): "2024-10-02T13:00:00Z"
-        runCatching { return OffsetDateTime.parse(s).toInstant().toEpochMilli() }
-        runCatching { return ZonedDateTime.parse(s).toInstant().toEpochMilli() }
-        return null
+        return CivilTime.parseIsoOffset(s)
     }
 
-    private val GDELT_FMT = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'")
     private fun parseGdeltDate(raw: String?): Long? {
         val s = raw?.trim()?.ifBlank { null } ?: return null
-        return runCatching {
-            java.time.LocalDateTime.parse(s, GDELT_FMT).toInstant(java.time.ZoneOffset.UTC).toEpochMilli()
-        }.getOrNull()
+        return CivilTime.parseGdelt(s)
     }
 
-    // ---- DOM helpers ----------------------------------------------------
+    // ---- element helpers ------------------------------------------------
 
-    private fun hardenXxe(f: DocumentBuilderFactory) {
-        for (feat in listOf(
-            "http://apache.org/xml/features/disallow-doctype-decl" to true,
-            "http://xml.org/sax/features/external-general-entities" to false,
-            "http://xml.org/sax/features/external-parameter-entities" to false,
-        )) runCatching { f.setFeature(feat.first, feat.second) }
-        runCatching { f.isXIncludeAware = false }
-        runCatching { f.isExpandEntityReferences = false }
-    }
+    private fun XmlElement.childrenByLocal(local: String): List<XmlElement> =
+        childElements.filter { it.localName.equals(local, ignoreCase = true) }
 
-    private fun Element.childElements(): List<Element> {
-        val out = ArrayList<Element>()
-        val kids = childNodes
-        for (i in 0 until kids.length) (kids.item(i) as? Element)?.let { out.add(it) }
-        return out
-    }
+    private fun XmlElement.firstChildByLocal(local: String): XmlElement? = childrenByLocal(local).firstOrNull()
 
-    private fun Element.childrenByLocal(local: String): List<Element> =
-        childElements().filter { it.localOrName().equals(local, ignoreCase = true) }
-
-    private fun Element.firstChildByLocal(local: String): Element? = childrenByLocal(local).firstOrNull()
-
-    private fun Element.descendantsByLocal(local: String): List<Element> {
-        val out = ArrayList<Element>()
-        fun walk(n: Node) {
-            val kids = n.childNodes
-            for (i in 0 until kids.length) {
-                val k = kids.item(i)
-                if (k is Element) {
-                    if (k.localOrName().equals(local, ignoreCase = true)) out.add(k)
-                    walk(k)
-                }
+    private fun XmlElement.descendantsByLocal(local: String): List<XmlElement> {
+        val out = ArrayList<XmlElement>()
+        fun walk(n: XmlElement) {
+            for (k in n.childElements) {
+                if (k.localName.equals(local, ignoreCase = true)) out.add(k)
+                walk(k)
             }
         }
         walk(this)
         return out
     }
 
-    private fun Element.localOrName(): String = localName ?: tagName.substringAfter(':')
-    private fun Element.attrOrNull(name: String): String? = if (hasAttribute(name)) getAttribute(name) else null
+    private fun XmlElement.attrOrNull(name: String): String? = attributes[name]
 }

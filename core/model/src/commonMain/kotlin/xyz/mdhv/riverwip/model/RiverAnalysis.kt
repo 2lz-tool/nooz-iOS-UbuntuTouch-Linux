@@ -98,7 +98,7 @@ object RiverAnalysis {
     ): List<TopicDecomposition> {
         val s0 = shares(stream0); val r0 = shares(read0)
         val s1 = shares(stream1); val r1 = shares(read1)
-        val topics = (s0.keys + s1.keys + r0.keys + r1.keys).toSortedSet(compareBy { it.ordinal })
+        val topics = (s0.keys + s1.keys + r0.keys + r1.keys).toSet().sortedBy { it.ordinal }
         return topics.map { t ->
             val s0i = s0[t] ?: 0.0; val s1i = s1[t] ?: 0.0
             val r0i = r0[t] ?: 0.0; val r1i = r1[t] ?: 0.0

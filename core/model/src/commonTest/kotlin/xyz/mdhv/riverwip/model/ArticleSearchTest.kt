@@ -1,10 +1,10 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class ArticleSearchTest {
 
@@ -67,7 +67,7 @@ class ArticleSearchTest {
         // prose does, which is why this would have hidden rather than failed.
         val q = ArticleSearch.toMatchQuery("dozen lawsuit")!!
         assertEquals("dozen* lawsuit*", q)
-        assertFalse("no bare AND operator in the expression", q.contains(" AND "))
+        assertFalse(q.contains(" AND "), "no bare AND operator in the expression")
     }
 
     @Test fun matchQueryIsNullWhenThereIsNothingToSearchFor() {
@@ -109,8 +109,8 @@ class ArticleSearchTest {
         val body = "Two dozen states and the District of Columbia filed a fresh lawsuit on Wednesday " +
             "to block Donald Trump's executive order restricting mail voting in this year's midterm elections."
         val snippet = ArticleSearch.snippet(body, listOf("lawsuit"), radius = 30)!!
-        assertTrue("contains the term: $snippet", snippet.contains("lawsuit"))
-        assertTrue("elided at the start: $snippet", snippet.startsWith("…"))
+        assertTrue(snippet.contains("lawsuit"), "contains the term: $snippet")
+        assertTrue(snippet.startsWith("…"), "elided at the start: $snippet")
     }
 
     @Test fun snippetNeverCutsMidWord() {
@@ -118,15 +118,15 @@ class ArticleSearchTest {
         val snippet = ArticleSearch.snippet(body, listOf("hotel"), radius = 12)!!
         val words = snippet.trim('…').trim().split(" ")
         for (w in words) {
-            assertTrue("whole word, got '$w' in: $snippet", body.contains(w))
+            assertTrue(body.contains(w), "whole word, got '$w' in: $snippet")
         }
     }
 
     @Test fun snippetPicksTheEarliestMatchingTerm() {
         val body = "Kathmandu first, then Sydney much later in the piece."
         val snippet = ArticleSearch.snippet(body, listOf("sydney", "kathmandu"), radius = 10)!!
-        assertTrue("anchored on the earliest hit: $snippet", snippet.contains("Kathmandu"))
-        assertFalse("did not start at the later hit: $snippet", snippet.startsWith("…"))
+        assertTrue(snippet.contains("Kathmandu"), "anchored on the earliest hit: $snippet")
+        assertFalse(snippet.startsWith("…"), "did not start at the later hit: $snippet")
     }
 
     @Test fun snippetCollapsesWhitespaceSoExtractedPagesStayOneLine() {
@@ -134,8 +134,8 @@ class ArticleSearchTest {
         // a paragraph break must not render as a gap in the results list.
         val body = "The first paragraph ends here.\n\n   The second one mentions monsoon rain."
         val snippet = ArticleSearch.snippet(body, listOf("monsoon"))!!
-        assertFalse("no newlines: $snippet", snippet.contains("\n"))
-        assertFalse("no double spaces: $snippet", snippet.contains("  "))
+        assertFalse(snippet.contains("\n"), "no newlines: $snippet")
+        assertFalse(snippet.contains("  "), "no double spaces: $snippet")
     }
 
     @Test fun snippetIsNullWhenNothingMatchesSoCallersCanFallBack() {

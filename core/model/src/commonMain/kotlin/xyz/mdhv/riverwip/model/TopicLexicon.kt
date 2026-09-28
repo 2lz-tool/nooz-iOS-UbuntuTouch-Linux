@@ -128,13 +128,14 @@ object TopicLexicon {
      * ArticleSearch and Simhash.
      */
     internal fun matcherFor(term: String): Regex =
-        if (UNSPACED_SCRIPT.containsMatchIn(term)) {
+        if (hasUnspacedScript(term)) {
             Regex(Regex.escape(term), RegexOption.IGNORE_CASE)
         } else {
             Regex("(?<!$WORD_CHAR)" + Regex.escape(term) + "(?!$WORD_CHAR)", RegexOption.IGNORE_CASE)
         }
 
-    private const val WORD_CHAR = "[\\p{L}\\p{N}\\p{M}]"
+    // \p{N} spelled out as Nd|Nl|No: Kotlin/Native's regex engine has no one-letter N class.
+    private const val WORD_CHAR = "[\\p{L}\\p{Nd}\\p{Nl}\\p{No}\\p{M}]"
 
     /**
      * Scripts written without spaces between words. A "word boundary" is not a
@@ -142,6 +143,35 @@ object TopicLexicon {
      * matched by containment instead — the boundary form would demand a
      * non-letter on each side and could never fire mid-sentence.
      */
-    private val UNSPACED_SCRIPT =
-        Regex("[\\p{IsHan}\\p{IsHiragana}\\p{IsKatakana}\\p{IsThai}\\p{IsKhmer}\\p{IsLao}]")
+    private fun hasUnspacedScript(term: String): Boolean {
+        var i = 0
+        while (i < term.length) {
+            val c = term[i]
+            var cp = c.code
+            if (c.isHighSurrogate() && i + 1 < term.length && term[i + 1].isLowSurrogate()) {
+                cp = 0x10000 + ((c.code - 0xD800) shl 10) + (term[i + 1].code - 0xDC00)
+                i++
+            }
+            i++
+            if (isUnspacedScript(cp)) return true
+        }
+        return false
+    }
+
+    /**
+     * Han, Hiragana, Katakana, Thai, Lao and Khmer by code-point range. This used to be
+     * `\p{IsHan}\p{IsHiragana}…`, which Kotlin/Native's regex engine cannot compile; explicit
+     * ranges behave the same on every platform (and cover supplementary-plane Han).
+     */
+    private fun isUnspacedScript(cp: Int): Boolean = when (cp) {
+        in 0x2E80..0x2FDF, 0x3005, 0x3007, in 0x3021..0x3029, in 0x3038..0x303B,
+        in 0x3400..0x4DBF, in 0x4E00..0x9FFF, in 0xF900..0xFAFF, in 0x20000..0x323AF -> true // Han
+        in 0x3041..0x3096, in 0x309D..0x309F, in 0x1B001..0x1B11F, 0x1F200 -> true // Hiragana
+        in 0x30A1..0x30FA, in 0x30FD..0x30FF, in 0x31F0..0x31FF, in 0x32D0..0x32FE,
+        in 0x3300..0x3357, in 0xFF66..0xFF6F, in 0xFF71..0xFF9D -> true // Katakana
+        in 0x0E01..0x0E3A, in 0x0E40..0x0E5B -> true // Thai
+        in 0x0E81..0x0EDF -> true // Lao
+        in 0x1780..0x17FF, in 0x19E0..0x19FF -> true // Khmer
+        else -> false
+    }
 }

@@ -1,8 +1,8 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class TodayInHistoryTest {
 
@@ -42,9 +42,9 @@ class TodayInHistoryTest {
         val picked = TodayInHistory.column(feed, count = 5)
 
         assertEquals(5, picked.size)
-        assertEquals("oldest event should survive", 1099, picked.first().year)
-        assertEquals("newest event should survive", 2020, picked.last().year)
-        assertTrue("column should reach past living memory", picked.any { it.year < 1900 })
+        assertEquals(1099, picked.first().year, "oldest event should survive")
+        assertEquals(2020, picked.last().year, "newest event should survive")
+        assertTrue(picked.any { it.year < 1900 }, "column should reach past living memory")
     }
 
     @Test

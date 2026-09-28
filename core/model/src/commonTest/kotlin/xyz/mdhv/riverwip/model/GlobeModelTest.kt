@@ -1,10 +1,10 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertNull
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class GlobeModelTest {
 
@@ -23,7 +23,7 @@ class GlobeModelTest {
 
     @Test fun dotGridIsNonTrivialAndStable() {
         val n = GlobeModel.dots.size
-        assertTrue("dot grid should be substantial, was $n", n > 200)
+        assertTrue(n > 200, "dot grid should be substantial, was $n")
         assertEquals(n, GlobeModel.dots.size) // lazy value stable
     }
 
@@ -116,8 +116,8 @@ class GlobeModelTest {
         assertEquals(ThemeMode.DARK, ThemeMode.SYSTEM.next(systemDark = false))
         // ...and the flick never lands back on SYSTEM from any tint.
         for (mode in ThemeMode.entries) {
-            assertTrue("flick from $mode", mode.next(systemDark = true) != ThemeMode.SYSTEM)
-            assertTrue("flick from $mode", mode.next(systemDark = false) != ThemeMode.SYSTEM)
+            assertTrue(mode.next(systemDark = true) != ThemeMode.SYSTEM, "flick from $mode")
+            assertTrue(mode.next(systemDark = false) != ThemeMode.SYSTEM, "flick from $mode")
         }
     }
 
@@ -133,7 +133,7 @@ class GlobeModelTest {
         // through to a default and the app paints a tint nobody chose.
         for (systemDark in listOf(true, false)) {
             for (mode in ThemeMode.entries) {
-                assertTrue("$mode resolved", mode.resolve(systemDark) != ThemeMode.SYSTEM)
+                assertTrue(mode.resolve(systemDark) != ThemeMode.SYSTEM, "$mode resolved")
             }
         }
         assertTrue(ThemeMode.SYSTEM.isDarkSurface(systemDark = true))

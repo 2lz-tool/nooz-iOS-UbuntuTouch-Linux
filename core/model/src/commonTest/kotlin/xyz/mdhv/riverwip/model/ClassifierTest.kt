@@ -1,8 +1,8 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class ClassifierTest {
 
@@ -11,7 +11,7 @@ class ClassifierTest {
             title = "Parliament passes new election law after long debate",
         )
         val politics = ev.firstOrNull { it.topic == Topic.POLITICS }
-        assertTrue("politics fired", politics != null)
+        assertTrue(politics != null, "politics fired")
         assertEquals("lexicon:politics", politics!!.ruleId)
         // The exact terms that fired are retained (brief §3 inspectability).
         assertTrue(politics.matchedTerms.any { it == "parliament" })

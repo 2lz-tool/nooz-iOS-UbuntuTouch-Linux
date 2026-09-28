@@ -1,9 +1,9 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNotEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class SimhashDedupTest {
 
@@ -27,7 +27,7 @@ class SimhashDedupTest {
         // The common syndication pattern: same headline, source appended.
         val a = Simhash.of("Government unveils new climate policy for 2027")
         val b = Simhash.of("Government unveils new climate policy for 2027 - Reuters")
-        assertTrue("distance=${Simhash.distance(a, b)}", Simhash.isNearDuplicate(a, b))
+        assertTrue(Simhash.isNearDuplicate(a, b), "distance=${Simhash.distance(a, b)}")
     }
 
     @Test fun unrelatedTitlesAreNotDuplicates() {

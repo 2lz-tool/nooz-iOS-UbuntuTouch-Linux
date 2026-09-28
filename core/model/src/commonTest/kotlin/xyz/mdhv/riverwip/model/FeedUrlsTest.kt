@@ -1,8 +1,8 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class FeedUrlsTest {
 
@@ -48,16 +48,16 @@ class FeedUrlsTest {
     }
 
     @Test fun gdeltDateTimeFormatsUtcNoSeparators() {
-        val millis = java.time.Instant.parse("2026-07-15T00:00:00Z").toEpochMilli()
+        val millis = 1784073600000L /* 2026-07-15T00:00:00Z */
         assertEquals("20260715000000", FeedUrls.gdeltDateTime(millis))
-        val withTime = java.time.Instant.parse("2026-01-05T07:08:09Z").toEpochMilli()
+        val withTime = 1767596889000L /* 2026-01-05T07:08:09Z */
         assertEquals("20260105070809", FeedUrls.gdeltDateTime(withTime))
     }
 
     @Test fun gdeltDocForRangeSwapsTimespanForAbsoluteWindowAndKeepsOtherParams() {
         val existing = FeedUrls.gdeltDoc(FeedUrls.GdeltQuery(query = "flood india", maxRecords = 75, timespanHours = 24))
-        val start = java.time.Instant.parse("2026-07-15T00:00:00Z").toEpochMilli()
-        val end = java.time.Instant.parse("2026-07-16T00:00:00Z").toEpochMilli()
+        val start = 1784073600000L /* 2026-07-15T00:00:00Z */
+        val end = 1784160000000L /* 2026-07-16T00:00:00Z */
         val rewritten = FeedUrls.gdeltDocForRange(existing, start, end)
         assertTrue(rewritten != null)
         assertTrue(rewritten!!.contains("query=flood%20india"))

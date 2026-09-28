@@ -1,9 +1,9 @@
 package xyz.mdhv.riverwip.model
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+import kotlin.test.Test
 
 class SourceSearchTest {
 
@@ -40,7 +40,7 @@ class SourceSearchTest {
         // what makes that convention reachable, along with the region tag.
         assertTrue(SourceSearch.matches(tv9Telugu, "telugu"))
         assertTrue(SourceSearch.matches(tv9Telugu, "india"))
-        assertTrue("terms may match different fields", SourceSearch.matches(tv9Telugu, "india tv9"))
+        assertTrue(SourceSearch.matches(tv9Telugu, "india tv9"), "terms may match different fields")
         assertFalse(SourceSearch.matches(bbcWorld, "telugu"))
     }
 
@@ -83,7 +83,7 @@ class SourceSearchTest {
 
     @Test fun rankFiltersAsWellAsOrders() {
         val ranked = SourceSearch.rank(all, "world") { it }
-        assertTrue("only world feeds", ranked.all { it.title.contains("World") })
+        assertTrue(ranked.all { it.title.contains("World") }, "only world feeds")
         assertEquals(2, ranked.size)
     }
 
@@ -97,11 +97,11 @@ class SourceSearchTest {
         // The point of the exercise: the shipped catalogue is now large enough
         // that these have to actually work against it, not just a fixture.
         val feeds = Starters.verifiedFeeds
-        assertTrue("finds Telugu feeds", SourceSearch.rank(feeds, "telugu") { it }.isNotEmpty())
-        assertTrue("finds Odia feeds", SourceSearch.rank(feeds, "odia") { it }.isNotEmpty())
-        assertTrue("finds by domain", SourceSearch.rank(feeds, "abplive.com") { it }.isNotEmpty())
+        assertTrue(SourceSearch.rank(feeds, "telugu") { it }.isNotEmpty(), "finds Telugu feeds")
+        assertTrue(SourceSearch.rank(feeds, "odia") { it }.isNotEmpty(), "finds Odia feeds")
+        assertTrue(SourceSearch.rank(feeds, "abplive.com") { it }.isNotEmpty(), "finds by domain")
         val bbc = SourceSearch.rank(feeds, "bbc news") { it }
-        assertTrue("BBC News ranks first for its own name", bbc.first().title.startsWith("BBC News"))
-        assertTrue("a nonsense query finds nothing", SourceSearch.rank(feeds, "zzzzqqq") { it }.isEmpty())
+        assertTrue(bbc.first().title.startsWith("BBC News"), "BBC News ranks first for its own name")
+        assertTrue(SourceSearch.rank(feeds, "zzzzqqq") { it }.isEmpty(), "a nonsense query finds nothing")
     }
 }

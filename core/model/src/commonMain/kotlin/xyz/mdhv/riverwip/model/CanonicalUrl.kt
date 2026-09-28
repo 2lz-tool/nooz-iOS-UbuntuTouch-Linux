@@ -1,7 +1,5 @@
 package xyz.mdhv.riverwip.model
 
-import java.net.URI
-
 /**
  * Canonical URL normalization — the first half of dedup (brief §2: canonical URL
  * + title simhash). Pure and deterministic. The goal is that two links to the
@@ -29,14 +27,14 @@ object CanonicalUrl {
         if (trimmed.isEmpty()) return trimmed
         val withScheme = if (trimmed.contains("://")) trimmed else "https://$trimmed"
         return try {
-            val uri = URI(withScheme)
+            val uri = Uri.parse(withScheme)
             val scheme = (uri.scheme ?: "https").lowercase()
             val host = uri.host?.lowercase() ?: return stripFragment(withScheme)
             val port = uri.port
             val defaultPort = (scheme == "http" && port == 80) || (scheme == "https" && port == 443)
             val portPart = if (port == -1 || defaultPort) "" else ":$port"
 
-            var path = uri.rawPath ?: ""
+            var path = uri.rawPath
             if (path.length > 1 && path.endsWith("/")) path = path.dropLast(1)
 
             val query = normalizeQuery(uri.rawQuery)

@@ -26,17 +26,17 @@ object WeeklyAggregator {
         for (item in items) {
             val period = WeekBucketing.periodStart(item.publishedAt, periodDays)
             val topic = Classifier.dominantTopic(item.topics)
-            streamByPeriod.getOrPut(period) { HashMap() }.merge(topic.key, 1, Int::plus)
-            sourceByPeriod.getOrPut(period) { HashMap() }.merge(item.sourceId, 1, Int::plus)
+            streamByPeriod.getOrPut(period) { HashMap() }.addCount(topic.key)
+            sourceByPeriod.getOrPut(period) { HashMap() }.addCount(item.sourceId)
         }
         val readByPeriod = HashMap<Long, MutableMap<String, Int>>()
         for (ev in readEvents) {
             val item = itemsById[ev.itemId] ?: continue
             val period = WeekBucketing.periodStart(ev.openedAt, periodDays)
             val topic = Classifier.dominantTopic(item.topics)
-            readByPeriod.getOrPut(period) { HashMap() }.merge(topic.key, 1, Int::plus)
+            readByPeriod.getOrPut(period) { HashMap() }.addCount(topic.key)
         }
-        val periods = (streamByPeriod.keys + readByPeriod.keys).toSortedSet()
+        val periods = (streamByPeriod.keys + readByPeriod.keys).toSet().sorted()
         return periods.map { p ->
             WeeklyAggregate(
                 weekStart = p,
@@ -50,7 +50,7 @@ object WeeklyAggregator {
 
 private fun Map<String, Int>.toTopicKeyed(): Map<Topic, Int> {
     val out = HashMap<Topic, Int>()
-    for ((k, v) in this) out.merge(Topic.fromKey(k), v, Int::plus)
+    for ((k, v) in this) out.addCount(Topic.fromKey(k), v)
     return out
 }
 
