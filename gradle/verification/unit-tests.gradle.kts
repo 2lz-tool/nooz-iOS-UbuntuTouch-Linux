@@ -39,12 +39,15 @@ gradle.projectsEvaluated {
         val chosen = when {
             variantTests.isNotEmpty() -> variantTests
             "test" in names -> listOf("test")
+            // Kotlin Multiplatform modules (:core:model): the JVM target runs commonTest + jvmTest.
+            // Their native targets (linuxX64Test, iOS) need a matching host and run in their own CI jobs.
+            "jvmTest" in names -> listOf("jvmTest")
             else -> emptyList()
         }
 
-        val testDir = project.file("src/test")
-        val hasTestSources = testDir.exists() && testDir.walkTopDown()
-            .any { it.isFile && (it.extension == "kt" || it.extension == "java") }
+        val hasTestSources = listOf("src/test", "src/commonTest", "src/jvmTest").map { project.file(it) }.any { dir ->
+            dir.exists() && dir.walkTopDown().any { it.isFile && (it.extension == "kt" || it.extension == "java") }
+        }
 
         if (chosen.isEmpty() && hasTestSources) {
             throw GradleException(
