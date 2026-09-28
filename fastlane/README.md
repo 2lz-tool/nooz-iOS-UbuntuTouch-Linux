@@ -20,9 +20,8 @@ publishable listing:
    a metadata file instead of code. It stays a placeholder until the owner
    decides.
 2. **The license.** F-Droid will not include an app at all without an
-   OSI/FSF-approved license and a real `LICENSE` file (see
-   `LICENSE.RESERVED`) — so the F-Droid half of this skeleton cannot go live
-   regardless of how complete the descriptions are.
+   OSI/FSF-approved license and a real `LICENSE` file. This fork now carries
+   an MIT `LICENSE` (owner-chosen), which satisfies that requirement.
 
 `short_description.txt`/`full_description.txt` hold draft, functional
 copy — what the app *does* — with no name, no metaphor/mythological language,
@@ -44,6 +43,6 @@ revise once naming lands, not a final listing.
 ## When the RESERVED decisions land
 Fill in `title.txt` with the real name, rewrite the descriptions around it,
 add the icon/feature graphic/screenshots, and add the SPDX identifier
-alongside the `LICENSE` file per `LICENSE.RESERVED`'s own instructions.
+alongside the `LICENSE` file.
 
 [fdroid-docs]: https://f-droid.org/docs/All_About_Descriptions_Graphics_and_Screenshots/

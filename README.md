@@ -58,5 +58,4 @@ and screenshot script done, with baseline profiles logged as a deliberate,
 undone gap (no device/emulator available to generate or verify one).
 
 ## License
-**RESERVED** — see [`LICENSE.RESERVED`](LICENSE.RESERVED). F-Droid eligibility for
-`foss` is gated on this choice.
+MIT — see [`LICENSE`](LICENSE). Chosen by the project owner for this fork.
