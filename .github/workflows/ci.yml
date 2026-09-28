@@ -25,13 +25,13 @@ jobs:
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
       - name: Shared core + data layer unit tests (JVM)
-        run: ./gradlew :core:model:jvmTest :core:data:jvmTest --stacktrace
+        run: ./gradlew :core:model:jvmTest :core:data:jvmTest
 
       # The same tests, compiled to a native Linux binary by Kotlin/Native. This is what
       # keeps the core free of JVM-only APIs: the JVM build alone happily accepts them.
       # linuxArm64 (Ubuntu Touch phones) is compiled too; it cannot run on this host.
       - name: Shared core + data layer unit tests (native Linux)
-        run: ./gradlew :core:model:linuxX64Test :core:data:linuxX64Test :core:model:compileKotlinLinuxArm64 :core:data:compileKotlinLinuxArm64 --stacktrace
+        run: ./gradlew :core:model:linuxX64Test :core:data:linuxX64Test :core:model:compileKotlinLinuxArm64 :core:data:compileKotlinLinuxArm64
 
   # The web reader had no CI at all until now — its 6,300 lines of JS shipped
   # unexercised, which is how a topic classifier that could not match any
@@ -102,16 +102,16 @@ jobs:
       # whose task is `test`. Its 215 tests, the largest suite in the repo, had
       # never run here. The build was green because everything asked for passed.
       - name: Unit tests (every module)
-        run: ./gradlew unitTests --stacktrace
+        run: ./gradlew unitTests
 
       - name: Lint (foss)
-        run: ./gradlew lintFossDebug --stacktrace
+        run: ./gradlew lintFossDebug
 
       # The i18n ratchet. Not Lint's HardcodedText -- that check reads layout
       # XML, and this app has none, so it passes a codebase where every visible
       # word is a Kotlin literal.
       - name: Interface copy is translatable
-        run: ./gradlew verifyI18n --stacktrace
+        run: ./gradlew verifyI18n
 
       # strings.xml, locales_config.xml, LocaleCoverage.kt and the web
       # catalogues are all generated from i18n/strings/. Editing a generated
@@ -121,7 +121,7 @@ jobs:
         run: python3 tools/i18n/generate.py --check
 
       - name: Assemble (both flavors)
-        run: ./gradlew assembleFossDebug assembleFullDebug --stacktrace
+        run: ./gradlew assembleFossDebug assembleFullDebug
 
       # Keep the built debug APKs so they can be downloaded from the run's
       # "Artifacts" section and sideloaded onto an Android device (API 31+).
