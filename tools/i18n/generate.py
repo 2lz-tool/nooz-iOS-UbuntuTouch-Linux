@@ -38,14 +38,14 @@ CATALOGUES = REPO / "i18n" / "strings"
 ANDROID_RES = REPO / "core" / "design" / "src" / "main" / "res"
 LOCALE_CONFIG = REPO / "app" / "src" / "main" / "res" / "xml" / "locales_config.xml"
 COVERAGE_KT = (
-    REPO / "core" / "model" / "src" / "main" / "kotlin"
+    REPO / "core" / "model" / "src" / "commonMain" / "kotlin"
     / "xyz" / "mdhv" / "riverwip" / "model" / "LocaleCoverage.kt"
 )
 WEB_OUT = REPO / "web" / "i18n"
 WEB_INDEX = WEB_OUT / "index.json"
 LEXICON_IN = REPO / "i18n" / "lexicon"
 LEXICON_KT = (
-    REPO / "core" / "model" / "src" / "main" / "kotlin"
+    REPO / "core" / "model" / "src" / "commonMain" / "kotlin"
     / "xyz" / "mdhv" / "riverwip" / "model" / "TopicLexiconL10n.kt"
 )
 LEXICON_WEB = REPO / "web" / "js" / "topics-l10n.js"
@@ -277,7 +277,7 @@ def parse_locales_kt() -> dict:
     import re
 
     source = (
-        REPO / "core" / "model" / "src" / "main" / "kotlin"
+        REPO / "core" / "model" / "src" / "commonMain" / "kotlin"
         / "xyz" / "mdhv" / "riverwip" / "model" / "Locales.kt"
     ).read_text(encoding="utf-8")
     # The base entry is written `Locale(BASE_TAG, …)` so the constant stays the
