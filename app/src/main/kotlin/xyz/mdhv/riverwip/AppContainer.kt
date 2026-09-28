@@ -2,6 +2,7 @@ package xyz.mdhv.riverwip
 
 import android.content.Context
 import java.io.File
+import xyz.mdhv.riverwip.data.AndroidDataPlatform
 import xyz.mdhv.riverwip.data.RiverData
 import xyz.mdhv.riverwip.data.repo.ArticleRepository
 import xyz.mdhv.riverwip.data.repo.CatalogueRepository
@@ -41,7 +42,8 @@ import xyz.mdhv.riverwip.inference.local.LocalKokoroTtsProvider
  */
 class AppContainer(appContext: Context) {
 
-    private val data: RiverData = RiverData.create(appContext)
+    private val platform = AndroidDataPlatform(appContext)
+    private val data: RiverData = RiverData.create(platform)
 
     val sourceRepository: SourceRepository = data.sourceRepository
     val itemRepository: ItemRepository = data.itemRepository
@@ -92,8 +94,9 @@ class AppContainer(appContext: Context) {
     val byokConfigStore: ByokConfigStore = ByokConfigStore(appContext)
 
     /** Real one-click downloadable models (owner's #18 follow-up) — shares `models/` with [inferenceRouter]'s LocalLlamaProvider. */
-    val modelCatalogueRepository: ModelCatalogueRepository = ModelCatalogueRepository(appContext)
+    val modelCatalogueRepository: ModelCatalogueRepository = ModelCatalogueRepository(platform)
 
     /** For `Configuration.Provider` on [RiverApplication] — never touched by feature UI. */
-    val workerFactory: RiverWorkerFactory = data.workerFactory
+    val workerFactory: RiverWorkerFactory =
+        RiverWorkerFactory(data.itemRepository, data.weeklyAggregateRepository, data.articleRepository)
 }

@@ -326,3 +326,9 @@ internal object UrlEncoding {
         }
     }
 }
+
+/** URL helpers for modules that don't see the internal [Uri]. */
+object Urls {
+    /** Resolve [reference] (possibly relative) against [base] per RFC 3986. Throws [IllegalArgumentException] if either is malformed. */
+    fun resolve(base: String, reference: String): String = Uri.parse(base).resolve(reference)
+}
