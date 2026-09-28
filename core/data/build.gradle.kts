@@ -75,6 +75,12 @@ kotlin {
             api(libs.androidx.sqlite)
             implementation(libs.ksoup)
         }
+        // Tests that need a real SQLite file (Room, the translation packs) run on the JVM and native
+        // targets, which can open one directly. Android would need Robolectric + a Context for the same.
+        val sqliteTest = create("sqliteTest") { dependsOn(commonTest.get()) }
+        jvmTest.get().dependsOn(sqliteTest)
+        getByName("nativeTest").dependsOn(sqliteTest)
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.kotlinx.coroutines.test)
