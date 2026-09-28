@@ -12,7 +12,7 @@ import xyz.mdhv.riverwip.data.db.RiverDatabase
 
 /**
  * The Android [DataPlatform]. Deliberately changes nothing a shipped install can
- * see: the same `river.db`, the same `datastore/*.preferences_pb` files, the same
+ * see: the same `river.db`, the same DataStore `.preferences_pb` files, the same
  * framework SQLite under Room.
  */
 class AndroidDataPlatform(context: Context) : DataPlatform {
