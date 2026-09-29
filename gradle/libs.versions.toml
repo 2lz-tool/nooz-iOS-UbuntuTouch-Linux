@@ -12,6 +12,7 @@ navigationCompose = "2.8.5"
 room = "2.8.5"
 sqlite = "2.6.2"
 okio = "3.9.1"
+composeMp = "1.9.3"
 kotlinxDatetime = "0.6.1"
 sqliteFramework = "2.6.2"
 ksoup = "0.2.6"
@@ -105,4 +106,5 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlinxSerializationPlugin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+compose-multiplatform = { id = "org.jetbrains.compose", version.ref = "composeMp" }
 androidx-room = { id = "androidx.room", version.ref = "room" }

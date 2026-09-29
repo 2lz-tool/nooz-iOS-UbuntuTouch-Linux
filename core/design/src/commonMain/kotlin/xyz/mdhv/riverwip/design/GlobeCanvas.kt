@@ -7,7 +7,8 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import xyz.mdhv.riverwip.design.res.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.pointer.pointerInput
@@ -52,10 +53,10 @@ fun GlobeCanvas(
     val guide = MaterialTheme.colorScheme.onSurfaceVariant
     // Resolved before `semantics { }`, which is not a composable scope.
     val spokenDescription = describeGlobe(region, bandHalf, ringMix)
-    val spinWest = stringResource(R.string.globe_spin_west)
-    val spinEast = stringResource(R.string.globe_spin_east)
-    val widen = stringResource(R.string.globe_widen)
-    val narrow = stringResource(R.string.globe_narrow)
+    val spinWest = stringResource(Res.string.globe_spin_west)
+    val spinEast = stringResource(Res.string.globe_spin_east)
+    val widen = stringResource(Res.string.globe_widen)
+    val narrow = stringResource(Res.string.globe_narrow)
 
     Box(
         modifier = modifier
@@ -166,12 +167,12 @@ private const val WIDEN_STEP = 1.35
 private fun describeGlobe(region: Region, bandHalf: Double, ringMix: Map<Topic, Int>): String {
     val total = ringMix.values.sum()
     val band = if (bandHalf >= GlobeModel.GLOBAL_BAND_THRESHOLD) {
-        stringResource(R.string.globe_band_world)
+        stringResource(Res.string.globe_band_world)
     } else {
-        stringResource(R.string.globe_band_degrees, (bandHalf * 2).toInt())
+        stringResource(Res.string.globe_band_degrees, (bandHalf * 2).toInt())
     }
-    val head = stringResource(R.string.globe_aimed, region.label, band)
-    if (total == 0) return head + " " + stringResource(R.string.globe_nothing_flowed)
+    val head = stringResource(Res.string.globe_aimed, region.label, band)
+    if (total == 0) return head + " " + stringResource(Res.string.globe_nothing_flowed)
 
     val named = ringMix.entries
         .filter { it.value > 0 }
@@ -181,10 +182,10 @@ private fun describeGlobe(region: Region, bandHalf: Double, ringMix: Map<Topic, 
     // `map` is inline and so is a composable scope; `joinToString`'s transform
     // is not, which is why the pieces are resolved before being joined.
     var mix = named
-        .map { stringResource(R.string.loom_topic_count, it.key.placeholderLabel, it.value) }
+        .map { stringResource(Res.string.loom_topic_count, it.key.placeholderLabel, it.value) }
         .joinToString(", ")
-    if (rest > 0) mix += stringResource(R.string.loom_and_more_topics, rest)
-    return head + " " + stringResource(R.string.globe_mix, total, mix)
+    if (rest > 0) mix += stringResource(Res.string.loom_and_more_topics, rest)
+    return head + " " + stringResource(Res.string.globe_mix, total, mix)
 }
 
 private const val SPOKEN_RING_TOPICS = 4

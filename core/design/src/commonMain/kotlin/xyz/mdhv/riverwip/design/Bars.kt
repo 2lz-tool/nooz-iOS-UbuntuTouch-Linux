@@ -18,7 +18,8 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.clipPath
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
+import xyz.mdhv.riverwip.design.res.*
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
@@ -82,7 +83,7 @@ fun DayMixBar(
 @Composable
 fun CandyCaneBar(modifier: Modifier = Modifier, animate: Boolean = true) {
     // Hoisted: a semantics block is not a composable scope.
-    val waiting = stringResource(R.string.bar_waiting)
+    val waiting = stringResource(Res.string.bar_waiting)
     val stripe = Color(0xFFE03131)
     val ground = Color(0xFFFFFFFF)
     val transition = rememberInfiniteTransition(label = "candy")

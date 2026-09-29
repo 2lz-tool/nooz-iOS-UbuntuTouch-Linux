@@ -2,10 +2,13 @@ package xyz.mdhv.riverwip.design
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.font.Font
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import org.jetbrains.compose.resources.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.model.ReaderFont
 import xyz.mdhv.riverwip.model.TextScale
 
@@ -20,41 +23,52 @@ import xyz.mdhv.riverwip.model.TextScale
  */
 
 /** Hyle Grotesk Classic — the default sans reading + UI voice. */
-val HyleGroteskClassic: FontFamily = FontFamily(
-    Font(R.font.hyle_grotesk_classic_regular, weight = FontWeight.Normal),
-    Font(R.font.hyle_grotesk_classic_medium, weight = FontWeight.Medium),
-    Font(R.font.hyle_grotesk_classic_bold, weight = FontWeight.Bold),
-)
+val HyleGroteskClassic: FontFamily
+    @Composable get() {
+        val f0 = Font(Res.font.hyle_grotesk_classic_regular, weight = FontWeight.Normal)
+        val f1 = Font(Res.font.hyle_grotesk_classic_medium, weight = FontWeight.Medium)
+        val f2 = Font(Res.font.hyle_grotesk_classic_bold, weight = FontWeight.Bold)
+        return remember(f0, f1, f2) { FontFamily(f0, f1, f2) }
+    }
 
 /** Hyle Grotesk Plus — the alternate sans (Classic with the Deco N/R sweep). */
-val HyleGroteskPlus: FontFamily = FontFamily(
-    Font(R.font.hyle_grotesk_plus_regular, weight = FontWeight.Normal),
-    Font(R.font.hyle_grotesk_plus_medium, weight = FontWeight.Medium),
-    Font(R.font.hyle_grotesk_plus_bold, weight = FontWeight.Bold),
-)
+val HyleGroteskPlus: FontFamily
+    @Composable get() {
+        val f0 = Font(Res.font.hyle_grotesk_plus_regular, weight = FontWeight.Normal)
+        val f1 = Font(Res.font.hyle_grotesk_plus_medium, weight = FontWeight.Medium)
+        val f2 = Font(Res.font.hyle_grotesk_plus_bold, weight = FontWeight.Bold)
+        return remember(f0, f1, f2) { FontFamily(f0, f1, f2) }
+    }
 
 /** Hyle Print — the serif reading voice and every display/masthead role. */
-val HylePrint: FontFamily = FontFamily(
-    Font(R.font.hyle_print_regular, weight = FontWeight.Normal),
-    Font(R.font.hyle_print_medium, weight = FontWeight.Medium),
-    Font(R.font.hyle_print_heavy, weight = FontWeight.ExtraBold),
-)
+val HylePrint: FontFamily
+    @Composable get() {
+        val f0 = Font(Res.font.hyle_print_regular, weight = FontWeight.Normal)
+        val f1 = Font(Res.font.hyle_print_medium, weight = FontWeight.Medium)
+        val f2 = Font(Res.font.hyle_print_heavy, weight = FontWeight.ExtraBold)
+        return remember(f0, f1, f2) { FontFamily(f0, f1, f2) }
+    }
 
 /** The newspaper voice: titles, headlines, the loom's numerals. */
-val DisplayFontFamily: FontFamily = HylePrint
+val DisplayFontFamily: FontFamily
+    @Composable get() = HylePrint
 
 /**
  * The "Nooz" wordmark only: PT Serif Regular, owner-specified (2026-07) at
  * -2% letter-spacing — see [NoozWordmark]. Not Hyle Print, so it doesn't
  * reuse [DisplayFontFamily]. See `third_party/fonts/README.md`.
  */
-val WordmarkFontFamily: FontFamily = FontFamily(
-    Font(R.font.pt_serif_regular, weight = FontWeight.Normal),
-)
+val WordmarkFontFamily: FontFamily
+    @Composable get() {
+        val f0 = Font(Res.font.pt_serif_regular, weight = FontWeight.Normal)
+        return remember(f0) { FontFamily(f0) }
+    }
 
 /** UI chrome (labels, buttons, captions) stays on the default sans. */
-val HyleSans: FontFamily = HyleGroteskClassic
+val HyleSans: FontFamily
+    @Composable get() = HyleGroteskClassic
 
+@Composable
 fun ReaderFont.family(): FontFamily = when (this) {
     ReaderFont.GROTESK_CLASSIC -> HyleGroteskClassic
     ReaderFont.GROTESK_PLUS -> HyleGroteskPlus
@@ -65,6 +79,7 @@ fun ReaderFont.family(): FontFamily = when (this) {
  * Material3 [Typography] for the chosen reader font at the chosen text size
  * (the Settings mock's three-step scale). Feature code keeps using named roles.
  */
+@Composable
 fun riverTypography(
     readerFont: ReaderFont = ReaderFont.GROTESK_CLASSIC,
     textScale: TextScale = TextScale.PEANUT,
@@ -94,4 +109,5 @@ fun riverTypography(
 }
 
 /** Default typography — kept for previews and as the pre-settings-load fallback. */
-val AppTypography = riverTypography()
+val AppTypography: Typography
+    @Composable get() = riverTypography()
