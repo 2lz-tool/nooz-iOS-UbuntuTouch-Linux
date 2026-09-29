@@ -8,7 +8,7 @@ package xyz.mdhv.riverwip.inference
  * producing subtly different behavior for what's supposed to be the same
  * request regardless of which provider the router picked.
  */
-internal object PromptTemplates {
+object PromptTemplates {
     const val REWRITE_SYSTEM =
         "You neutralize loaded language in news sentences. Replace only the specified phrase with a plain, " +
             "neutral wording. Never add, drop, or change any fact, number, named entity, or negation. " +
