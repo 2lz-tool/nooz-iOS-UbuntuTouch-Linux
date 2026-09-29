@@ -15,6 +15,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -29,6 +30,10 @@ import xyz.mdhv.riverwip.model.ReadingAsideStyle
 
 /** The Material list-detail breakpoint (≥840dp) — the point past which a phone-width single pane starts wasting real space. */
 val TWO_PANE_MIN_WIDTH = 840.dp
+
+/** Test tags naming which Stand layout is on screen, so the adaptive switch can be asserted rather than eyeballed. */
+const val TWO_PANE_TAG = "stand-two-pane"
+const val ONE_PANE_TAG = "stand-one-pane"
 
 /** The list pane's fixed width once split — the detail pane takes whatever's left. */
 private val LIST_PANE_WIDTH = 400.dp
@@ -97,7 +102,7 @@ fun ReaderScreenTwoPane(
         }
     }
 
-    Row(Modifier.fillMaxSize()) {
+    Row(Modifier.fillMaxSize().testTag(TWO_PANE_TAG)) {
         Box(Modifier.width(LIST_PANE_WIDTH).fillMaxHeight()) {
             ArticleListScreen(
                 vm = vm,

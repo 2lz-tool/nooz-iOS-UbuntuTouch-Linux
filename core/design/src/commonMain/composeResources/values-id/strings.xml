@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">Kata atau frasa untuk ditambahkan</string>
     <string name="word_list_add">Tambahkan kata ini</string>
     <string name="word_list_remove">Hapus “%1$s”</string>
-    <string name="model_on_device_body">Nooz mencoba perangkat Anda lebih dulu, otomatis: tidak ada yang perlu disiapkan. Unduh sebuah model di bawah dan ia berjalan langsung di perangkat Anda; sampai itu (atau kecuali Anda menambahkan kunci di bawah), lensa dengan jujur melaporkan \"tak tersedia\" alih-alih menebak.</string>
+    <string name="model_on_device_body">Nooz mencoba perangkat Anda lebih dulu, otomatis: tidak ada yang perlu disiapkan. Unduh sebuah model di bawah dan ia berjalan langsung di perangkat Anda; sampai itu (atau kecuali Anda menambahkan kunci di bawah), lensa dengan jujur melaporkan "tak tersedia" alih-alih menebak.</string>
     <string name="model_download_body">Model sumber terbuka yang nyata, diverifikasi oleh katalog aplikasi ini sendiri. Unduh di sini: mereka tidak berjalan sendiri (lihat Di perangkat), tetapi setelah diunduh mereka siap di penyimpanan.</string>
     <string name="model_none_available">Tidak ada model tersedia.</string>
     <string name="model_progress_percent">%1$d%%</string>

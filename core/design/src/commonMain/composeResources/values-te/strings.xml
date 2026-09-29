@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">జోడించాల్సిన పదం లేదా పదబంధం</string>
     <string name="word_list_add">ఈ పదాన్ని జోడించు</string>
     <string name="word_list_remove">“%1$s” తొలగించు</string>
-    <string name="model_on_device_body">Nooz ముందుగా మీ పరికరాన్నే స్వయంచాలకంగా ప్రయత్నిస్తుంది: ఏర్పాటు చేయాల్సింది ఏమీ లేదు. కింద నుండి ఒక మోడల్‌ను డౌన్‌లోడ్ చేసుకుంటే అది మీ పరికరంలోనే నడుస్తుంది; అప్పటివరకు (లేదా మీరు కింద కీ జోడించే వరకు), కటకం ఊహించే బదులు నిజాయితీగా \"అందుబాటులో లేదు\" అని చెబుతుంది.</string>
+    <string name="model_on_device_body">Nooz ముందుగా మీ పరికరాన్నే స్వయంచాలకంగా ప్రయత్నిస్తుంది: ఏర్పాటు చేయాల్సింది ఏమీ లేదు. కింద నుండి ఒక మోడల్‌ను డౌన్‌లోడ్ చేసుకుంటే అది మీ పరికరంలోనే నడుస్తుంది; అప్పటివరకు (లేదా మీరు కింద కీ జోడించే వరకు), కటకం ఊహించే బదులు నిజాయితీగా "అందుబాటులో లేదు" అని చెబుతుంది.</string>
     <string name="model_download_body">ఈ యాప్ సొంత జాబితా ధృవీకరించిన నిజమైన, ఓపెన్-సోర్స్ మోడల్‌లు. వాటిని ఇక్కడ డౌన్‌లోడ్ చేసుకోండి: అవి స్వయంచాలకంగా నడవవు (చూడండి ఆన్-డివైస్), కానీ ఒకసారి డౌన్‌లోడ్ అయ్యాక డిస్క్‌లో సిద్ధంగా ఉంటాయి.</string>
     <string name="model_none_available">మోడల్‌లేవీ అందుబాటులో లేవు.</string>
     <string name="model_progress_percent">%1$d%%</string>

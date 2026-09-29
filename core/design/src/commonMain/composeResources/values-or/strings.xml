@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -219,7 +219,7 @@
     <string name="settings_more">ଅଧିକ ସେଟିଂସ</string>
     <string name="settings_more_body">ଅଭିଧାନ, ପାଠକ ବୁଦ୍ଧିମତ୍ତା ଓ ମଡେଲ, ଅଙ୍ଗଭଙ୍ଗୀ, ଆପଣଙ୍କ ତଥ୍ୟ, ବିଷୟରେ।</string>
     <string name="settings_dictionary">ଅଭିଧାନ</string>
-    <string name="settings_dictionary_body">ଗୋଟିଏ ଅଭିଧାନ ଡାଉନଲୋଡ୍ କରନ୍ତୁ, ତା\'ପରେ ପଢ଼ିବା ସମୟରେ ଯେକୌଣସି ଶବ୍ଦକୁ ଚାପି ଧରି ତାର ଅର୍ଥ ଦେଖନ୍ତୁ, Kindle ପରି।</string>
+    <string name="settings_dictionary_body">ଗୋଟିଏ ଅଭିଧାନ ଡାଉନଲୋଡ୍ କରନ୍ତୁ, ତା'ପରେ ପଢ଼ିବା ସମୟରେ ଯେକୌଣସି ଶବ୍ଦକୁ ଚାପି ଧରି ତାର ଅର୍ଥ ଦେଖନ୍ତୁ, Kindle ପରି।</string>
     <string name="settings_crash_title">ଗତଥର Nooz ଅପ୍ରତ୍ୟାଶିତ ଭାବେ ବନ୍ଦ ହୋଇଯାଇଥିଲା</string>
     <string name="settings_crash_body">ରିପୋର୍ଟ ଆପଣଙ୍କ ଉପକରଣରେ ହିଁ ରହିଲା; କେଉଁଆଡ଼େ କିଛି ପଠାଯାଇନାହିଁ।</string>
     <string name="settings_copy">କପି କରନ୍ତୁ</string>
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">ଯୋଡ଼ିବାକୁ ଶବ୍ଦ କିମ୍ବା ବାକ୍ୟାଂଶ</string>
     <string name="word_list_add">ଏହି ଶବ୍ଦ ଯୋଡ଼ନ୍ତୁ</string>
     <string name="word_list_remove">“%1$s” ବାହାର କରନ୍ତୁ</string>
-    <string name="model_on_device_body">Nooz ପ୍ରଥମେ ନିଜେ ନିଜେ ଆପଣଙ୍କ ଉପକରଣ ଚେଷ୍ଟା କରେ: ସେଟ୍ କରିବାକୁ କିଛି ନାହିଁ। ତଳୁ ଗୋଟିଏ ମଡେଲ ଡାଉନଲୋଡ୍ କଲେ ତାହା ଆପଣଙ୍କ ଉପକରଣରେ ହିଁ ଚାଲିବ; ସେ ପର୍ଯ୍ୟନ୍ତ (କିମ୍ବା ଆପଣ ତଳେ ଚାବି ନଯୋଡ଼ିବା ପର୍ଯ୍ୟନ୍ତ), କାଚ ଅନୁମାନ କରିବା ପରିବର୍ତ୍ତେ ସାଧୁଭାବେ \"ଅନୁପଲବ୍ଧ\" କହେ।</string>
+    <string name="model_on_device_body">Nooz ପ୍ରଥମେ ନିଜେ ନିଜେ ଆପଣଙ୍କ ଉପକରଣ ଚେଷ୍ଟା କରେ: ସେଟ୍ କରିବାକୁ କିଛି ନାହିଁ। ତଳୁ ଗୋଟିଏ ମଡେଲ ଡାଉନଲୋଡ୍ କଲେ ତାହା ଆପଣଙ୍କ ଉପକରଣରେ ହିଁ ଚାଲିବ; ସେ ପର୍ଯ୍ୟନ୍ତ (କିମ୍ବା ଆପଣ ତଳେ ଚାବି ନଯୋଡ଼ିବା ପର୍ଯ୍ୟନ୍ତ), କାଚ ଅନୁମାନ କରିବା ପରିବର୍ତ୍ତେ ସାଧୁଭାବେ "ଅନୁପଲବ୍ଧ" କହେ।</string>
     <string name="model_download_body">ଏହି ଆପ୍‌ର ନିଜସ୍ୱ ତାଲିକା ଯାଞ୍ଚ କରିଥିବା ପ୍ରକୃତ, ଓପନ୍-ସୋର୍ସ ମଡେଲ। ସେଗୁଡ଼ିକୁ ଏଠାରେ ଡାଉନଲୋଡ୍ କରନ୍ତୁ: ସେଗୁଡ଼ିକ ନିଜେ ନିଜେ ଚାଲିବେ ନାହିଁ (ଦେଖନ୍ତୁ ଉପକରଣରେ), କିନ୍ତୁ ଥରେ ଡାଉନଲୋଡ୍ ହେଲେ ଡିସ୍କରେ ପ୍ରସ୍ତୁତ ରହିବେ।</string>
     <string name="model_none_available">କୌଣସି ମଡେଲ ଉପଲବ୍ଧ ନାହିଁ।</string>
     <string name="model_progress_percent">%1$d%%</string>

@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">যোগ কৰিবলগীয়া শব্দ বা বাক্যাংশ</string>
     <string name="word_list_add">এই শব্দটো যোগ কৰক</string>
     <string name="word_list_remove">“%1$s” আঁতৰাওক</string>
-    <string name="model_on_device_body">Nooz প্ৰথমে নিজেই আপোনাৰ ডিভাইচ চেষ্টা কৰে: ছেট কৰিবলগীয়া একো নাই। তলৰ পৰা এটা মডেল ডাউনল’ড কৰক, সেয়া আপোনাৰ ডিভাইচতেই চলিব; তেতিয়ালৈকে (বা আপুনি তলত চাবি নোযোগোৱালৈকে), লেন্সে অনুমান কৰাৰ সলনি সাধুভাৱে \"অনুপলব্ধ\" বুলি কয়।</string>
+    <string name="model_on_device_body">Nooz প্ৰথমে নিজেই আপোনাৰ ডিভাইচ চেষ্টা কৰে: ছেট কৰিবলগীয়া একো নাই। তলৰ পৰা এটা মডেল ডাউনল’ড কৰক, সেয়া আপোনাৰ ডিভাইচতেই চলিব; তেতিয়ালৈকে (বা আপুনি তলত চাবি নোযোগোৱালৈকে), লেন্সে অনুমান কৰাৰ সলনি সাধুভাৱে "অনুপলব্ধ" বুলি কয়।</string>
     <string name="model_download_body">এই এপৰ নিজা তালিকাই যাচাই কৰা প্ৰকৃত, মুক্ত-উৎস মডেল। সেইবোৰ ইয়াত ডাউনল’ড কৰক: সেইবোৰ নিজে নিজে নচলিব (চাওক ডিভাইচত), কিন্তু এবাৰ ডাউনল’ড হ’লে ডিস্কত সাজু থাকিব।</string>
     <string name="model_none_available">কোনো মডেল উপলব্ধ নহয়।</string>
     <string name="model_progress_percent">%1$d%%</string>

@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">ಸೇರಿಸಬೇಕಾದ ಪದ ಅಥವಾ ನುಡಿಗಟ್ಟು</string>
     <string name="word_list_add">ಈ ಪದವನ್ನು ಸೇರಿಸಿ</string>
     <string name="word_list_remove">“%1$s” ತೆಗೆದುಹಾಕಿ</string>
-    <string name="model_on_device_body">Nooz ಮೊದಲು ತಾನಾಗಿಯೇ ನಿಮ್ಮ ಸಾಧನವನ್ನು ಪ್ರಯತ್ನಿಸುತ್ತದೆ: ಹೊಂದಿಸಲು ಏನೂ ಇಲ್ಲ. ಕೆಳಗಿನಿಂದ ಒಂದು ಮಾದರಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿದರೆ ಅದು ನಿಮ್ಮ ಸಾಧನದಲ್ಲೇ ಚಲಿಸುತ್ತದೆ; ಅಲ್ಲಿಯವರೆಗೆ (ಅಥವಾ ನೀವು ಕೆಳಗೆ ಕೀಲಿ ಸೇರಿಸುವವರೆಗೆ), ಮಸೂರ ಊಹಿಸುವ ಬದಲು ಪ್ರಾಮಾಣಿಕವಾಗಿ \"ಲಭ್ಯವಿಲ್ಲ\" ಎಂದು ಹೇಳುತ್ತದೆ.</string>
+    <string name="model_on_device_body">Nooz ಮೊದಲು ತಾನಾಗಿಯೇ ನಿಮ್ಮ ಸಾಧನವನ್ನು ಪ್ರಯತ್ನಿಸುತ್ತದೆ: ಹೊಂದಿಸಲು ಏನೂ ಇಲ್ಲ. ಕೆಳಗಿನಿಂದ ಒಂದು ಮಾದರಿಯನ್ನು ಡೌನ್‌ಲೋಡ್ ಮಾಡಿದರೆ ಅದು ನಿಮ್ಮ ಸಾಧನದಲ್ಲೇ ಚಲಿಸುತ್ತದೆ; ಅಲ್ಲಿಯವರೆಗೆ (ಅಥವಾ ನೀವು ಕೆಳಗೆ ಕೀಲಿ ಸೇರಿಸುವವರೆಗೆ), ಮಸೂರ ಊಹಿಸುವ ಬದಲು ಪ್ರಾಮಾಣಿಕವಾಗಿ "ಲಭ್ಯವಿಲ್ಲ" ಎಂದು ಹೇಳುತ್ತದೆ.</string>
     <string name="model_download_body">ಈ ಆಪ್‌ನ ಸ್ವಂತ ಪಟ್ಟಿಯಿಂದ ಪರಿಶೀಲಿಸಲಾದ ನಿಜವಾದ, ಮುಕ್ತ-ಮೂಲ ಮಾದರಿಗಳು. ಅವನ್ನು ಇಲ್ಲಿ ಡೌನ್‌ಲೋಡ್ ಮಾಡಿ: ಅವು ತಾವಾಗಿಯೇ ಚಲಿಸುವುದಿಲ್ಲ (ನೋಡಿ ಸಾಧನದಲ್ಲಿ), ಆದರೆ ಒಮ್ಮೆ ಡೌನ್‌ಲೋಡ್ ಆದ ಮೇಲೆ ಡಿಸ್ಕ್‌ನಲ್ಲಿ ಸಿದ್ಧವಾಗಿರುತ್ತವೆ.</string>
     <string name="model_none_available">ಯಾವುದೇ ಮಾದರಿ ಲಭ್ಯವಿಲ್ಲ.</string>
     <string name="model_progress_percent">%1$d%%</string>

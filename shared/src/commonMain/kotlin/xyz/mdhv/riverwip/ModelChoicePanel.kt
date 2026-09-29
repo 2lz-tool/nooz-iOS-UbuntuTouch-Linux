@@ -79,7 +79,20 @@ fun ModelChoicePanel(
     onClearByok: () -> Unit,
     download: ModelDownloadUi,
     modifier: Modifier = Modifier,
+    localModels: Boolean = true,
 ) {
+    if (!localModels) {
+        // No on-device runtime on this platform: there is nothing to choose between, only the key.
+        Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.sm)) {
+            Text(
+                stringResource(Res.string.model_local_unavailable),
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            ByokStanza(byokConfig, onSaveByok, onClearByok)
+        }
+        return
+    }
     Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.sm)) {
         Row(horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.xs)) {
             PathChip("On-device", path == ModelPath.ON_DEVICE) { onPathChange(ModelPath.ON_DEVICE) }

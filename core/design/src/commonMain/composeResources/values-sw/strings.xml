@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">Neno au msemo wa kuongeza</string>
     <string name="word_list_add">Ongeza neno hili</string>
     <string name="word_list_remove">Ondoa “%1$s”</string>
-    <string name="model_on_device_body">Nooz hujaribu kifaa chako kwanza, kiotomatiki: hakuna cha kuweka. Pakua muundo hapa chini nao utafanya kazi kwenye kifaa chako; hadi wakati huo (au isipokuwa uongeze ufunguo hapa chini), lenzi husema kwa uaminifu \"haipatikani\" badala ya kubahatisha.</string>
+    <string name="model_on_device_body">Nooz hujaribu kifaa chako kwanza, kiotomatiki: hakuna cha kuweka. Pakua muundo hapa chini nao utafanya kazi kwenye kifaa chako; hadi wakati huo (au isipokuwa uongeze ufunguo hapa chini), lenzi husema kwa uaminifu "haipatikani" badala ya kubahatisha.</string>
     <string name="model_download_body">Miundo halisi ya chanzo huria, iliyothibitishwa na orodha ya programu hii yenyewe. Ipakue hapa: haitafanya kazi yenyewe (angalia Ndani ya kifaa), lakini ikishapakuliwa hukaa tayari kwenye diski.</string>
     <string name="model_none_available">Hakuna miundo inayopatikana.</string>
     <string name="model_progress_percent">%1$d%%</string>

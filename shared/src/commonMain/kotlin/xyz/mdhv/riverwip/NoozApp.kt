@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.safeDrawingPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
@@ -20,6 +22,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.paneTitle
 import androidx.compose.ui.semantics.semantics
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.ViewModelStore
+import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.lifecycle.viewmodel.compose.viewModel
 import kotlinx.coroutines.delay
 import org.jetbrains.compose.resources.stringResource
@@ -59,7 +64,30 @@ private const val SPLASH_MILLIS = 1_100L
 fun NoozApp(container: AppServices) {
     // A language change on desktop rebuilds the whole tree (resources are resolved at composition);
     // on Android the activity is re-created instead and this key never changes.
-    key(container.locale.epoch) { CompositionLocalProvider(LocalImageStore provides container.imageStore, LocalAppServices provides container) { NoozAppContent(container) } }
+    key(container.locale.epoch) {
+        CompositionLocalProvider(LocalImageStore provides container.imageStore, LocalAppServices provides container) {
+            WithViewModelStore { NoozAppContent(container) }
+        }
+    }
+}
+
+/**
+ * Android's activity owns the ViewModel store; a desktop window or a test host may not provide one.
+ * Where none exists, this composition owns its own, so the shell runs unchanged on any host.
+ */
+@Composable
+private fun WithViewModelStore(content: @Composable () -> Unit) {
+    if (LocalViewModelStoreOwner.current != null) {
+        content()
+        return
+    }
+    val owner = remember {
+        object : ViewModelStoreOwner {
+            override val viewModelStore = ViewModelStore()
+        }
+    }
+    DisposableEffect(owner) { onDispose { owner.viewModelStore.clear() } }
+    CompositionLocalProvider(LocalViewModelStoreOwner provides owner) { content() }
 }
 
 @Composable

@@ -17,6 +17,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.unit.dp
@@ -190,7 +191,7 @@ fun ReaderScreen(
         if (parkedRoom != null) unpark() else vm.closeItem()
     }
 
-    Box(Modifier.fillMaxSize().onSizeChanged { containerWidth = it.width }) {
+    Box(Modifier.fillMaxSize().testTag(ONE_PANE_TAG).onSizeChanged { containerWidth = it.width }) {
         // Parked home (owner #8): with content and nothing open, rest the most
         // recent article as a peek over the Stand — never recorded as read.
         LaunchedEffect(items, selected, containerWidth) {

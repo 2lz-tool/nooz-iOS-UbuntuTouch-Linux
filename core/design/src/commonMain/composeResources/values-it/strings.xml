@@ -7,12 +7,12 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
     <string name="onboarding_loading">Raccolta delle notizie di oggi…</string>
-    <string name="onboarding_headline">Leggi ciò che c\'è, e nota ciò che manca.</string>
+    <string name="onboarding_headline">Leggi ciò che c'è, e nota ciò che manca.</string>
     <string name="onboarding_blurb">Un lettore di notizie tranquillo: ciò che le tue fonti ti hanno davvero mandato e, con la stessa chiarezza, ciò che hanno tralasciato. La lente segnala il linguaggio tendenzioso e, con un dizionario scaricato, definisce qualsiasi parola con una pressione prolungata. Tutto gira sul tuo telefono, per impostazione predefinita.</string>
     <string name="onboarding_quick_setup">Configurazione rapida</string>
     <string name="onboarding_advanced_setup">Configurazione avanzata</string>
@@ -25,18 +25,18 @@
     <string name="onboarding_mode_controls">Con i comandi</string>
     <string name="onboarding_mode_immersive">Pagina intera</string>
     <string name="onboarding_mode_explainer">«Con i comandi» tiene in vista un pulsante indietro e la barra degli strumenti. «Pagina intera» li nasconde per lasciare la pagina nuda; scorri verso destra per tornare. Puoi cambiarlo quando vuoi nelle Impostazioni.</string>
-    <string name="tour_title">Cosa c\'è dentro</string>
+    <string name="tour_title">Cosa c'è dentro</string>
     <string name="tour_loom_name">Il Telaio</string>
     <string name="tour_loom_body">Ciò che le tue fonti ti hanno davvero mandato, intrecciato con ciò che hai davvero letto. Tira verso il basso sulla tua edicola, oppure tocca la barra colorata sopra le notizie.</string>
     <string name="tour_flash_name">Nooz Flash</string>
-    <string name="tour_flash_body">I titoli del giorno ridotti a una riga ciascuno, con una via di ritorno all\'articolo intero. Spento finché non lo accendi, nelle Impostazioni.</string>
+    <string name="tour_flash_body">I titoli del giorno ridotti a una riga ciascuno, con una via di ritorno all'articolo intero. Spento finché non lo accendi, nelle Impostazioni.</string>
     <string name="tour_cast_name">Nooz Cast</string>
     <string name="tour_cast_body">Un articolo letto ad alta voce da una voce che gira sul tuo telefono anziché su un server. Anche questo nelle Impostazioni; chiede prima di scaricare qualsiasi cosa.</string>
     <string name="tour_clippings_name">Ritagli</string>
     <string name="tour_clippings_body">Tocca il segnalibro mentre leggi per tenere un pezzo. I Ritagli li conservano come brandelli strappati dal giornale.</string>
     <string name="tour_history_name">Oggi nella storia</string>
-    <string name="tour_history_body">Una breve colonna datata sopra le notizie del giorno, dall\'«accadde oggi» di Wikipedia. Spenta finché non la accendi.</string>
-    <string name="tour_footer">Qui non c\'è nulla che vada a prendere qualcosa che tu non abbia chiesto. I tre interruttori qui sopra restano spenti finché non li accendi tu.</string>
+    <string name="tour_history_body">Una breve colonna datata sopra le notizie del giorno, dall'«accadde oggi» di Wikipedia. Spenta finché non la accendi.</string>
+    <string name="tour_footer">Qui non c'è nulla che vada a prendere qualcosa che tu non abbia chiesto. I tre interruttori qui sopra restano spenti finché non li accendi tu.</string>
     <string name="screen_paper">Giornale</string>
     <string name="screen_sources_and_settings">Fonti e impostazioni</string>
     <string name="screen_settings">Impostazioni</string>
@@ -54,7 +54,7 @@
     <string name="list_fetch_now">Recupera ora dalle tue fonti</string>
     <string name="list_settings">Impostazioni</string>
     <string name="list_nothing_unread">Non è rimasto nulla da leggere</string>
-    <string name="list_nothing_unread_body">Ogni notizia di questo elenco è stata aperta. Allarga le dita, o tocca qui, per rivedere l\'elenco intero.</string>
+    <string name="list_nothing_unread_body">Ogni notizia di questo elenco è stata aperta. Allarga le dita, o tocca qui, per rivedere l'elenco intero.</string>
     <string name="list_search">Cerca articoli</string>
     <string name="list_filter">Filtro</string>
     <string name="list_clear">Azzera</string>
@@ -67,18 +67,18 @@
     <string name="list_showing_all">Mostro tutti; tocca per vedere solo i non letti</string>
     <string name="list_show_all_click">Mostra tutti gli articoli</string>
     <string name="reader_previous">‹ Precedente</string>
-    <string name="reader_end_of_article">Fine dell\'articolo</string>
+    <string name="reader_end_of_article">Fine dell'articolo</string>
     <string name="reader_next">Successivo ›</string>
-    <string name="reader_loading">Caricamento dell\'articolo</string>
-    <string name="reader_full_story">Leggi l\'articolo completo alla fonte ↗</string>
-    <string name="reader_back_to_stand">Torna all\'edicola</string>
+    <string name="reader_loading">Caricamento dell'articolo</string>
+    <string name="reader_full_story">Leggi l'articolo completo alla fonte ↗</string>
+    <string name="reader_back_to_stand">Torna all'edicola</string>
     <string name="reader_open_settings">Apri le impostazioni di lettura</string>
     <string name="reader_lens_toggle">Lente: evidenziazione del linguaggio tendenzioso</string>
     <string name="reader_open_in_browser">Apri nel browser</string>
     <string name="reader_share_clipping">Condividi come ritaglio di giornale</string>
     <string name="reader_minutes_short">%1$d min</string>
     <string name="reader_reading_time">Tempo di lettura stimato: %1$d minuti</string>
-    <string name="reader_progress">Circa il %1$d per cento dell\'articolo</string>
+    <string name="reader_progress">Circa il %1$d per cento dell'articolo</string>
     <string name="loom_title">Telaio del giorno.</string>
     <string name="loom_flowed">%1$d notizie sono arrivate dalle tue %2$s</string>
     <string name="loom_flowed_named">%1$s: %2$s</string>
@@ -110,7 +110,7 @@
     <string name="loom_previous_day">Giorno precedente</string>
     <string name="loom_next_day">Giorno successivo</string>
     <string name="loom_empty">Quel giorno non è arrivato nulla. Il telaio tesse appena lo fanno le tue fonti.</string>
-    <string name="loom_no_archive">Quasi tutte le fonti sono feed RSS/Atom in diretta, a cui non si può chiedere una data passata; qui c\'è ciò che servono in questo momento, non un archivio.</string>
+    <string name="loom_no_archive">Quasi tutte le fonti sono feed RSS/Atom in diretta, a cui non si può chiedere una data passata; qui c'è ciò che servono in questo momento, non un archivio.</string>
     <string name="loom_asking_gdelt">Sto chiedendo a GDELT…</string>
     <string name="loom_ask_gdelt">Chiedi a GDELT per questo giorno</string>
     <string name="contrast_nothing_flowed">Quel giorno non è arrivato nulla</string>
@@ -126,11 +126,11 @@
     <string name="cross_breadth_you">Ampiezza: tu</string>
     <string name="cross_over_under">Sopra/sotto per argomento</string>
     <string name="cross_what_changed">Cosa è cambiato dal periodo precedente</string>
-    <string name="cross_no_earlier">Non c\'è ancora un periodo precedente da confrontare.</string>
+    <string name="cross_no_earlier">Non c'è ancora un periodo precedente da confrontare.</string>
     <string name="cross_steady">Il tuo mix di argomenti è rimasto stabile.</string>
-    <string name="stand_title">L\'Edicola</string>
+    <string name="stand_title">L'Edicola</string>
     <string name="stand_subtitle">Sfoglia i giornali. Scegli una pila per leggere quella fetta.</string>
-    <string name="stand_empty">L\'edicola è vuota</string>
+    <string name="stand_empty">L'edicola è vuota</string>
     <string name="stand_loom_edition">Edizione Telaio</string>
     <string name="stand_woven_from">Tessuto dalle tue stesse fonti</string>
     <string name="stand_your_source">Le tue fonti, le tue notizie</string>
@@ -141,8 +141,8 @@
     <string name="stand_no_full_text">Il testo completo non è in questo feed. Apri la notizia per leggerla alla fonte.</string>
     <string name="stand_no_full_text_yet">Il testo completo non è ancora in questo feed. Apri la notizia per leggerla alla fonte.</string>
     <string name="reader_share_item">Condividi questo pezzo</string>
-    <string name="reader_fetching">Sto recuperando l\'articolo intero…</string>
-    <string name="reader_no_text">Il feed di questa fonte non conteneva il testo dell\'articolo. Leggi il pezzo intero alla fonte, qui sotto.</string>
+    <string name="reader_fetching">Sto recuperando l'articolo intero…</string>
+    <string name="reader_no_text">Il feed di questa fonte non conteneva il testo dell'articolo. Leggi il pezzo intero alla fonte, qui sotto.</string>
     <string name="reader_read_at_source">Leggi alla fonte</string>
     <string name="reader_no_link">Il feed di questo pezzo non conteneva un collegamento utilizzabile alla sua fonte.</string>
     <string name="loom_subtitle">Ciò che è arrivato dalle tue fonti, intrecciato con ciò che hai davvero letto.</string>
@@ -154,7 +154,7 @@
     <string name="loom_nothing_read_yet">Non hai ancora letto nulla: la striscia si riempie man mano che apri le notizie.</string>
     <string name="loom_nothing_to_weave">Ancora niente da tessere</string>
     <string name="clippings_empty">Ancora nessun ritaglio</string>
-    <string name="clippings_empty_body">Tocca l\'icona del ritaglio su un pezzo qualsiasi per tenerlo qui: resta anche se poi togli o disattivi la sua fonte.</string>
+    <string name="clippings_empty_body">Tocca l'icona del ritaglio su un pezzo qualsiasi per tenerlo qui: resta anche se poi togli o disattivi la sua fonte.</string>
     <string name="clippings_remove">Togli il ritaglio</string>
     <string name="sources_title">Fonti</string>
     <string name="sources_add">Aggiungi una fonte</string>
@@ -183,13 +183,13 @@
     <string name="edit_could_not_add">Non è stato possibile aggiungere: %1$s</string>
     <string name="edit_added_named">«%1$s» aggiunto.</string>
     <string name="edit_pick_a_feed">Questa pagina dichiara più di un feed, scegline uno:</string>
-    <string name="edit_paste_hint">Incolla l\'URL di un feed o di un sito: l\'app trova il feed e recupera solo ciò che aggiungi.</string>
-    <string name="edit_globe_hint">Trascina per ruotare · pizzica per allargare · l\'anello mostra il mix di argomenti della fascia</string>
+    <string name="edit_paste_hint">Incolla l'URL di un feed o di un sito: l'app trova il feed e recupera solo ciò che aggiungi.</string>
+    <string name="edit_globe_hint">Trascina per ruotare · pizzica per allargare · l'anello mostra il mix di argomenti della fascia</string>
     <string name="edit_reset_to_global">Torna a Globale</string>
     <string name="edit_import_opml">Importa OPML</string>
     <string name="edit_export_opml">Esporta OPML</string>
     <string name="edit_catalogue">Catalogo</string>
-    <string name="edit_catalogue_hint">Se vuoi, punta questo a un catalogue.json per aggiornare le fonti iniziali e i limiti gratuiti senza aggiornare l\'app. Non viene recuperato nulla finché non tocchi aggiorna; non c\'è un URL predefinito, perché questa build non può verificare che uno sia attivo.</string>
+    <string name="edit_catalogue_hint">Se vuoi, punta questo a un catalogue.json per aggiornare le fonti iniziali e i limiti gratuiti senza aggiornare l'app. Non viene recuperato nulla finché non tocchi aggiorna; non c'è un URL predefinito, perché questa build non può verificare che uno sia attivo.</string>
     <string name="edit_catalogue_placeholder">https://…/catalogue.json</string>
     <string name="edit_catalogue_url">URL del catalogo</string>
     <string name="edit_built_in_starters">Usa le fonti iniziali incluse</string>

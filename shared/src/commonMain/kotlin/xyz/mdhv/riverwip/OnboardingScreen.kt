@@ -190,6 +190,7 @@ private fun AdvancedStep(
         onSaveByok = onSaveByok,
         onClearByok = onClearByok,
         download = download,
+        localModels = LocalAppServices.current.localModels,
     )
 
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)

@@ -22,7 +22,7 @@ resolves per key, and the web layer does the same -- so a locale can ship at a
 third done and show that third. Never a blank, never a key name.
 
 OUTPUTS (both generated; edit the JSON, not these)
-  core/design/src/main/res/values-<qualifier>/strings.xml
+  core/design/src/commonMain/composeResources/values-<qualifier>/strings.xml
   web/i18n/<tag>.json
 
 Run:  python3 tools/i18n/generate.py          write the outputs
@@ -35,7 +35,7 @@ import sys
 
 REPO = pathlib.Path(__file__).resolve().parents[2]
 CATALOGUES = REPO / "i18n" / "strings"
-ANDROID_RES = REPO / "core" / "design" / "src" / "main" / "res"
+COMPOSE_RES = REPO / "core" / "design" / "src" / "commonMain" / "composeResources"
 LOCALE_CONFIG = REPO / "app" / "src" / "main" / "res" / "xml" / "locales_config.xml"
 COVERAGE_KT = (
     REPO / "core" / "model" / "src" / "commonMain" / "kotlin"
@@ -93,30 +93,36 @@ HEADER = """<?xml version="1.0" encoding="utf-8"?>
 """
 
 
-def android_qualifier(tag: str) -> str:
-    """BCP 47 -> the `values-` suffix Android wants (`zh-Hans` -> `b+zh+Hans`)."""
-    return "b+" + tag.replace("-", "+")
-
-
-def escape_android(value: str) -> str:
+def resource_qualifier(tag: str) -> str:
     """
-    Android's string resource escaping.
+    BCP 47 -> the `values-` suffix Compose Multiplatform resources want.
 
-    `&` and `<` are XML; `'` and `"` are aapt's own, and an unescaped apostrophe
-    is a build error rather than a warning. A leading `@` or `?` would be read as
-    a resource reference.
+    Compose resources understand a language and an optional region (`pt-rBR`) and nothing
+    else: there is no script qualifier, so `zh-Hans` becomes plain `zh` (and Traditional
+    Chinese readers see Simplified until the resource system grows one).
     """
-    out = (
+    parts = tag.split("-")
+    qualifier = parts[0]
+    for extra in parts[1:]:
+        if len(extra) == 2 and extra.isalpha():
+            qualifier += "-r" + extra.upper()
+    return qualifier
+
+
+def escape_compose(value: str) -> str:
+    """
+    Compose resources' string escaping, which is *not* Android's.
+
+    `&`, `<` and `>` are XML. Newline is the two characters `\\n`. Quotes and apostrophes are
+    written as themselves: Android's `\\'` and `\\"` are not understood here and would be shown
+    to the reader with the backslash in front of them.
+    """
+    return (
         value.replace("&", "&amp;")
         .replace("<", "&lt;")
         .replace(">", "&gt;")
-        .replace("'", "\\'")
-        .replace('"', '\\"')
         .replace("\n", "\\n")
     )
-    if out[:1] in ("@", "?"):
-        out = "\\" + out
-    return out
 
 
 def load(tag: str) -> dict:
@@ -131,7 +137,7 @@ def render_android(tag: str, strings: dict, base: dict) -> str:
     for key in base:  # base order, so files line up for review
         if key not in strings:
             continue
-        lines.append(f'    <string name="{key}">{escape_android(strings[key])}</string>')
+        lines.append(f'    <string name="{key}">{escape_compose(strings[key])}</string>')
     lines.append("</resources>\n")
     return "\n".join(lines)
 
@@ -168,13 +174,13 @@ def render_base(base: dict) -> str:
         for key in keys:
             if key in notes:
                 out.append("    " + xml_comment(notes[key]))
-            out.append(f'    <string name="{key}">{escape_android(base[key])}</string>')
+            out.append(f'    <string name="{key}">{escape_compose(base[key])}</string>')
         out.append("")
     leftover = [k for k in base if k not in placed]
     if leftover:
         out.append("    <!-- Uncategorised: give these a section in _sections.json. -->")
         for key in leftover:
-            out.append(f'    <string name="{key}">{escape_android(base[key])}</string>')
+            out.append(f'    <string name="{key}">{escape_compose(base[key])}</string>')
         out.append("")
     out.append("</resources>\n")
     return "\n".join(out)
@@ -397,10 +403,10 @@ def main() -> int:
             return 2
         wanted[WEB_OUT / f"{tag}.json"] = render_web(tag, strings, base)
         if tag == BASE_TAG:
-            wanted[ANDROID_RES / "values" / "strings.xml"] = render_base(base)
+            wanted[COMPOSE_RES / "values" / "strings.xml"] = render_base(base)
         else:
-            qualifier = android_qualifier(tag)
-            wanted[ANDROID_RES / f"values-{qualifier}" / "strings.xml"] = render_android(tag, strings, base)
+            qualifier = resource_qualifier(tag)
+            wanted[COMPOSE_RES / f"values-{qualifier}" / "strings.xml"] = render_android(tag, strings, base)
 
     coverage = {tag: len(load(tag)) for tag in tags}
     shipped = [t for t in tags if coverage[t] > 0]
@@ -439,12 +445,12 @@ def main() -> int:
     # A locale removed from i18n/strings must not leave its generated output
     # behind, or the app keeps shipping a language nobody maintains.
     orphans = []
-    for existing in list(ANDROID_RES.glob("values-b+*/strings.xml")) + list(WEB_OUT.glob("*.json")):
+    for existing in list(COMPOSE_RES.glob("values-*/strings.xml")) + list(WEB_OUT.glob("*.json")):
         if existing not in wanted:
             orphans.append(existing.relative_to(REPO))
             if not check:
                 existing.unlink()
-                if existing.parent.name.startswith("values-b+") and not any(existing.parent.iterdir()):
+                if existing.parent.name.startswith("values-") and not any(existing.parent.iterdir()):
                     existing.parent.rmdir()
 
     if check and (stale or orphans):

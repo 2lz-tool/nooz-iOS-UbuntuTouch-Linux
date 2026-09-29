@@ -105,6 +105,7 @@ class AppContainer(appContext: Context) : AppServices {
         RiverWorkerFactory(data.itemRepository, data.weeklyAggregateRepository, data.articleRepository)
 
     // Filled in by MainActivity for the lifetime of the activity: they act on its window and configuration.
+    override val localModels: Boolean = true
     override val locale: LocaleController = AndroidLocaleController(appContext)
     override val window: WindowControls get() = windowControls
     var windowControls: WindowControls = object : WindowControls {

@@ -855,30 +855,34 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
         }
         Switch(checked = settings.noozFlashEnabled, onCheckedChange = null)
     }
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .toggleable(
-                value = settings.noozCastEnabled,
-                onValueChange = { vm.setNoozCastEnabled(it) },
-                role = Role.Switch,
-            )
-            .padding(vertical = Tokens.Spacing.xs),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Column(modifier = Modifier.weight(1f)) {
-            Text(
-                "Nooz Cast",
-                style = MaterialTheme.typography.titleMedium,
-                color = MaterialTheme.colorScheme.onBackground,
-            )
-            Text(
-                stringResource(Res.string.settings_cast_body),
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.onSurfaceVariant,
-            )
+    val localModels = LocalAppServices.current.localModels
+    // Cast narrates with an on-device voice model; where no model can run there is nothing to switch on.
+    if (localModels) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .toggleable(
+                    value = settings.noozCastEnabled,
+                    onValueChange = { vm.setNoozCastEnabled(it) },
+                    role = Role.Switch,
+                )
+                .padding(vertical = Tokens.Spacing.xs),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    "Nooz Cast",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onBackground,
+                )
+                Text(
+                    stringResource(Res.string.settings_cast_body),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+            Switch(checked = settings.noozCastEnabled, onCheckedChange = null)
         }
-        Switch(checked = settings.noozCastEnabled, onCheckedChange = null)
     }
     val catalogue by vm.modelCatalogue.collectAsStateWithLifecycle()
     ModelChoicePanel(
@@ -887,6 +891,7 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
         byokConfig = config,
         onSaveByok = { url, key, model -> vm.saveByok(url, key, model) },
         onClearByok = { vm.clearByok() },
+        localModels = localModels,
         download = ModelDownloadUi(
             models = vm.downloadableModels(catalogue),
             downloadStates = vm.modelDownloadStates,
@@ -898,22 +903,24 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
             error = vm.modelCatalogueError,
         ),
     )
-    // Cast has no on-device/BYOK trichotomy — a private anchor voice never
-    // leaves the device — so its own model gets only the download list,
-    // scoped to its own kind rather than Flash's LLM_GGUF default.
-    SectionHeading(stringResource(Res.string.settings_cast_model), modifier = Modifier.padding(top = Tokens.Spacing.md))
-    ModelDownloadList(
-        ModelDownloadUi(
-            models = vm.downloadableModels(catalogue, kind = "TTS_ONNX"),
-            downloadStates = vm.modelDownloadStates,
-            isDownloaded = { vm.isModelDownloaded(it) },
-            onDownload = { vm.downloadModel(it) },
-            onDelete = { vm.deleteModel(it) },
-            onRefresh = { vm.refreshModelCatalogue() },
-            refreshing = vm.modelCatalogueRefreshing,
-            error = vm.modelCatalogueError,
-        ),
-    )
+    if (localModels) {
+        // Cast has no on-device/BYOK trichotomy — a private anchor voice never
+        // leaves the device — so its own model gets only the download list,
+        // scoped to its own kind rather than Flash's LLM_GGUF default.
+        SectionHeading(stringResource(Res.string.settings_cast_model), modifier = Modifier.padding(top = Tokens.Spacing.md))
+        ModelDownloadList(
+            ModelDownloadUi(
+                models = vm.downloadableModels(catalogue, kind = "TTS_ONNX"),
+                downloadStates = vm.modelDownloadStates,
+                isDownloaded = { vm.isModelDownloaded(it) },
+                onDownload = { vm.downloadModel(it) },
+                onDelete = { vm.deleteModel(it) },
+                onRefresh = { vm.refreshModelCatalogue() },
+                refreshing = vm.modelCatalogueRefreshing,
+                error = vm.modelCatalogueError,
+            ),
+        )
+    }
 }
 
 /**

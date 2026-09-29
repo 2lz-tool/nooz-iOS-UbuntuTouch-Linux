@@ -24,8 +24,8 @@
 <resources>
 
     <!-- Onboarding: the first thing anyone sees. -->
-    <string name="onboarding_loading">Gathering today\'s stories…</string>
-    <string name="onboarding_headline">Read what\'s there, and notice what isn\'t.</string>
+    <string name="onboarding_loading">Gathering today's stories…</string>
+    <string name="onboarding_headline">Read what's there, and notice what isn't.</string>
     <string name="onboarding_blurb">A quiet news reader: what your sources actually sent you, and — just as plainly — what they left out. The lens flags loaded language, and with a dictionary downloaded it defines any word on a long-press. Everything runs on your phone by default.</string>
     <string name="onboarding_quick_setup">Quick setup</string>
     <string name="onboarding_advanced_setup">Advanced setup</string>
@@ -40,18 +40,18 @@
     <string name="onboarding_mode_explainer">Controls shown keeps an obvious back button and the utility bar. Immersive hides them for a bare page; swipe right to go back. You can change this any time in Settings.</string>
 
     <!-- "What's inside": the short tour of things a reader would otherwise never find. Shown once during onboarding, and kept in Settings so readers who onboarded before it existed still meet it. -->
-    <string name="tour_title">What\'s inside</string>
+    <string name="tour_title">What's inside</string>
     <string name="tour_loom_name">The Loom</string>
     <string name="tour_loom_body">What your sources actually sent you, woven against what you actually read. Pull down on your stand, or tap the coloured bar above the stories.</string>
     <string name="tour_flash_name">Nooz Flash</string>
-    <string name="tour_flash_body">The day\'s headlines cut to a line each, with a way back into the full piece. Off until you switch it on, in Settings.</string>
+    <string name="tour_flash_body">The day's headlines cut to a line each, with a way back into the full piece. Off until you switch it on, in Settings.</string>
     <string name="tour_cast_name">Nooz Cast</string>
     <string name="tour_cast_body">An article read aloud in a voice that runs on your phone rather than a server. Also in Settings; it asks before downloading anything.</string>
     <string name="tour_clippings_name">Clippings</string>
     <string name="tour_clippings_body">Tap the bookmark while reading to keep a piece. Clippings holds them as torn scraps of the paper.</string>
     <string name="tour_history_name">Today in History</string>
-    <string name="tour_history_body">A short dated column above the day\'s stories, from Wikipedia\'s own “on this day”. Off until you switch it on.</string>
-    <string name="tour_footer">Nothing here reaches for anything you didn\'t ask for. The three switches above stay off until you turn them on.</string>
+    <string name="tour_history_body">A short dated column above the day's stories, from Wikipedia's own “on this day”. Off until you switch it on.</string>
+    <string name="tour_footer">Nothing here reaches for anything you didn't ask for. The three switches above stay off until you turn them on.</string>
 
     <!-- Screen names. These are what TalkBack announces on arrival, so they are the names the reader already knows from the control they pressed — "Loom", not "LoomScreen". -->
     <string name="screen_paper">Paper</string>
@@ -115,7 +115,7 @@
     <!-- The language picker. -->
     <string name="language_title">Language</string>
     <string name="language_system_default">Match my phone</string>
-    <string name="language_explainer">Nooz\'s own text. Stories always stay in the language their publisher wrote them in.</string>
+    <string name="language_explainer">Nooz's own text. Stories always stay in the language their publisher wrote them in.</string>
     <!-- %1$s is a language's own name for itself; %2$d is how much of the app is translated into it, 0–100. Shown so nobody is surprised by a screen that is half in English. -->
     <string name="language_partial">%1$s · %2$d%% translated</string>
     <string name="language_complete">%1$s</string>
@@ -127,7 +127,7 @@
     <string name="loom_and_more_topics">, and %1$d more topics</string>
     <string name="loom_read_none">You read none of it</string>
     <string name="loom_read_some">You read %1$d: %2$s</string>
-    <string name="loom_use_actions">Use actions for a single stream\'s counts.</string>
+    <string name="loom_use_actions">Use actions for a single stream's counts.</string>
     <string name="loom_nothing_flowed">Nothing flowed from your %1$s this day.</string>
     <string name="loom_source_one">%1$d source</string>
     <string name="loom_source_many">%1$d sources</string>
@@ -340,11 +340,11 @@
     <string name="bar_waiting">Waiting for stories</string>
     <string name="empty_no_results">No results found</string>
     <string name="search_clear">Clear search</string>
-    <string name="flash_coming_soon">Coming soon: today\'s news compressed to 10 words or fewer, once on-device intelligence is ready.</string>
-    <string name="flash_tap_to_compress">Tap to compress today\'s news to 10 words or fewer</string>
-    <string name="flash_compressing">Compressing today\'s news…</string>
+    <string name="flash_coming_soon">Coming soon: today's news compressed to 10 words or fewer, once on-device intelligence is ready.</string>
+    <string name="flash_tap_to_compress">Tap to compress today's news to 10 words or fewer</string>
+    <string name="flash_compressing">Compressing today's news…</string>
     <string name="flash_setup_link">Set up an on-device model or connect an API →</string>
-    <string name="flash_action_compress">Compress today\'s news</string>
+    <string name="flash_action_compress">Compress today's news</string>
     <string name="flash_action_setup">Set up Nooz Flash</string>
     <string name="cast_tap_to_hear">Tap to hear this article read aloud in a natural voice</string>
     <string name="cast_narrating">Narrating the article…</string>
@@ -355,7 +355,7 @@
     <string name="provenance_cloud_urbana">cloud (via Urbana)</string>
     <string name="history_retry_notice">%1$s Tap to try again.</string>
     <string name="history_read_year">Read about %1$s on Wikipedia</string>
-    <string name="history_open_wikipedia">Open Wikipedia\'s On this day</string>
+    <string name="history_open_wikipedia">Open Wikipedia's On this day</string>
     <string name="history_try_again">Try loading Today in History again</string>
     <string name="framings_empty">No overlapping stories yet</string>
     <string name="lens_looking_up">Looking up…</string>
@@ -375,15 +375,16 @@
     <string name="defuse_view_suggestion">View suggestion</string>
     <string name="word_list_title">WORD LIST</string>
     <string name="word_list_search">Search words</string>
-    <string name="word_list_body">Words and phrases the reading lens underlines as loaded language or editorial hedging. Turn off any default you don\'t want flagged, or add your own below.</string>
+    <string name="word_list_body">Words and phrases the reading lens underlines as loaded language or editorial hedging. Turn off any default you don't want flagged, or add your own below.</string>
     <string name="word_list_default">Default</string>
     <string name="word_list_custom">Custom</string>
     <string name="word_list_add_hint">Word or phrase to add</string>
     <string name="word_list_add">Add this word</string>
     <string name="word_list_remove">Remove “%1$s”</string>
-    <string name="model_on_device_body">Nooz tries your device first, automatically: nothing to set up. Download a model below and it runs right on your device; until then (or unless you add a key below), the lens honestly reports \"unavailable\" instead of guessing.</string>
-    <string name="model_download_body">Real, open-source models verified by this app\'s own catalogue. Download them here: they won\'t run automatically (see On-device), but once downloaded they\'re on disk and ready.</string>
+    <string name="model_on_device_body">Nooz tries your device first, automatically: nothing to set up. Download a model below and it runs right on your device; until then (or unless you add a key below), the lens honestly reports "unavailable" instead of guessing.</string>
+    <string name="model_download_body">Real, open-source models verified by this app's own catalogue. Download them here: they won't run automatically (see On-device), but once downloaded they're on disk and ready.</string>
     <string name="model_none_available">No models available.</string>
+    <string name="model_local_unavailable">On this computer Nooz uses a key you supply. Running a model on the device itself arrives in a later version.</string>
     <string name="model_progress_percent">%1$d%%</string>
     <string name="model_delete">Delete</string>
     <string name="model_download">Download</string>

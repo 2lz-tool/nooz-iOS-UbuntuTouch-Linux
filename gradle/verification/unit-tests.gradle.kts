@@ -21,7 +21,10 @@ val unitTests = tasks.register("unitTests") {
 // Modules deliberately left out of the default run, with the reason. Empty
 // today; kept so that an exclusion has to be written down rather than happening
 // by accident, which is exactly how :core:model went missing.
-val skippedModules = setOf<String>()
+val skippedModules = setOf(
+    // Compose UI tests that need a display; CI runs them in the `desktop` job under xvfb.
+    ":desktop",
+)
 
 // projectsEvaluated, not each project's own afterEvaluate: AGP registers its
 // variant tasks from inside its own afterEvaluate hook, so a callback added

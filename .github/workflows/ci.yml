@@ -25,13 +25,57 @@ jobs:
           java-version: '17'
       - uses: gradle/actions/setup-gradle@v4
       - name: Shared core + data layer unit tests (JVM)
-        run: ./gradlew :core:model:jvmTest :core:data:jvmTest
+        run: ./gradlew :core:model:jvmTest :core:data:jvmTest :core:inference-api:jvmTest
 
       # The same tests, compiled to a native Linux binary by Kotlin/Native. This is what
       # keeps the core free of JVM-only APIs: the JVM build alone happily accepts them.
       # linuxArm64 (Ubuntu Touch phones) is compiled too; it cannot run on this host.
       - name: Shared core + data layer unit tests (native Linux)
-        run: ./gradlew :core:model:linuxX64Test :core:data:linuxX64Test :core:model:compileKotlinLinuxArm64 :core:data:compileKotlinLinuxArm64
+        run: ./gradlew :core:model:linuxX64Test :core:data:linuxX64Test :core:inference-api:linuxX64Test :core:model:compileKotlinLinuxArm64 :core:data:compileKotlinLinuxArm64 :core:inference-api:compileKotlinLinuxArm64
+
+  # The Linux desktop app: the Compose UI tests (locale resolution, accessibility semantics, and the
+  # adaptive layout at phone / tablet / desktop / ultrawide widths, run against the real app with a
+  # real feed), then the installable packages. Compose needs a display even when nothing is shown,
+  # so the tests run under xvfb.
+  desktop:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      # No Android SDK on this job's path: the Android targets are switched off.
+      - name: Desktop UI tests
+        run: xvfb-run -a ./gradlew -Pnooz.skipAndroid=true :core:design:jvmTest :feature:river:jvmTest :desktop:test
+      - name: Generated translations are current
+        run: python3 tools/i18n/generate.py --check
+      - name: Interface copy is translatable
+        run: ./gradlew -Pnooz.skipAndroid=true verifyI18n
+      - name: Layout screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: linux-layout-screenshots
+          path: desktop/build/screenshots/*.png
+          if-no-files-found: warn
+      - name: Package tools
+        run: sudo apt-get install -y fakeroot
+      - name: Package (.deb and portable app image)
+        run: ./gradlew -Pnooz.skipAndroid=true :desktop:packageDeb :desktop:createDistributable
+      - name: Portable tarball
+        run: tar -C desktop/build/compose/binaries/main/app -czf nooz-linux-x86_64.tar.gz nooz
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nooz-linux-deb
+          path: desktop/build/compose/binaries/main/deb/*.deb
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nooz-linux-portable
+          path: nooz-linux-x86_64.tar.gz
+          if-no-files-found: error
 
   # The web reader had no CI at all until now — its 6,300 lines of JS shipped
   # unexercised, which is how a topic classifier that could not match any

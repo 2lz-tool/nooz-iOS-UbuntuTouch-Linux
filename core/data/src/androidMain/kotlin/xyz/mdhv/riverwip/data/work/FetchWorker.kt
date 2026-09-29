@@ -3,6 +3,7 @@ package xyz.mdhv.riverwip.data.work
 import android.content.Context
 import androidx.work.CoroutineWorker
 import androidx.work.WorkerParameters
+import xyz.mdhv.riverwip.data.IngestCycle
 import xyz.mdhv.riverwip.data.repo.ArticleRepository
 import xyz.mdhv.riverwip.data.repo.ItemRepository
 import xyz.mdhv.riverwip.data.repo.WeeklyAggregateRepository
@@ -23,12 +24,7 @@ class FetchWorker(
 ) : CoroutineWorker(context, params) {
 
     override suspend fun doWork(): Result = try {
-        itemRepository.fetchAndIngestAllEnabled()
-        weeklyAggregateRepository.recompute()
-        itemRepository.pruneOlderThan()
-        // Retention just removed items; the search index must follow them
-        // out or it keeps prose for stories that can no longer be opened.
-        articleRepository.pruneIndexOrphans()
+        IngestCycle(itemRepository, weeklyAggregateRepository, articleRepository).run()
         Result.success()
     } catch (e: Exception) {
         Result.retry()

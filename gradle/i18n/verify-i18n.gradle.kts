@@ -243,8 +243,8 @@ abstract class VerifyI18nTask : DefaultTask() {
         if (problems.isNotEmpty()) {
             throw GradleException(
                 buildString {
-                    appendLine("Interface copy must live in core/design/src/main/res/values/strings.xml,")
-                    appendLine("reached with stringResource(DesignR.string.…), so it can be translated.")
+                    appendLine("Interface copy must live in core/design/src/commonMain/composeResources/values/strings.xml,")
+                    appendLine("reached with stringResource(Res.string.…), so it can be translated.")
                     appendLine("See that file's header for how a locale is added.")
                     appendLine()
                     problems.forEach { appendLine(it) }
@@ -262,18 +262,13 @@ abstract class VerifyI18nTask : DefaultTask() {
 // :core:model and :core:data are deliberately absent — their strings are feed
 // data, publisher names and lexicon terms. Those are not interface copy, and
 // translating a publisher's own masthead would be a bug, not a feature.
-val i18nScannedRoots = listOf(
-    "app/src/main",
-    "core/design/src/main",
-    "feature/reader/src/main",
-    "feature/river/src/main",
-    "feature/sources/src/main",
-    "feature/lens/src/main",
-)
+val i18nModules = listOf("app", "shared", "desktop", "core/design", "feature/reader", "feature/river", "feature/sources", "feature/lens")
+val i18nSourceSets = listOf("main", "commonMain", "androidMain", "jvmMain")
+val i18nScannedRoots = i18nModules.flatMap { module -> i18nSourceSets.map { "$module/src/$it" } }
 
 tasks.register<VerifyI18nTask>("verifyI18n") {
     group = "verification"
-    description = "Fails on interface copy hardcoded in Kotlin instead of strings.xml."
+    description = "Fails on interface copy hardcoded in Kotlin instead of the string resources."
     sources.from(i18nScannedRoots.map { rootProject.fileTree(it) { include("**/*.kt") } })
     allowlist.set(rootProject.layout.projectDirectory.file("gradle/i18n/i18n-allowlist.txt"))
     repoRoot.set(rootProject.projectDir.absolutePath)

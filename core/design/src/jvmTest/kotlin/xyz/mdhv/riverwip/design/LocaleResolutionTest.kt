@@ -38,6 +38,14 @@ class LocaleResolutionTest {
 
     private fun paper(tag: String): String = tr(tag, Res.string.screen_paper)
 
+    @Test fun apostropheAndQuoteEscapesAreNotShownToTheReader() {
+        // Android's `\'` and `\"` are not Compose-resource escapes: left in the XML they are printed, backslash and all.
+        assertEquals("Read what's there, and notice what isn't.", tr("en", Res.string.onboarding_headline))
+        val body = tr("en", Res.string.model_on_device_body)
+        assertTrue("\\" !in body, body)
+        assertTrue("\"unavailable\"" in body, body)
+    }
+
     @Test fun englishIsTheBase() = assertEquals("Paper", paper("en"))
     @Test fun hindiResolves() = assertEquals("अख़बार", paper("hi"))
     @Test fun tamilResolves() = assertEquals("பத்திரிகை", paper("ta"))

@@ -45,6 +45,9 @@ interface AppServices {
     val ttsProvider: TtsProvider
     val byokConfigStore: ByokConfigStore
 
+    /** False where no on-device model can run (desktop for now): the UI then offers only bring-your-own-key. */
+    val localModels: Boolean
+
     val locale: LocaleController
     val window: WindowControls
     val crashReports: CrashReports

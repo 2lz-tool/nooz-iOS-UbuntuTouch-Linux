@@ -314,6 +314,7 @@
   "model_on_device_body": "Nooz tries your device first, automatically: nothing to set up. Download a model below and it runs right on your device; until then (or unless you add a key below), the lens honestly reports \"unavailable\" instead of guessing.",
   "model_download_body": "Real, open-source models verified by this app's own catalogue. Download them here: they won't run automatically (see On-device), but once downloaded they're on disk and ready.",
   "model_none_available": "No models available.",
+  "model_local_unavailable": "On this computer Nooz uses a key you supply. Running a model on the device itself arrives in a later version.",
   "model_progress_percent": "%1$d%%",
   "model_delete": "Delete",
   "model_download": "Download",

@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">Từ hoặc cụm từ cần thêm</string>
     <string name="word_list_add">Thêm từ này</string>
     <string name="word_list_remove">Gỡ “%1$s”</string>
-    <string name="model_on_device_body">Nooz thử máy của bạn trước, tự động: không có gì phải thiết lập. Tải một mô hình ở dưới và nó chạy ngay trên máy bạn; cho đến lúc đó (hoặc trừ khi bạn thêm một khóa ở dưới), ống kính thành thật báo \"không dùng được\" thay vì đoán mò.</string>
+    <string name="model_on_device_body">Nooz thử máy của bạn trước, tự động: không có gì phải thiết lập. Tải một mô hình ở dưới và nó chạy ngay trên máy bạn; cho đến lúc đó (hoặc trừ khi bạn thêm một khóa ở dưới), ống kính thành thật báo "không dùng được" thay vì đoán mò.</string>
     <string name="model_download_body">Các mô hình nguồn mở có thật, đã được chính danh mục của ứng dụng này xác minh. Tải chúng ở đây: chúng sẽ không tự chạy (xem Trên máy), nhưng khi đã tải thì nằm sẵn trên ổ đĩa.</string>
     <string name="model_none_available">Không có mô hình nào.</string>
     <string name="model_progress_percent">%1$d%%</string>

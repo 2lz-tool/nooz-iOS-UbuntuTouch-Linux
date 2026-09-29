@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -24,18 +24,18 @@
     <string name="onboarding_reading_mode">Okuma biçimi</string>
     <string name="onboarding_mode_controls">Denetimler görünür</string>
     <string name="onboarding_mode_immersive">Tam sayfa</string>
-    <string name="onboarding_mode_explainer">“Denetimler görünür” geri düğmesini ve araç çubuğunu açıkça görünür tutar. “Tam sayfa” sayfayı çıplak bırakmak için onları gizler; geri dönmek için sağa kaydırın. Bunu Ayarlar\'dan istediğiniz zaman değiştirebilirsiniz.</string>
+    <string name="onboarding_mode_explainer">“Denetimler görünür” geri düğmesini ve araç çubuğunu açıkça görünür tutar. “Tam sayfa” sayfayı çıplak bırakmak için onları gizler; geri dönmek için sağa kaydırın. Bunu Ayarlar'dan istediğiniz zaman değiştirebilirsiniz.</string>
     <string name="tour_title">İçinde ne var</string>
     <string name="tour_loom_name">Tezgâh</string>
     <string name="tour_loom_body">Kaynaklarınızın size gerçekte ne gönderdiği, gerçekte ne okuduğunuzla birlikte dokunmuş hâlde. Tezgâhınızda aşağı çekin ya da haberlerin üstündeki renkli şeride dokunun.</string>
     <string name="tour_flash_name">Nooz Flash</string>
-    <string name="tour_flash_body">Günün başlıkları birer satıra indirilmiş, tam metne dönüş yoluyla birlikte. Ayarlar\'dan açana kadar kapalıdır.</string>
+    <string name="tour_flash_body">Günün başlıkları birer satıra indirilmiş, tam metne dönüş yoluyla birlikte. Ayarlar'dan açana kadar kapalıdır.</string>
     <string name="tour_cast_name">Nooz Cast</string>
-    <string name="tour_cast_body">Bir yazının, sunucuda değil telefonunuzda çalışan bir sesle okunması. O da Ayarlar\'da; herhangi bir şey indirmeden önce sorar.</string>
+    <string name="tour_cast_body">Bir yazının, sunucuda değil telefonunuzda çalışan bir sesle okunması. O da Ayarlar'da; herhangi bir şey indirmeden önce sorar.</string>
     <string name="tour_clippings_name">Kupürler</string>
     <string name="tour_clippings_body">Okurken yer imine dokunup bir yazıyı saklayın. Kupürler onları gazeteden yırtılmış parçalar gibi tutar.</string>
     <string name="tour_history_name">Tarihte bugün</string>
-    <string name="tour_history_body">Günün haberlerinin üstünde kısa, tarihli bir sütun; Vikipedi\'nin kendi “tarihte bugün”ünden. Açana kadar kapalıdır.</string>
+    <string name="tour_history_body">Günün haberlerinin üstünde kısa, tarihli bir sütun; Vikipedi'nin kendi “tarihte bugün”ünden. Açana kadar kapalıdır.</string>
     <string name="tour_footer">Burada istemediğiniz hiçbir şeye uzanan bir şey yok. Yukarıdaki üç anahtar, siz açana kadar kapalı kalır.</string>
     <string name="screen_paper">Gazete</string>
     <string name="screen_sources_and_settings">Kaynaklar ve ayarlar</string>
@@ -45,7 +45,7 @@
     <string name="screen_lens_words">Mercek kelime listesi</string>
     <string name="language_title">Dil</string>
     <string name="language_system_default">Telefonumla aynı</string>
-    <string name="language_explainer">Nooz\'un kendi metni. Haberler her zaman yayıncısının yazdığı dilde kalır.</string>
+    <string name="language_explainer">Nooz'un kendi metni. Haberler her zaman yayıncısının yazdığı dilde kalır.</string>
     <string name="language_partial">%1$s · %%%2$d çevrildi</string>
     <string name="language_complete">%1$s</string>
     <string name="list_filter_region_topic">Bölgeye ve konuya göre süz</string>
@@ -111,8 +111,8 @@
     <string name="loom_next_day">Sonraki gün</string>
     <string name="loom_empty">O gün hiçbir şey akmadı. Kaynaklarınız dokudukça tezgâh da dokur.</string>
     <string name="loom_no_archive">Kaynakların çoğu canlı RSS/Atom akışları; onlardan geçmiş bir tarih istenemez. Burada şu anda sundukları var, bir arşiv değil.</string>
-    <string name="loom_asking_gdelt">GDELT\'e soruluyor…</string>
-    <string name="loom_ask_gdelt">Bu gün için GDELT\'e sor</string>
+    <string name="loom_asking_gdelt">GDELT'e soruluyor…</string>
+    <string name="loom_ask_gdelt">Bu gün için GDELT'e sor</string>
     <string name="contrast_nothing_flowed">O gün hiçbir şey akmadı</string>
     <string name="contrast_reach">Erişim</string>
     <string name="contrast_by_topic">Konuya göre</string>
@@ -171,7 +171,7 @@
     <string name="edit_edit">DÜZENLE</string>
     <string name="edit_done">BİTTİ</string>
     <string name="edit_all">Tümü</string>
-    <string name="edit_news_apis">Haber API\'leri ve kurucular</string>
+    <string name="edit_news_apis">Haber API'leri ve kurucular</string>
     <string name="edit_search_sources">Kaynak ara</string>
     <string name="edit_get_free_key">%1$s için ücretsiz anahtar alın</string>
     <string name="edit_add_named">%1$s ekle</string>
@@ -185,11 +185,11 @@
     <string name="edit_pick_a_feed">Bu sayfa birden fazla akış bildiriyor, birini seçin:</string>
     <string name="edit_paste_hint">Bir akış ya da site adresi yapıştırın — uygulama akışı bulur; yalnızca eklediğinizi getirir.</string>
     <string name="edit_globe_hint">Döndürmek için sürükleyin · genişletmek için sıkıştırın · halka o kuşağın konu karışımını gösterir</string>
-    <string name="edit_reset_to_global">Küresel\'e döndür</string>
+    <string name="edit_reset_to_global">Küresel'e döndür</string>
     <string name="edit_import_opml">OPML içe aktar</string>
     <string name="edit_export_opml">OPML dışa aktar</string>
     <string name="edit_catalogue">Katalog</string>
-    <string name="edit_catalogue_hint">İsterseniz bunu bir catalogue.json\'a yöneltin; böylece başlangıç kaynakları ve ücretsiz kademe sınırları uygulama güncellenmeden tazelenir. Siz tazele\'ye dokunmadıkça hiçbir şey getirilmez; varsayılan bir adres yok, çünkü bu sürüm hangisinin çalıştığını doğrulayamaz.</string>
+    <string name="edit_catalogue_hint">İsterseniz bunu bir catalogue.json'a yöneltin; böylece başlangıç kaynakları ve ücretsiz kademe sınırları uygulama güncellenmeden tazelenir. Siz tazele'ye dokunmadıkça hiçbir şey getirilmez; varsayılan bir adres yok, çünkü bu sürüm hangisinin çalıştığını doğrulayamaz.</string>
     <string name="edit_catalogue_placeholder">https://…/catalogue.json</string>
     <string name="edit_catalogue_url">Katalog adresi</string>
     <string name="edit_built_in_starters">Yerleşik başlangıç kaynaklarını kullan</string>
@@ -210,7 +210,7 @@
     <string name="settings_while_you_read_body">Arada bir, daha önce okuduğunuz bir şeyden alınmış gerçek bir satır.</string>
     <string name="settings_today_in_history">Tarihte bugün</string>
     <string name="settings_show_the_column">Bu sütunu göster</string>
-    <string name="settings_today_in_history_body">Günün haberlerinin üstünde tarihli birkaç satır; Vikipedi\'nin kendi “On this day” seçkisinden. Nooz\'un eklediğiniz kaynakların dışından getirdiği tek şey budur, bu yüzden siz açana kadar kapalı kalır.</string>
+    <string name="settings_today_in_history_body">Günün haberlerinin üstünde tarihli birkaç satır; Vikipedi'nin kendi “On this day” seçkisinden. Nooz'un eklediğiniz kaynakların dışından getirdiği tek şey budur, bu yüzden siz açana kadar kapalı kalır.</string>
     <string name="settings_show_reading_time">Okuma süresini göster</string>
     <string name="settings_highlight_loaded">Yanlı dili belirginleştir</string>
     <string name="settings_highlight_loaded_body">Okurken yüklü sözcüklerin altını çizer; kanıtı için üstüne dokunun.</string>
@@ -219,7 +219,7 @@
     <string name="settings_more">Diğer ayarlar</string>
     <string name="settings_more_body">Sözlük, okuyucu zekâsı ve modeller, hareketler, verileriniz, hakkında.</string>
     <string name="settings_dictionary">Sözlük</string>
-    <string name="settings_dictionary_body">Bir sözlük indirin, sonra okurken herhangi bir sözcüğe uzun basıp anlamını görün — Kindle\'daki gibi.</string>
+    <string name="settings_dictionary_body">Bir sözlük indirin, sonra okurken herhangi bir sözcüğe uzun basıp anlamını görün — Kindle'daki gibi.</string>
     <string name="settings_crash_title">Nooz geçen sefer beklenmedik biçimde kapandı</string>
     <string name="settings_crash_body">Rapor cihazınızda kaldı; hiçbir yere hiçbir şey gönderilmedi.</string>
     <string name="settings_copy">Kopyala</string>
@@ -227,7 +227,7 @@
     <string name="settings_reader_intelligence">Okuyucu zekâsı</string>
     <string name="settings_byok_model">Kendi anahtarınızla: %1$s</string>
     <string name="settings_flash_body">Günün haberleri 10 sözcük ya da daha azına sıkıştırılmış. Aşağıdan bir model indirdiğinizde cihazınızda çalışır, ya da kendi anahtarınız üzerinden.</string>
-    <string name="settings_cast_body">Yazının tamamı, cihazın içindeki doğal bir sesle okunur; asla makine gibi konuşan sistem okuyucusuyla değil. Kendi modeli var ve Flash\'ınkinden ayrı indirilir.</string>
+    <string name="settings_cast_body">Yazının tamamı, cihazın içindeki doğal bir sesle okunur; asla makine gibi konuşan sistem okuyucusuyla değil. Kendi modeli var ve Flash'ınkinden ayrı indirilir.</string>
     <string name="settings_cast_model">Nooz Cast modeli</string>
     <string name="settings_whats_inside_body">Tezgâh, Flash, Cast, Kupürler — ve her birinin nerede olduğu.</string>
     <string name="settings_gestures">Hareketler</string>
@@ -246,8 +246,8 @@
     <string name="settings_your_data_body">Her şeyi açık JSON olarak dışa aktarın: tercihler, bölgeniz ve konularınız, kaynaklarınız, kupürleriniz ve kaba okuma kaydı. Yalnızca yerelde; API anahtarları asla dâhil edilmez.</string>
     <string name="settings_about">Hakkında</string>
     <string name="settings_about_body">Nooz, konusu atlama olan bir haber okuyucusudur: neyin dışarıda bırakıldığı. Onu mdhv.xyz yapıyor; sakin, tek işe odaklanmış uygulamalardan oluşan küçük bir stüdyo.</string>
-    <string name="settings_visit_studio">mdhv.xyz\'i ziyaret et</string>
-    <string name="settings_view_source">Kaynağı GitHub\'da gör</string>
+    <string name="settings_visit_studio">mdhv.xyz'i ziyaret et</string>
+    <string name="settings_view_source">Kaynağı GitHub'da gör</string>
     <string name="settings_contact">Bize ulaşın</string>
     <string name="settings_more_from_studio">Stüdyodan dahası</string>
     <string name="settings_size_license">%1$s · %2$s</string>
@@ -271,20 +271,20 @@
     <string name="flash_compressing">Günün haberleri sıkıştırılıyor…</string>
     <string name="flash_setup_link">Cihazda bir model kurun ya da bir API bağlayın →</string>
     <string name="flash_action_compress">Günün haberlerini sıkıştır</string>
-    <string name="flash_action_setup">Nooz Flash\'ı kur</string>
+    <string name="flash_action_setup">Nooz Flash'ı kur</string>
     <string name="cast_tap_to_hear">Bu yazıyı doğal bir sesle dinlemek için dokunun</string>
     <string name="cast_narrating">Yazı okunuyor…</string>
     <string name="cast_setup_link">Cihazda bir seslendirme modeli kurun →</string>
     <string name="cast_action_narrate">Bu yazıyı seslendir</string>
-    <string name="cast_action_setup">Nooz Cast\'i kur</string>
+    <string name="cast_action_setup">Nooz Cast'i kur</string>
     <string name="provenance_on_device">cihazda</string>
     <string name="provenance_cloud_urbana">bulut (Urbana üzerinden)</string>
     <string name="reader_select_article">Okumak için bir yazı seçin</string>
     <string name="reader_quote">“%1$s”</string>
     <string name="history_retry_notice">%1$s Yeniden denemek için dokunun.</string>
-    <string name="history_read_year">%1$s hakkında Vikipedi\'de okuyun</string>
-    <string name="history_open_wikipedia">Vikipedi\'nin On this day sayfasını aç</string>
-    <string name="history_try_again">Tarihte bugün\'ü yeniden yüklemeyi dene</string>
+    <string name="history_read_year">%1$s hakkında Vikipedi'de okuyun</string>
+    <string name="history_open_wikipedia">Vikipedi'nin On this day sayfasını aç</string>
+    <string name="history_try_again">Tarihte bugün'ü yeniden yüklemeyi dene</string>
     <string name="contrast_share_pair">%1$d%% / %2$d%%</string>
     <string name="cross_section_ratio">%1$.2fx</string>
     <string name="cross_section_explainer">okuduklarınız içinde %1$s payı ÷ akıştaki payı; 1x üzeri, bu konuyu akıştaki ağırlığından fazla okuduğunuz anlamına gelir</string>
@@ -297,7 +297,7 @@
     <string name="loom_single_day">Tek gün</string>
     <string name="loom_range">Aralık</string>
     <string name="loom_open_date_picker">Tarih seçiciyi aç</string>
-    <string name="loom_ask_gdelt_again">Bu gün için GDELT\'e yeniden sor</string>
+    <string name="loom_ask_gdelt_again">Bu gün için GDELT'e yeniden sor</string>
     <string name="loom_fetch_gdelt">Bu günün GDELT sonuçlarını getir</string>
     <string name="loom_show_view">%1$s görünümünü göster</string>
     <string name="lens_looking_up">Aranıyor…</string>
@@ -308,7 +308,7 @@
     <string name="defuse_loading">Önerilen yeniden yazım yükleniyor</string>
     <string name="defuse_proposed">Öneri</string>
     <string name="defuse_revert">Geri al</string>
-    <string name="defuse_needs_setup">Henüz tarafsız bir yeniden yazım yok. Bunun için cihazda bir model ya da kendi anahtarınız gerekir; Ayarlar › Okuyucu zekâsı\'ndan.</string>
+    <string name="defuse_needs_setup">Henüz tarafsız bir yeniden yazım yok. Bunun için cihazda bir model ya da kendi anahtarınız gerekir; Ayarlar › Okuyucu zekâsı'ndan.</string>
     <string name="defuse_close">Kapat</string>
     <string name="defuse_suggest">Tarafsız bir yeniden yazım öner</string>
     <string name="defuse_revert_suggestion">Öneriyi geri al</string>
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">Eklenecek sözcük ya da deyiş</string>
     <string name="word_list_add">Bu sözcüğü ekle</string>
     <string name="word_list_remove">“%1$s” sözcüğünü kaldır</string>
-    <string name="model_on_device_body">Nooz önce kendiliğinden cihazınızı dener: kuracak bir şey yok. Aşağıdan bir model indirin, doğrudan cihazınızda çalışır; o zamana kadar (ya da aşağıya bir anahtar eklemediğiniz sürece) mercek tahmin yürütmek yerine dürüstçe \"kullanılamıyor\" der.</string>
+    <string name="model_on_device_body">Nooz önce kendiliğinden cihazınızı dener: kuracak bir şey yok. Aşağıdan bir model indirin, doğrudan cihazınızda çalışır; o zamana kadar (ya da aşağıya bir anahtar eklemediğiniz sürece) mercek tahmin yürütmek yerine dürüstçe "kullanılamıyor" der.</string>
     <string name="model_download_body">Bu uygulamanın kendi kataloğunun doğruladığı gerçek, açık kaynaklı modeller. Buradan indirin: kendiliğinden çalışmazlar (bkz. Cihazda), ama bir kez indirildiklerinde diskte hazır dururlar.</string>
     <string name="model_none_available">Kullanılabilir model yok.</string>
     <string name="model_progress_percent">%1$d%%</string>
@@ -334,7 +334,7 @@
     <string name="model_remove_key">Anahtarı kaldır</string>
     <string name="settings_open_all">Tüm ayarları aç</string>
     <string name="settings_open_word_list">Yanlı dil sözcük listesini aç</string>
-    <string name="settings_contact_email">Nooz\'a e-postayla ulaşın</string>
+    <string name="settings_contact_email">Nooz'a e-postayla ulaşın</string>
     <string name="list_open_date_picker">Tarih seçiciyi aç</string>
     <string name="list_open_loom">Günün tezgâhını aç</string>
     <string name="list_open_sources">Kaynaklarınızı aç</string>

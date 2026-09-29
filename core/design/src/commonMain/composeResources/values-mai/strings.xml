@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">जोड़बाक लेल शब्द वा वाक्यांश</string>
     <string name="word_list_add">ई शब्द जोड़ू</string>
     <string name="word_list_remove">“%1$s” हटाउ</string>
-    <string name="model_on_device_body">Nooz पहिने अपने आप अहाँक डिवाइस आजमबैत अछि: सेट करबाक किछु नहि। नीचाँसँ एकटा मॉडल डाउनलोड करू, ओ अहींक डिवाइस पर चलत; ता धरि (वा जा धरि अहाँ नीचाँ कोनो कुंजी नहि जोड़ब), काच अनुमान लगेबाक बदला ईमानदारीसँ \"अनुपलब्ध\" कहैत अछि।</string>
+    <string name="model_on_device_body">Nooz पहिने अपने आप अहाँक डिवाइस आजमबैत अछि: सेट करबाक किछु नहि। नीचाँसँ एकटा मॉडल डाउनलोड करू, ओ अहींक डिवाइस पर चलत; ता धरि (वा जा धरि अहाँ नीचाँ कोनो कुंजी नहि जोड़ब), काच अनुमान लगेबाक बदला ईमानदारीसँ "अनुपलब्ध" कहैत अछि।</string>
     <string name="model_download_body">असली, ओपन-सोर्स मॉडल जकरा एहि एपक अपन सूची जाँचने अछि। एकरा एतय डाउनलोड करू: ई अपने आप नहि चलत (देखू डिवाइस पर), मुदा एक बेर डाउनलोड भेला पर डिस्क पर तैयार रहत।</string>
     <string name="model_none_available">कोनो मॉडल उपलब्ध नहि।</string>
     <string name="model_progress_percent">%1$d%%</string>

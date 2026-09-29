@@ -7,7 +7,7 @@
 
   Edit the JSON and re-run the generator. Keys absent here fall back to
   values/strings.xml, per key, so a partial translation is safe to ship.
-  330 of 330 strings translated.
+  330 of 331 strings translated.
 -->
 <resources>
 
@@ -323,7 +323,7 @@
     <string name="word_list_add_hint">যোগ করার শব্দ বা বাক্যাংশ</string>
     <string name="word_list_add">এই শব্দটি যোগ করুন</string>
     <string name="word_list_remove">“%1$s” সরান</string>
-    <string name="model_on_device_body">Nooz প্রথমে নিজে থেকেই আপনার ডিভাইস চেষ্টা করে: সেট করার কিছু নেই। নিচ থেকে একটি মডেল ডাউনলোড করুন, সেটি আপনার ডিভাইসেই চলবে; ততক্ষণ পর্যন্ত (বা নিচে কোনো চাবি না যোগ করা পর্যন্ত) লেন্স অনুমান না করে সৎভাবে \"অনুপলব্ধ\" জানায়।</string>
+    <string name="model_on_device_body">Nooz প্রথমে নিজে থেকেই আপনার ডিভাইস চেষ্টা করে: সেট করার কিছু নেই। নিচ থেকে একটি মডেল ডাউনলোড করুন, সেটি আপনার ডিভাইসেই চলবে; ততক্ষণ পর্যন্ত (বা নিচে কোনো চাবি না যোগ করা পর্যন্ত) লেন্স অনুমান না করে সৎভাবে "অনুপলব্ধ" জানায়।</string>
     <string name="model_download_body">সত্যিকারের, মুক্ত-উৎস মডেল, এই অ্যাপের নিজস্ব তালিকায় যাচাই করা। এখানে ডাউনলোড করুন: এগুলি নিজে থেকে চলবে না (দেখুন অন-ডিভাইস), তবে একবার ডাউনলোড হলে ডিস্কে তৈরি থাকবে।</string>
     <string name="model_none_available">কোনো মডেল নেই।</string>
     <string name="model_progress_percent">%1$d%%</string>

@@ -1,7 +1,7 @@
 package xyz.mdhv.riverwip.data
 
-import kotlinx.datetime.Clock
-import kotlinx.datetime.Instant
+import kotlin.time.Clock
+import kotlin.time.Instant
 import okio.Path.Companion.toPath
 import okio.fakefilesystem.FakeFileSystem
 

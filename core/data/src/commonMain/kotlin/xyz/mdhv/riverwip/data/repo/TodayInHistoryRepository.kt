@@ -14,7 +14,7 @@ import kotlinx.serialization.json.Json
 import xyz.mdhv.riverwip.data.net.HttpClient
 import xyz.mdhv.riverwip.model.HistoricalEvent
 import xyz.mdhv.riverwip.model.TodayInHistory
-import kotlinx.datetime.Clock
+import kotlin.time.Clock
 import kotlinx.datetime.LocalDate
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.todayIn
