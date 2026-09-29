@@ -1,8 +1,6 @@
 {
-    "template": "unconfined",
     "policy_groups": [
-        "networking",
-        "content_exchange"
+        "networking"
     ],
-    "policy_version": 16.04
+    "policy_version": 20.04
 }
