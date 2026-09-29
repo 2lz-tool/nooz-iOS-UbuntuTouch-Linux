@@ -52,6 +52,9 @@ kotlin {
             api(compose.components.resources)
             api(compose.components.uiToolingPreview)
         }
+        jvmMain.dependencies {
+            implementation(libs.kotlinx.coroutines.swing)
+        }
         jvmTest.dependencies {
             implementation(libs.kotlin.test)
             implementation(libs.junit)
@@ -60,6 +63,10 @@ kotlin {
             implementation(compose.desktop.currentOs)
         }
         if (!skipAndroid) {
+            getByName("androidMain").dependencies {
+                implementation(libs.androidx.activity.compose)
+                implementation(libs.kotlinx.coroutines.android)
+            }
             getByName("androidUnitTest").dependencies {
                 implementation(libs.junit)
                 implementation(libs.robolectric)
