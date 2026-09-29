@@ -1,6 +1,5 @@
 package xyz.mdhv.riverwip.feature.reader
 
-import android.content.Intent
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -35,12 +34,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalUriHandler
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlin.reflect.KClass
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -49,7 +50,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import xyz.mdhv.riverwip.data.repo.ClippingRepository
 import xyz.mdhv.riverwip.design.EmptyState
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.design.paperGrain
 import xyz.mdhv.riverwip.design.topFadingEdge
@@ -69,7 +70,7 @@ class ClippingsViewModel(private val repo: ClippingRepository) : ViewModel() {
 
     class Factory(private val repo: ClippingRepository) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T = ClippingsViewModel(repo) as T
+        override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T = ClippingsViewModel(repo) as T
     }
 }
 
@@ -89,15 +90,16 @@ fun ClippingsScreen(
     onBack: () -> Unit,
 ) {
     val clippings by vm.clippings.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val sharer = rememberClippingSharer()
 
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(stringResource(DesignR.string.clippings_screen_title), style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 2.sp)) },
+                title = { Text(stringResource(Res.string.clippings_screen_title), style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 2.sp)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(DesignR.string.settings_back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Res.string.settings_back))
                     }
                 },
             )
@@ -106,7 +108,7 @@ fun ClippingsScreen(
         Column(Modifier.fillMaxSize().padding(padding)) {
             if (clippings.isEmpty()) {
                 EmptyState(
-                    title = stringResource(DesignR.string.clippings_none_yet),
+                    title = stringResource(Res.string.clippings_none_yet),
                     body = "Tap the bookmark on any article to tear it out and keep it on this board.",
                 )
             } else {
@@ -121,8 +123,8 @@ fun ClippingsScreen(
                         TornClippingCard(
                             clip = clip,
                             paperGrain = paperGrain,
-                            onOpen = { context.startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse(clip.url))) },
-                            onShare = { NewspaperShare.share(context, clip.title, clip.sourceTitle, clip.author, clip.url) },
+                            onOpen = { uriHandler.openUri(clip.url) },
+                            onShare = { sharer.share(clip.title, clip.sourceTitle, clip.author, clip.url) },
                             onRemove = { vm.remove(clip.itemId) },
                         )
                     }
@@ -159,7 +161,7 @@ private fun TornClippingCard(
             .clip(shape)
             .background(Tokens.Palette.paperField)
             .paperGrain(paperGrain, Tokens.Palette.paperInkDim)
-            .clickable(onClickLabel = stringResource(DesignR.string.clippings_open_in_browser), onClick = onOpen)
+            .clickable(onClickLabel = stringResource(Res.string.clippings_open_in_browser), onClick = onOpen)
             .padding(horizontal = Tokens.Spacing.md, vertical = Tokens.Spacing.lg),
         verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.xs),
     ) {
@@ -186,10 +188,10 @@ private fun TornClippingCard(
                 modifier = Modifier.weight(1f),
             )
             IconButton(onClick = onShare) {
-                Icon(Icons.Filled.Share, contentDescription = stringResource(DesignR.string.reader_share_clipping), tint = Tokens.Palette.paperInkDim, modifier = Modifier.size(20.dp))
+                Icon(Icons.Filled.Share, contentDescription = stringResource(Res.string.reader_share_clipping), tint = Tokens.Palette.paperInkDim, modifier = Modifier.size(20.dp))
             }
             IconButton(onClick = onRemove) {
-                Icon(Icons.Filled.Bookmark, contentDescription = stringResource(DesignR.string.clippings_remove), tint = Tokens.Palette.paperInkDim, modifier = Modifier.size(20.dp))
+                Icon(Icons.Filled.Bookmark, contentDescription = stringResource(Res.string.clippings_remove), tint = Tokens.Palette.paperInkDim, modifier = Modifier.size(20.dp))
             }
         }
     }

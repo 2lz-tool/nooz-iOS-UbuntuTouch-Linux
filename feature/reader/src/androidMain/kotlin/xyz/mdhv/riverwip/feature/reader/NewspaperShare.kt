@@ -12,12 +12,18 @@ import android.text.StaticLayout
 import android.text.TextPaint
 import android.text.TextUtils
 import androidx.core.content.FileProvider
-import androidx.core.content.res.ResourcesCompat
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import xyz.mdhv.riverwip.design.R as DesignR
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import xyz.mdhv.riverwip.design.res.Res
 
 /**
  * Share as a newspaper clipping (owner's spec, 2026-07). The Share action
@@ -30,7 +36,7 @@ import xyz.mdhv.riverwip.design.R as DesignR
  */
 object NewspaperShare {
 
-    fun share(context: Context, title: String, source: String?, author: String?, url: String?) {
+    suspend fun share(context: Context, title: String, source: String?, author: String?, url: String?) {
         val uri = runCatching {
             val bitmap = render(context, title, source, author)
             val dir = File(context.cacheDir, "shared").apply { mkdirs() }
@@ -79,11 +85,10 @@ object NewspaperShare {
     private const val BYLINE_LINE_HEIGHT = 42f
     private const val BYLINE_TO_FOOTER = 40f
 
-    private fun render(context: Context, title: String, source: String?, author: String?): Bitmap {
-        val serif = ResourcesCompat.getFont(context, DesignR.font.hyle_print_medium) ?: Typeface.SERIF
-        val wordmarkFace = ResourcesCompat.getFont(context, DesignR.font.pt_serif_regular)
-            ?: Typeface.create(serif, Typeface.NORMAL)
-        val sans = ResourcesCompat.getFont(context, DesignR.font.hyle_grotesk_classic_medium) ?: Typeface.SANS_SERIF
+    private suspend fun render(context: Context, title: String, source: String?, author: String?): Bitmap {
+        val serif = font(context, "hyle_print_medium") ?: Typeface.SERIF
+        val wordmarkFace = font(context, "pt_serif_regular") ?: Typeface.create(serif, Typeface.NORMAL)
+        val sans = font(context, "hyle_grotesk_classic_medium") ?: Typeface.SANS_SERIF
 
         val contentW = (W - 2 * MARGIN).toInt()
 
@@ -164,5 +169,27 @@ object NewspaperShare {
         canvas.drawText("$date  ·  clipped with Nooz", W / 2f, y - footerMetrics.ascent, footer)
 
         return bmp
+    }
+
+    /** The design system's bundled fonts live in Compose resources; Android's Typeface wants a file, so unpack each once. */
+    private suspend fun font(context: Context, name: String): Typeface? = withContext(Dispatchers.IO) {
+        runCatching {
+            val file = File(File(context.cacheDir, "fonts").apply { mkdirs() }, "$name.ttf")
+            if (!file.exists()) file.writeBytes(Res.readBytes("font/$name.ttf"))
+            Typeface.createFromFile(file)
+        }.getOrNull()
+    }
+}
+
+@Composable
+actual fun rememberClippingSharer(): ClippingSharer {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    return remember(context, scope) {
+        object : ClippingSharer {
+            override fun share(title: String, source: String?, author: String?, url: String?) {
+                scope.launch { NewspaperShare.share(context, title, source, author, url) }
+            }
+        }
     }
 }

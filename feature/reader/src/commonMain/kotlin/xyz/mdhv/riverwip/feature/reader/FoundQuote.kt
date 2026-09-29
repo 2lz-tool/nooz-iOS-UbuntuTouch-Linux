@@ -10,7 +10,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.model.ReadingAsideStyle
 
@@ -72,7 +72,7 @@ fun FoundQuoteAside(quote: FoundQuote, style: ReadingAsideStyle, modifier: Modif
     Column(modifier.fillMaxWidth(), horizontalAlignment = Alignment.CenterHorizontally) {
         HorizontalDivider(modifier = Modifier.width(48.dp), color = MaterialTheme.colorScheme.outlineVariant)
         Text(
-            stringResource(DesignR.string.reader_quote, quote.text),
+            stringResource(Res.string.reader_quote, quote.text),
             style = MaterialTheme.typography.titleMedium.copy(fontStyle = FontStyle.Italic),
             textAlign = TextAlign.Center,
             modifier = Modifier.padding(vertical = Tokens.Spacing.sm),

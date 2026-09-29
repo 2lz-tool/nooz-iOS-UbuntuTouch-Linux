@@ -98,6 +98,49 @@ class HttpClient(
             out.readUtf8()
         }
 
+    /** [url]'s body as bytes (redirects followed, at most [maxBytes]), or null on any non-2xx status, oversize body or I/O failure. */
+    suspend fun getBytes(url: String, maxBytes: Int = 8 * 1024 * 1024): ByteArray? = withContext(IoDispatcher) {
+        val headers = mapOf(
+            "User-Agent" to DEFAULT_USER_AGENT,
+            "Accept-Encoding" to "gzip",
+            "Accept" to "image/*,*/*;q=0.5",
+        )
+        try {
+            var current = url
+            var redirects = 0
+            while (true) {
+                val resp = openHttp(RawRequest(current, headers, connectTimeoutMs, readTimeoutMs))
+                try {
+                    if (resp.code in REDIRECTS && redirects < maxRedirects) {
+                        current = Urls.resolve(current, resp.header("Location") ?: return@withContext null)
+                        redirects++
+                        continue
+                    }
+                    if (resp.code !in 200..299) return@withContext null
+                    val out = okio.Buffer()
+                    resp.body.buffer().use { src ->
+                        val chunk = okio.Buffer()
+                        var total = 0L
+                        while (true) {
+                            val n = src.read(chunk, 16 * 1024L)
+                            if (n < 0) break
+                            total += n
+                            if (total > maxBytes) return@withContext null
+                            out.write(chunk, n)
+                        }
+                    }
+                    return@withContext out.readByteArray()
+                } finally {
+                    resp.close()
+                }
+            }
+            @Suppress("UNREACHABLE_CODE")
+            null
+        } catch (_: Exception) {
+            null
+        }
+    }
+
     /**
      * Stream [url] to [dest], following redirects, reporting `(bytesRead, totalBytes)`
      * (total is -1 when unknown). Throws on a non-2xx status. Used for the large

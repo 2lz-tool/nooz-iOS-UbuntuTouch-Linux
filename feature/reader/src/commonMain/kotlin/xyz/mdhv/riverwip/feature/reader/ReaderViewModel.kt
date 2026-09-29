@@ -5,6 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlin.reflect.KClass
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -44,7 +46,6 @@ import xyz.mdhv.riverwip.model.Region
 import xyz.mdhv.riverwip.model.Starters
 import xyz.mdhv.riverwip.model.Topic
 import xyz.mdhv.riverwip.model.WeekBucketing
-import java.io.File
 
 /** The reader's article state, once a reading session has begun. */
 sealed interface ArticleUiState {
@@ -100,8 +101,8 @@ sealed interface HistoryUiState {
 sealed interface CastUiState {
     data object Idle : CastUiState
     data object Loading : CastUiState
-    /** [audioFile] is the rendered narration — always [Provenance.NATIVE]; Cast has no cloud path to mark otherwise (owner: "a private anchor voice should never leave the device"). */
-    data class Ready(val audioFile: File, val provenance: Provenance) : CastUiState
+    /** [audioPath] is the rendered narration — always [Provenance.NATIVE]; Cast has no cloud path to mark otherwise (owner: "a private anchor voice should never leave the device"). */
+    data class Ready(val audioPath: String, val provenance: Provenance) : CastUiState
     /**
      * The provider ran but declined or errored — never silent (brief §3).
      * [needsSetup] distinguishes "the narration model isn't downloaded yet"
@@ -410,7 +411,7 @@ class ReaderViewModel(
                 return@launch
             }
             _castState.value = when (val result = ttsProvider.synthesize(SynthesisRequest(body))) {
-                is SynthesisResult.Success -> CastUiState.Ready(result.audioFile, result.provenance)
+                is SynthesisResult.Success -> CastUiState.Ready(result.audioPath, result.provenance)
                 is SynthesisResult.Failed -> CastUiState.Unavailable(result.reason)
             }
         }
@@ -652,7 +653,7 @@ class ReaderViewModel(
         private val ttsProvider: TtsProvider,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T =
             ReaderViewModel(
                 itemRepository,
                 sourceRepository,

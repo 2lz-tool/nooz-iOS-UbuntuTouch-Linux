@@ -1,8 +1,5 @@
 package xyz.mdhv.riverwip.feature.reader
 
-import android.media.MediaPlayer
-import android.speech.tts.TextToSpeech
-import android.speech.tts.UtteranceProgressListener
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
@@ -38,17 +35,17 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import xyz.mdhv.riverwip.design.DisplayFontFamily
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.SectionHeading
 import xyz.mdhv.riverwip.design.Tokens
+import xyz.mdhv.riverwip.design.rememberAudioFilePlayer
+import xyz.mdhv.riverwip.design.rememberTextSpeaker
 import xyz.mdhv.riverwip.inference.Provenance
-import java.io.File
 import java.util.Locale
 
 /**
@@ -111,7 +108,7 @@ private fun FlashCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
     }
     when (val s = state) {
         is FlashUiState.ComingSoon -> Text(
-            stringResource(DesignR.string.flash_coming_soon),
+            stringResource(Res.string.flash_coming_soon),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = Tokens.Spacing.xxs),
@@ -119,12 +116,12 @@ private fun FlashCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
         is FlashUiState.Idle -> Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClickLabel = stringResource(DesignR.string.flash_action_compress)) { vm.requestFlash() }
+                .clickable(onClickLabel = stringResource(Res.string.flash_action_compress)) { vm.requestFlash() }
                 .padding(top = Tokens.Spacing.xxs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                stringResource(DesignR.string.flash_tap_to_compress),
+                stringResource(Res.string.flash_tap_to_compress),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
@@ -137,7 +134,7 @@ private fun FlashCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
         ) {
             CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
             Text(
-                stringResource(DesignR.string.flash_compressing),
+                stringResource(Res.string.flash_compressing),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -182,12 +179,12 @@ private fun FlashCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
             )
             if (s.needsSetup) {
                 Text(
-                    stringResource(DesignR.string.flash_setup_link),
+                    stringResource(Res.string.flash_setup_link),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
-                        .clickable(onClickLabel = stringResource(DesignR.string.flash_action_setup)) { onOpenSetup() }
+                        .clickable(onClickLabel = stringResource(Res.string.flash_action_setup)) { onOpenSetup() }
                         .padding(top = Tokens.Spacing.xxs),
                 )
             }
@@ -218,12 +215,12 @@ private fun CastCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
         is CastUiState.Idle -> Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClickLabel = stringResource(DesignR.string.cast_action_narrate)) { vm.requestCast() }
+                .clickable(onClickLabel = stringResource(Res.string.cast_action_narrate)) { vm.requestCast() }
                 .padding(top = Tokens.Spacing.xxs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
-                stringResource(DesignR.string.cast_tap_to_hear),
+                stringResource(Res.string.cast_tap_to_hear),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.weight(1f),
@@ -236,7 +233,7 @@ private fun CastCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
         ) {
             CircularProgressIndicator(modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
             Text(
-                stringResource(DesignR.string.cast_narrating),
+                stringResource(Res.string.cast_narrating),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -248,9 +245,9 @@ private fun CastCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
         ) {
             // Always on-device (owner: "a private anchor voice should never
             // leave the device") — no cloud branch to show, unlike Flash's.
-            Text(stringResource(DesignR.string.provenance_on_device), style = MaterialTheme.typography.labelSmall, color = Tokens.Color.provenanceNative)
+            Text(stringResource(Res.string.provenance_on_device), style = MaterialTheme.typography.labelSmall, color = Tokens.Color.provenanceNative)
             Spacer(Modifier.weight(1f))
-            PlayAudioFileButton(audioFile = s.audioFile)
+            PlayAudioFileButton(audioPath = s.audioPath)
         }
         is CastUiState.Unavailable -> Column(Modifier.padding(top = Tokens.Spacing.xxs)) {
             Text(
@@ -260,12 +257,12 @@ private fun CastCardBody(vm: ReaderViewModel, onOpenSetup: () -> Unit) {
             )
             if (s.needsSetup) {
                 Text(
-                    stringResource(DesignR.string.cast_setup_link),
+                    stringResource(Res.string.cast_setup_link),
                     style = MaterialTheme.typography.labelMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
-                        .clickable(onClickLabel = stringResource(DesignR.string.cast_action_setup)) { onOpenSetup() }
+                        .clickable(onClickLabel = stringResource(Res.string.cast_action_setup)) { onOpenSetup() }
                         .padding(top = Tokens.Spacing.xxs),
                 )
             }
@@ -320,44 +317,14 @@ fun NoozBroadcastCard(
  */
 @Composable
 fun PlayTextButton(text: String, playLabel: String, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    var engine by remember { mutableStateOf<TextToSpeech?>(null) }
-    var speaking by remember { mutableStateOf(false) }
-
-    DisposableEffect(context) {
-        val instance = TextToSpeech(context) { }
-        instance.setOnUtteranceProgressListener(object : UtteranceProgressListener() {
-            override fun onStart(utteranceId: String?) { speaking = true }
-            override fun onDone(utteranceId: String?) { speaking = false }
-            override fun onError(utteranceId: String?) { speaking = false }
-        })
-        engine = instance
-        onDispose {
-            instance.stop()
-            instance.shutdown()
-            engine = null
-        }
-    }
+    val speaker = rememberTextSpeaker()
+    // No speech engine on this machine (a bare desktop): show no control rather than one that cannot work.
+    if (!speaker.available) return
+    val speaking = speaker.speaking
 
     IconButton(
         modifier = modifier,
-        onClick = {
-            val tts = engine ?: return@IconButton
-            if (speaking) {
-                tts.stop()
-                speaking = false
-            } else {
-                tts.setLanguage(Locale.getDefault())
-                // TextToSpeech.speak has a per-call length ceiling on some OEM
-                // engines (historically ~4000 chars); QUEUE_ADD across chunks
-                // plays them back to back as one continuous read instead of
-                // truncating a long article.
-                for ((index, chunk) in text.chunked(TTS_CHUNK_CHARS).withIndex()) {
-                    val mode = if (index == 0) TextToSpeech.QUEUE_FLUSH else TextToSpeech.QUEUE_ADD
-                    tts.speak(chunk, mode, null, "nooz-tts-$index")
-                }
-            }
-        },
+        onClick = { if (speaking) speaker.stop() else speaker.speak(text) },
     ) {
         Icon(
             if (speaking) Icons.Filled.Stop else Icons.Filled.PlayArrow,
@@ -367,46 +334,17 @@ fun PlayTextButton(text: String, playLabel: String, modifier: Modifier = Modifie
     }
 }
 
-private const val TTS_CHUNK_CHARS = 3_800
-
 /**
- * Plays a rendered Nooz Cast narration file on tap (its own "Ready" state) —
- * real playback via [MediaPlayer] of a real synthesized file
- * ([xyz.mdhv.riverwip.inference.local.LocalKokoroTtsProvider]'s own doc
+ * Plays a rendered Nooz Cast narration file on tap (its own "Ready" state) — real playback of a
+ * real synthesized file ([xyz.mdhv.riverwip.inference.local.LocalKokoroTtsProvider]'s own doc
  * comment covers the synthesis step upstream of this control).
  */
 @Composable
-private fun PlayAudioFileButton(audioFile: File, modifier: Modifier = Modifier) {
-    var player by remember { mutableStateOf<MediaPlayer?>(null) }
-    var playing by remember { mutableStateOf(false) }
+private fun PlayAudioFileButton(audioPath: String, modifier: Modifier = Modifier) {
+    val player = rememberAudioFilePlayer(audioPath)
+    val playing = player.playing
 
-    DisposableEffect(audioFile) {
-        onDispose {
-            player?.release()
-            player = null
-        }
-    }
-
-    IconButton(
-        modifier = modifier,
-        onClick = {
-            val current = player
-            if (playing && current != null) {
-                current.stop()
-                current.release()
-                player = null
-                playing = false
-            } else {
-                player = MediaPlayer().apply {
-                    setDataSource(audioFile.absolutePath)
-                    setOnCompletionListener { playing = false }
-                    prepare()
-                    start()
-                }
-                playing = true
-            }
-        },
-    ) {
+    IconButton(modifier = modifier, onClick = { player.toggle() }) {
         Icon(
             if (playing) Icons.Filled.Stop else Icons.Filled.PlayArrow,
             contentDescription = if (playing) "Stop the narration" else "Play the narration",

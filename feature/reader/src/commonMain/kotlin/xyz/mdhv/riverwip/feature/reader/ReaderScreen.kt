@@ -1,6 +1,6 @@
 package xyz.mdhv.riverwip.feature.reader
 
-import androidx.activity.compose.BackHandler
+import xyz.mdhv.riverwip.design.BackHandler
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.animate
 import androidx.compose.animation.core.tween

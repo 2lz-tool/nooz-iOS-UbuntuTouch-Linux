@@ -32,9 +32,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.LocalDensity
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.semantics.LiveRegionMode
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.liveRegion
@@ -47,7 +47,7 @@ import androidx.compose.ui.unit.Constraints
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.design.paperGrain
 import xyz.mdhv.riverwip.design.toComposeColor
@@ -117,7 +117,8 @@ fun NewspaperReaderPane(
     val state by vm.articleState.collectAsStateWithLifecycle()
     val sourceTitles by vm.sourceTitles.collectAsStateWithLifecycle()
     val todayMix by vm.todayReadMix.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val sharer = rememberClippingSharer()
     val topic = Classifier.dominantTopic(item.topics)
     val background = MaterialTheme.colorScheme.background
 
@@ -213,7 +214,7 @@ fun NewspaperReaderPane(
                     contentAlignment = Alignment.Center,
                 ) {
                     // Hoisted: a semantics block is not a composable scope.
-                    val loadingLabel = stringResource(DesignR.string.reader_loading)
+                    val loadingLabel = stringResource(Res.string.reader_loading)
                     CircularProgressIndicator(
                         modifier = Modifier.semantics {
                             contentDescription = loadingLabel
@@ -238,14 +239,12 @@ fun NewspaperReaderPane(
                         style = MaterialTheme.typography.bodyLarge,
                     )
                     Text(
-                        stringResource(DesignR.string.reader_full_story),
+                        stringResource(Res.string.reader_full_story),
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier
                             .clickable {
-                                context.startActivity(
-                                    android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(item.canonicalUrl)),
-                                )
+                                uriHandler.openUri(item.canonicalUrl)
                             }
                             .padding(top = Tokens.Spacing.xs),
                     )
@@ -277,13 +276,10 @@ fun NewspaperReaderPane(
             onToggleLens = onToggleLens,
             onToggleClip = onToggleClip,
             onOpenBrowser = {
-                context.startActivity(
-                    android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(item.canonicalUrl)),
-                )
+                uriHandler.openUri(item.canonicalUrl)
             },
             onShare = {
-                NewspaperShare.share(
-                    context = context,
+                sharer.share(
                     title = item.title,
                     source = sourceTitles[item.sourceId],
                     author = item.author,

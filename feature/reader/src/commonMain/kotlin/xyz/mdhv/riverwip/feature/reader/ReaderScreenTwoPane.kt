@@ -15,11 +15,11 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.feature.lens.LensViewModel
 import xyz.mdhv.riverwip.model.ImageStyle
@@ -134,7 +134,7 @@ fun ReaderScreenTwoPane(
                 // empty state already explains why; this pane just stays quiet.
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                     Text(
-                        stringResource(DesignR.string.reader_select_article),
+                        stringResource(Res.string.reader_select_article),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         textAlign = TextAlign.Center,

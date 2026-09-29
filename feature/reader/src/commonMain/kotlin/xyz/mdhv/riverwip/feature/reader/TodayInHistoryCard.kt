@@ -1,9 +1,5 @@
 package xyz.mdhv.riverwip.feature.reader
 
-import android.content.ActivityNotFoundException
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -24,14 +20,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.platform.UriHandler
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import xyz.mdhv.riverwip.data.repo.TodayInHistoryRepository
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.SectionHeading
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.model.HistoricalEvent
@@ -88,9 +85,9 @@ private fun HistoryShell(modifier: Modifier = Modifier, content: @Composable Col
 
 @Composable
 private fun HistoryColumn(events: List<HistoricalEvent>, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
     HistoryShell(modifier) {
-        SectionHeading(stringResource(DesignR.string.settings_today_in_history), color = MaterialTheme.colorScheme.onBackground)
+        SectionHeading(stringResource(Res.string.settings_today_in_history), color = MaterialTheme.colorScheme.onBackground)
         for ((index, event) in events.withIndex()) {
             if (index > 0) {
                 HorizontalDivider(
@@ -108,8 +105,8 @@ private fun HistoryColumn(events: List<HistoricalEvent>, modifier: Modifier = Mo
                         // Only rows that actually have somewhere to go are
                         // clickable, so a tap never silently does nothing.
                         if (url != null) {
-                            Modifier.clickable(onClickLabel = stringResource(DesignR.string.history_read_year, event.year.toString())) {
-                                openLink(context, url)
+                            Modifier.clickable(onClickLabel = stringResource(Res.string.history_read_year, event.year.toString())) {
+                                openLink(uriHandler, url)
                             }
                         } else {
                             Modifier
@@ -144,8 +141,8 @@ private fun HistoryColumn(events: List<HistoricalEvent>, modifier: Modifier = Mo
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
-                .clickable(onClickLabel = stringResource(DesignR.string.history_open_wikipedia)) {
-                    openLink(context, TodayInHistoryRepository.SOURCE_URL)
+                .clickable(onClickLabel = stringResource(Res.string.history_open_wikipedia)) {
+                    openLink(uriHandler, TodayInHistoryRepository.SOURCE_URL)
                 }
                 .padding(top = Tokens.Spacing.xxs),
         )
@@ -155,25 +152,25 @@ private fun HistoryColumn(events: List<HistoricalEvent>, modifier: Modifier = Mo
 @Composable
 private fun HistoryNotice(reason: String, onRetry: () -> Unit, modifier: Modifier = Modifier) {
     HistoryShell(modifier) {
-        SectionHeading(stringResource(DesignR.string.settings_today_in_history), color = MaterialTheme.colorScheme.onBackground)
+        SectionHeading(stringResource(Res.string.settings_today_in_history), color = MaterialTheme.colorScheme.onBackground)
         Text(
-            stringResource(DesignR.string.history_retry_notice, reason),
+            stringResource(Res.string.history_retry_notice, reason),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClickLabel = stringResource(DesignR.string.history_try_again)) { onRetry() }
+                .clickable(onClickLabel = stringResource(Res.string.history_try_again)) { onRetry() }
                 .padding(top = Tokens.Spacing.xxs),
         )
     }
 }
 
 /** A missing browser is a real device state, not a crash: the tap just does nothing rather than taking the app down. */
-private fun openLink(context: Context, url: String) {
+private fun openLink(uriHandler: UriHandler, url: String) {
     try {
-        context.startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(url)))
-    } catch (_: ActivityNotFoundException) {
-        // No browser installed.
+        uriHandler.openUri(url)
+    } catch (_: Exception) {
+        // No browser installed / no handler for the link.
     }
 }
 

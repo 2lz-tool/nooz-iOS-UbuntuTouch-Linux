@@ -1,7 +1,8 @@
 package xyz.mdhv.riverwip.feature.reader
 
-import android.content.Context
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -11,20 +12,56 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.ColorMatrix
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
-import coil.imageLoader
-import coil.request.ImageRequest
-import coil.request.SuccessResult
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import org.jetbrains.compose.resources.decodeToImageBitmap
+import xyz.mdhv.riverwip.data.net.ImageStore
 import xyz.mdhv.riverwip.model.ImageStyle
+
+/**
+ * Where feed images come from (disk cache + download). The app root provides it; without one no
+ * image is shown, which is what a preview or a test wants.
+ */
+val LocalImageStore = staticCompositionLocalOf<ImageStore?> { null }
+
+/** Decoded images kept in memory so scrolling a list back and forth does not decode the same JPEG again. */
+private object DecodedImages {
+    private const val MAX = 48
+    private val map = object : LinkedHashMap<String, ImageBitmap>(MAX, 0.75f, true) {
+        override fun removeEldestEntry(eldest: MutableMap.MutableEntry<String, ImageBitmap>?) = size > MAX
+    }
+
+    @Synchronized operator fun get(url: String): ImageBitmap? = map[url]
+    @Synchronized operator fun set(url: String, image: ImageBitmap) { map[url] = image }
+}
+
+@Composable
+private fun rememberRemoteImage(url: String): ImageBitmap? {
+    val store = LocalImageStore.current
+    var image by remember(url, store) { mutableStateOf(DecodedImages[url]) }
+    LaunchedEffect(url, store) {
+        if (image != null || store == null) return@LaunchedEffect
+        val decoded = withContext(Dispatchers.Default) {
+            store.load(url)?.let { bytes -> runCatching { bytes.decodeToImageBitmap() }.getOrNull() }
+        }
+        if (decoded != null) {
+            DecodedImages[url] = decoded
+            image = decoded
+        }
+    }
+    return image
+}
 
 /**
  * A feed's own image (owner's ask, 2026-07), styled per the reader's choice:
@@ -52,26 +89,25 @@ fun FeedImage(
     if (imageUrl.isNullOrBlank() || (hideNsfw && declaredNsfw)) return
 
     when (style) {
-        ImageStyle.COLOR -> AsyncImage(
-            model = crossfadeRequest(imageUrl),
-            contentDescription = contentDescription,
-            contentScale = ContentScale.Crop,
-            modifier = modifier,
-        )
-        ImageStyle.BLACK_AND_WHITE -> AsyncImage(
-            model = crossfadeRequest(imageUrl),
-            contentDescription = contentDescription,
-            contentScale = ContentScale.Crop,
-            colorFilter = ColorFilter.colorMatrix(TastefulBlackAndWhite),
-            modifier = modifier,
-        )
+        ImageStyle.COLOR -> PhotoImage(imageUrl, contentDescription, null, modifier)
+        ImageStyle.BLACK_AND_WHITE -> PhotoImage(imageUrl, contentDescription, ColorFilter.colorMatrix(TastefulBlackAndWhite), modifier)
         ImageStyle.HALFTONE -> HalftoneImage(imageUrl = imageUrl, contentDescription = contentDescription, modifier = modifier)
     }
 }
 
+/** The photo itself, cropped to fill, fading in when it arrives. Nothing is drawn (no reserved space) until it has loaded. */
 @Composable
-private fun crossfadeRequest(imageUrl: String) =
-    ImageRequest.Builder(LocalContext.current).data(imageUrl).crossfade(true).build()
+private fun PhotoImage(imageUrl: String, contentDescription: String?, colorFilter: ColorFilter?, modifier: Modifier) {
+    val bitmap = rememberRemoteImage(imageUrl) ?: return
+    val alpha by animateFloatAsState(1f, label = "feed-image-fade")
+    Image(
+        bitmap = bitmap,
+        contentDescription = contentDescription,
+        contentScale = ContentScale.Crop,
+        colorFilter = colorFilter,
+        modifier = modifier.alpha(alpha),
+    )
+}
 
 /**
  * Grayscale (standard BT.601 luminance weights) with a mild contrast boost
@@ -102,32 +138,15 @@ private const val HALFTONE_MIN_COLUMNS = 12
 private const val HALFTONE_MAX_COLUMNS = 160
 
 /**
- * The image reproduced as newsprint would: no photo drawn at all, only a
- * grid of dots whose radius tracks that cell's own darkness — the app's
- * existing paper-grain speckle technique (a seeded jittered dot field on a
- * `Canvas`), driven by the image's downsampled luminance instead of noise.
- * Decodes the source once into a plain software [android.graphics.Bitmap]
- * (Coil's own image loader, off the main thread — a plain `LaunchedEffect`
- * coroutine), then leans on [android.graphics.Bitmap.createScaledBitmap]
- * to do the per-cell averaging: scaling *down* to the dot grid's own
- * resolution is exactly a box-filtered average per output pixel, so no
- * separate luminance-sampling pass is needed.
+ * The image reproduced as newsprint would: no photo drawn at all, only a grid of dots whose radius
+ * tracks that cell's own darkness -- the app's existing paper-grain speckle technique (a seeded
+ * jittered dot field on a `Canvas`), driven by the image's per-cell luminance instead of noise.
+ * Each cell is the box-average of the source pixels beneath it, read one band of rows at a time so
+ * a large photo is never held as a full pixel array.
  */
 @Composable
 private fun HalftoneImage(imageUrl: String, contentDescription: String?, modifier: Modifier = Modifier) {
-    val context = LocalContext.current
-    // The same reset-and-refetch-on-key-change shape produceState gives for
-    // free -- written out as remember+LaunchedEffect instead, since Compose
-    // lint's ProduceStateDoesNotAssignValue check persistently misreported
-    // this exact decode (a single `value = decodeSoftwareBitmap(...)`
-    // statement, no try/catch, no branching) as never assigning a value,
-    // even after simplifying it as far as the produceState API allows.
-    var bitmap by remember(imageUrl) { mutableStateOf<android.graphics.Bitmap?>(null) }
-    LaunchedEffect(imageUrl) {
-        bitmap = decodeSoftwareBitmap(context, imageUrl)
-    }
-
-    val source = bitmap ?: return // still loading, or the decode failed -- reserve nothing, same as no image at all
+    val source = rememberRemoteImage(imageUrl) ?: return // still loading, or the decode failed -- reserve nothing, same as no image at all
 
     val ink = MaterialTheme.colorScheme.onBackground
     val paper = MaterialTheme.colorScheme.background
@@ -136,7 +155,7 @@ private fun HalftoneImage(imageUrl: String, contentDescription: String?, modifie
     BoxWithConstraints(modifier) {
         val cols = (maxWidth / HALFTONE_CELL_SIZE).toInt().coerceIn(HALFTONE_MIN_COLUMNS, HALFTONE_MAX_COLUMNS)
         val rows = (cols / (source.width.toFloat() / source.height.toFloat())).toInt().coerceAtLeast(1)
-        val cells = remember(source, cols, rows) { android.graphics.Bitmap.createScaledBitmap(source, cols, rows, true) }
+        val luminance = remember(source, cols, rows) { cellLuminance(source, cols, rows) }
 
         val canvasModifier = if (description != null) {
             Modifier.fillMaxSize().semantics { this.contentDescription = description }
@@ -151,12 +170,7 @@ private fun HalftoneImage(imageUrl: String, contentDescription: String?, modifie
             val maxRadius = minOf(cellW, cellH) / 2f
             for (y in 0 until rows) {
                 for (x in 0 until cols) {
-                    val pixel = cells.getPixel(x, y)
-                    val r = android.graphics.Color.red(pixel)
-                    val g = android.graphics.Color.green(pixel)
-                    val b = android.graphics.Color.blue(pixel)
-                    val luminance = (0.299f * r + 0.587f * g + 0.114f * b) / 255f
-                    val radius = (1f - luminance) * maxRadius * 0.95f
+                    val radius = (1f - luminance[y * cols + x]) * maxRadius * 0.95f
                     if (radius > 0.5f) {
                         drawCircle(
                             color = ink,
@@ -170,24 +184,35 @@ private fun HalftoneImage(imageUrl: String, contentDescription: String?, modifie
     }
 }
 
-/**
- * Decode [imageUrl] into a plain software [android.graphics.Bitmap] (via
- * Coil's own loader, `allowHardware(false)` so its pixels are readable), or
- * null on any failure. A plain suspend function, called from
- * [HalftoneImage]'s `LaunchedEffect`.
- */
-private suspend fun decodeSoftwareBitmap(context: Context, imageUrl: String): android.graphics.Bitmap? = try {
-    val request = ImageRequest.Builder(context).data(imageUrl).allowHardware(false).build()
-    val drawable = (context.imageLoader.execute(request) as? SuccessResult)?.drawable
-    drawable?.let {
-        val w = it.intrinsicWidth.coerceAtLeast(1)
-        val h = it.intrinsicHeight.coerceAtLeast(1)
-        val decoded = android.graphics.Bitmap.createBitmap(w, h, android.graphics.Bitmap.Config.ARGB_8888)
-        val canvas = android.graphics.Canvas(decoded)
-        it.setBounds(0, 0, w, h)
-        it.draw(canvas)
-        decoded
+/** Perceived luminance (0..1) of each of the `cols x rows` cells of [image], row-major. */
+internal fun cellLuminance(image: ImageBitmap, cols: Int, rows: Int): FloatArray {
+    val out = FloatArray(cols * rows)
+    val w = image.width
+    val h = image.height
+    val band = IntArray(w * ((h + rows - 1) / rows + 1))
+    for (row in 0 until rows) {
+        val y0 = (row.toLong() * h / rows).toInt()
+        val y1 = ((row + 1).toLong() * h / rows).toInt().coerceAtLeast(y0 + 1).coerceAtMost(h)
+        val bandH = y1 - y0
+        image.readPixels(band, startX = 0, startY = y0, width = w, height = bandH, bufferOffset = 0, stride = w)
+        for (col in 0 until cols) {
+            val x0 = (col.toLong() * w / cols).toInt()
+            val x1 = ((col + 1).toLong() * w / cols).toInt().coerceAtLeast(x0 + 1).coerceAtMost(w)
+            var sum = 0f
+            var n = 0
+            for (yy in 0 until bandH) {
+                val rowBase = yy * w
+                for (xx in x0 until x1) {
+                    val p = band[rowBase + xx]
+                    val r = (p shr 16) and 0xFF
+                    val g = (p shr 8) and 0xFF
+                    val b = p and 0xFF
+                    sum += 0.299f * r + 0.587f * g + 0.114f * b
+                    n++
+                }
+            }
+            out[row * cols + col] = if (n == 0) 1f else sum / n / 255f
+        }
     }
-} catch (_: Exception) {
-    null
+    return out
 }

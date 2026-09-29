@@ -4,6 +4,7 @@ import xyz.mdhv.riverwip.data.cache.FullTextCache
 import xyz.mdhv.riverwip.data.db.RiverDatabase
 import xyz.mdhv.riverwip.data.net.FeedProbe
 import xyz.mdhv.riverwip.data.net.HttpClient
+import xyz.mdhv.riverwip.data.net.ImageStore
 import xyz.mdhv.riverwip.data.repo.ArticleRepository
 import xyz.mdhv.riverwip.data.repo.CatalogueRepository
 import xyz.mdhv.riverwip.data.repo.ClippingRepository
@@ -37,6 +38,7 @@ class RiverData private constructor(
     val settingsRepository: SettingsRepository,
     val todayInHistoryRepository: TodayInHistoryRepository,
     val dataExporter: DataExporter,
+    val imageStore: ImageStore,
 ) {
     companion object {
         /** Full-text cache budget (brief §4: "user-visible storage budget"). Working default; a settings screen can raise/lower it later. */
@@ -75,6 +77,7 @@ class RiverData private constructor(
                 // offers a contact, which feed fetches have no business
                 // carrying to the reader's own sources.
                 todayInHistoryRepository = TodayInHistoryRepository(platform),
+                imageStore = ImageStore(platform.fileSystem, platform.cacheDir / "images") { http.getBytes(it) },
                 dataExporter = DataExporter(
                     settingsRepository = settingsRepository,
                     sourceRepository = sourceRepository,

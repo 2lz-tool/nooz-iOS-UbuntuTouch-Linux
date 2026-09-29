@@ -39,7 +39,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -47,8 +47,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.compose.foundation.shape.CircleShape
@@ -67,7 +67,7 @@ import xyz.mdhv.riverwip.design.DayMixBar
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.design.paperGrain
 import xyz.mdhv.riverwip.design.toComposeColor
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import androidx.compose.foundation.layout.aspectRatio
 import xyz.mdhv.riverwip.feature.lens.LensAnnotatedParagraph
 import xyz.mdhv.riverwip.feature.lens.LensViewModel
@@ -105,7 +105,7 @@ fun EndOfArticleRow(
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterStart) {
             if (hasPrevious) {
                 Text(
-                    stringResource(DesignR.string.reader_previous),
+                    stringResource(Res.string.reader_previous),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.clickable(onClick = onPrevious),
@@ -113,14 +113,14 @@ fun EndOfArticleRow(
             }
         }
         Text(
-            stringResource(DesignR.string.reader_end_of_article),
+            stringResource(Res.string.reader_end_of_article),
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Box(Modifier.weight(1f), contentAlignment = Alignment.CenterEnd) {
             if (hasNext) {
                 Text(
-                    stringResource(DesignR.string.reader_next),
+                    stringResource(Res.string.reader_next),
                     style = MaterialTheme.typography.labelMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.clickable(onClick = onNext),
@@ -179,7 +179,8 @@ fun ReaderDetailScreen(
     // read today (owner), the same read-distribution the Stand's top bar
     // shows, not the ambient supply mix. Tapping it still opens the loom.
     val todayMix by vm.todayReadMix.collectAsStateWithLifecycle()
-    val context = LocalContext.current
+    val uriHandler = LocalUriHandler.current
+    val sharer = rememberClippingSharer()
     val topic = Classifier.dominantTopic(item.topics)
     val background = MaterialTheme.colorScheme.background
 
@@ -321,7 +322,7 @@ fun ReaderDetailScreen(
                 }
                 when (val s = state) {
                     is ArticleUiState.Loading -> item {
-                        val loading = stringResource(DesignR.string.reader_loading)
+                        val loading = stringResource(Res.string.reader_loading)
                         Box(Modifier.fillMaxWidth().padding(top = Tokens.Spacing.xxl), contentAlignment = Alignment.Center) {
                             CircularProgressIndicator(
                                 modifier = Modifier.semantics {
@@ -378,14 +379,12 @@ fun ReaderDetailScreen(
                                 style = MaterialTheme.typography.bodyLarge,
                             )
                             Text(
-                                stringResource(DesignR.string.reader_full_story),
+                                stringResource(Res.string.reader_full_story),
                                 style = MaterialTheme.typography.labelLarge,
                                 color = MaterialTheme.colorScheme.onBackground,
                                 modifier = Modifier
                                     .clickable {
-                                        context.startActivity(
-                                            android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(item.canonicalUrl)),
-                                        )
+                                        uriHandler.openUri(item.canonicalUrl)
                                     }
                                     .padding(top = Tokens.Spacing.xs),
                             )
@@ -426,13 +425,10 @@ fun ReaderDetailScreen(
                 onToggleLens = onToggleLens,
                 onToggleClip = onToggleClip,
                 onOpenBrowser = {
-                    context.startActivity(
-                        android.content.Intent(android.content.Intent.ACTION_VIEW, android.net.Uri.parse(item.canonicalUrl)),
-                    )
+                    uriHandler.openUri(item.canonicalUrl)
                 },
                 onShare = {
-                    NewspaperShare.share(
-                        context = context,
+                    sharer.share(
                         title = item.title,
                         source = sourceTitles[item.sourceId],
                         author = item.author,
@@ -472,7 +468,7 @@ fun ReaderDetailScreen(
                     ) {
                         Icon(
                             Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = stringResource(DesignR.string.reader_back_to_stand),
+                            contentDescription = stringResource(Res.string.reader_back_to_stand),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -484,7 +480,7 @@ fun ReaderDetailScreen(
                     ) {
                         Icon(
                             Icons.Filled.Settings,
-                            contentDescription = stringResource(DesignR.string.reader_open_settings),
+                            contentDescription = stringResource(Res.string.reader_open_settings),
                             tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
                     }
@@ -549,7 +545,7 @@ internal fun ReaderUtilityBar(
                 ) {
                     Icon(
                         Icons.Filled.RemoveRedEye,
-                        contentDescription = stringResource(DesignR.string.reader_lens_toggle),
+                        contentDescription = stringResource(Res.string.reader_lens_toggle),
                         tint = if (lensOn) {
                             MaterialTheme.colorScheme.onSecondaryContainer
                         } else {
@@ -560,7 +556,7 @@ internal fun ReaderUtilityBar(
                 }
             }
             IconButton(onClick = onOpenBrowser) {
-                Icon(Icons.Filled.Public, contentDescription = stringResource(DesignR.string.reader_open_in_browser))
+                Icon(Icons.Filled.Public, contentDescription = stringResource(Res.string.reader_open_in_browser))
             }
             IconButton(onClick = onToggleClip) {
                 Icon(
@@ -570,7 +566,7 @@ internal fun ReaderUtilityBar(
                 )
             }
             IconButton(onClick = onShare) {
-                Icon(Icons.Filled.Share, contentDescription = stringResource(DesignR.string.reader_share_clipping))
+                Icon(Icons.Filled.Share, contentDescription = stringResource(Res.string.reader_share_clipping))
             }
             val s = state
             // Listen to the article itself (owner: "where is the play button to
@@ -587,9 +583,9 @@ internal fun ReaderUtilityBar(
             }
             if (showReadingTime && s is ArticleUiState.Loaded) {
                 val minutes = remember(s.paragraphs) { readingMinutes(s.paragraphs) }
-                val readingTime = stringResource(DesignR.string.reader_reading_time, minutes)
+                val readingTime = stringResource(Res.string.reader_reading_time, minutes)
                 Text(
-                    stringResource(DesignR.string.reader_minutes_short, minutes),
+                    stringResource(Res.string.reader_minutes_short, minutes),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier
@@ -605,7 +601,7 @@ internal fun ReaderUtilityBar(
                     Modifier
                         .weight(1f)
                         .heightIn(min = 48.dp)
-                        .clickable(onClickLabel = stringResource(DesignR.string.list_open_loom)) { onOpenLoom() },
+                        .clickable(onClickLabel = stringResource(Res.string.list_open_loom)) { onOpenLoom() },
                     contentAlignment = Alignment.Center,
                 ) {
                     DayMixBar(todayMix, Modifier.fillMaxWidth())
@@ -623,7 +619,7 @@ private fun ProgressDial(progress: Float) {
     val track = MaterialTheme.colorScheme.outlineVariant
     val ink = MaterialTheme.colorScheme.onSurfaceVariant
     val pct = (progress * 100).toInt()
-    val spokenProgress = stringResource(DesignR.string.reader_progress, pct)
+    val spokenProgress = stringResource(Res.string.reader_progress, pct)
     Canvas(
         Modifier
             .padding(start = Tokens.Spacing.xs, end = Tokens.Spacing.xxs)

@@ -27,7 +27,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.draw.clip
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Sort
@@ -66,7 +66,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.input.pointer.PointerEventPass
 import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.res.painterResource
+import org.jetbrains.compose.resources.painterResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
@@ -84,11 +84,10 @@ import xyz.mdhv.riverwip.design.DayMixBar
 import xyz.mdhv.riverwip.design.EmptyState
 import xyz.mdhv.riverwip.design.NoResultsState
 import xyz.mdhv.riverwip.design.NoozWordmark
-import xyz.mdhv.riverwip.design.R
 import xyz.mdhv.riverwip.design.SectionHeading
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.design.topFadingEdge
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.model.ArticleSearch
 import xyz.mdhv.riverwip.model.Diversifier
 import xyz.mdhv.riverwip.model.ImageStyle
@@ -237,7 +236,7 @@ fun ArticleListScreen(
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .clickable(onClickLabel = stringResource(DesignR.string.list_open_date_picker)) { onOpenDatePicker() }
+                    .clickable(onClickLabel = stringResource(Res.string.list_open_date_picker)) { onOpenDatePicker() }
                     .semantics { role = Role.Button }
                     .minimumInteractiveComponentSize()
                     .padding(horizontal = Tokens.Spacing.xs),
@@ -255,7 +254,7 @@ fun ArticleListScreen(
                 .minimumInteractiveComponentSize() // >=48dp tap target; the thin bar centres inside
                 .padding(horizontal = Tokens.Spacing.md)
                 .height(barHeight)
-                .clickable(onClickLabel = stringResource(DesignR.string.list_open_loom)) { onOpenLoom() },
+                .clickable(onClickLabel = stringResource(Res.string.list_open_loom)) { onOpenLoom() },
         ) {
             if (todayReadMix.isEmpty() || isRefreshing) {
                 CandyCaneBar(Modifier.fillMaxSize())
@@ -281,7 +280,7 @@ fun ArticleListScreen(
                 style = MaterialTheme.typography.titleLarge,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier
-                    .clickable(onClickLabel = stringResource(DesignR.string.list_open_sources)) { onOpenEdit() }
+                    .clickable(onClickLabel = stringResource(Res.string.list_open_sources)) { onOpenEdit() }
                     .semantics { role = Role.Button }
                     .padding(vertical = Tokens.Spacing.xxs),
             )
@@ -289,7 +288,7 @@ fun ArticleListScreen(
             IconButton(onClick = { showFilterSheet = true }) {
                 Icon(
                     Icons.Filled.FilterList,
-                    contentDescription = stringResource(DesignR.string.list_filter_region_topic),
+                    contentDescription = stringResource(Res.string.list_filter_region_topic),
                     tint = if (!filter.allTopics || filter.region != Region.GLOBAL) {
                         MaterialTheme.colorScheme.onBackground
                     } else {
@@ -320,9 +319,9 @@ fun ArticleListScreen(
                 Icon(
                     if (showUnreadOnly) Icons.Filled.Visibility else Icons.Filled.VisibilityOff,
                     contentDescription = if (showUnreadOnly) {
-                        stringResource(DesignR.string.list_showing_unread_only)
+                        stringResource(Res.string.list_showing_unread_only)
                     } else {
-                        stringResource(DesignR.string.list_showing_all)
+                        stringResource(Res.string.list_showing_all)
                     },
                     tint = if (showUnreadOnly) {
                         MaterialTheme.colorScheme.onBackground
@@ -332,12 +331,12 @@ fun ArticleListScreen(
                 )
             }
             IconButton(onClick = onOpenClippings) {
-                Icon(Icons.Filled.Bookmarks, contentDescription = stringResource(DesignR.string.list_open_clippings))
+                Icon(Icons.Filled.Bookmarks, contentDescription = stringResource(Res.string.list_open_clippings))
             }
             if (isRefreshing) {
                 // Resolved before the semantics block, which is not a
                 // composable scope.
-                val fetching = stringResource(DesignR.string.list_fetching)
+                val fetching = stringResource(Res.string.list_fetching)
                 CircularProgressIndicator(
                     modifier = Modifier
                         .padding(end = Tokens.Spacing.sm)
@@ -347,11 +346,11 @@ fun ArticleListScreen(
                 )
             } else {
                 IconButton(onClick = { vm.refresh() }, enabled = enabledCount > 0) {
-                    Icon(Icons.Filled.Refresh, contentDescription = stringResource(DesignR.string.list_fetch_now))
+                    Icon(Icons.Filled.Refresh, contentDescription = stringResource(Res.string.list_fetch_now))
                 }
             }
             IconButton(onClick = onOpenEditSettings) {
-                Icon(Icons.Filled.Settings, contentDescription = stringResource(DesignR.string.list_settings))
+                Icon(Icons.Filled.Settings, contentDescription = stringResource(Res.string.list_settings))
             }
         }
 
@@ -414,14 +413,14 @@ fun ArticleListScreen(
             unreadFiltered.isEmpty() -> {
                 // Resolved here rather than inline: `clickable`'s onClickLabel
                 // is a plain argument, not a composable scope.
-                val showAllLabel = stringResource(DesignR.string.list_show_all_click)
+                val showAllLabel = stringResource(Res.string.list_show_all_click)
                 // showUnreadOnly filtered everything away — an honest, different
                 // state from "no sources"/"nothing flowed": there's plenty here,
                 // all of it read already.
                 Box(Modifier.weight(1f).fillMaxWidth().then(pinchModifier)) {
                     EmptyState(
-                        title = stringResource(DesignR.string.list_nothing_unread),
-                        body = stringResource(DesignR.string.list_nothing_unread_body),
+                        title = stringResource(Res.string.list_nothing_unread),
+                        body = stringResource(Res.string.list_nothing_unread_body),
                         modifier = Modifier
                             .fillMaxSize()
                             .clickable(onClickLabel = showAllLabel) { showUnreadOnly = false },
@@ -430,7 +429,7 @@ fun ArticleListScreen(
             }
             displayedItems.isEmpty() -> {
                 // Unread items exist, but this search came up empty — distinct
-                // from the pinch-filter's stringResource(DesignR.string.list_nothing_unread) above.
+                // from the pinch-filter's stringResource(Res.string.list_nothing_unread) above.
                 Box(Modifier.weight(1f).fillMaxWidth().then(pinchModifier)) {
                     NoResultsState()
                 }
@@ -486,7 +485,7 @@ fun ArticleListScreen(
         // as well, same as we have in the sources") — the same shared bar,
         // hidden only when there's nothing yet to search through at all.
         if (items.isNotEmpty()) {
-            AppSearchBar(query = searchQuery, onQueryChange = { searchQuery = it }, placeholder = stringResource(DesignR.string.list_search))
+            AppSearchBar(query = searchQuery, onQueryChange = { searchQuery = it }, placeholder = stringResource(Res.string.list_search))
         }
     }
 
@@ -593,13 +592,13 @@ private fun EmptyStand(
             BoxWithConstraints(Modifier.fillMaxWidth()) {
                 val illustrationWidth = maxWidth * NEEDLE_ILLUSTRATION_WIDTH_FRACTION
                 Image(
-                    painter = painterResource(R.drawable.img_no_sources),
+                    painter = painterResource(Res.drawable.img_no_sources),
                     contentDescription = null,
                     modifier = Modifier
                         .align(Alignment.CenterEnd)
                         .width(illustrationWidth)
                         .aspectRatio(NEEDLE_ILLUSTRATION_ASPECT_RATIO)
-                        .clickable(enabled = !isRefreshing, onClickLabel = stringResource(DesignR.string.list_add_sources)) { onAdd() }
+                        .clickable(enabled = !isRefreshing, onClickLabel = stringResource(Res.string.list_add_sources)) { onAdd() }
                         .semantics { role = Role.Button },
                 )
             }
@@ -614,7 +613,7 @@ private fun EmptyStand(
                 modifier = Modifier
                     .size(72.dp)
                     .background(MaterialTheme.colorScheme.onBackground, CircleShape)
-                    .clickable(enabled = !isRefreshing, onClickLabel = stringResource(DesignR.string.list_fetch_now)) { onRetry() }
+                    .clickable(enabled = !isRefreshing, onClickLabel = stringResource(Res.string.list_fetch_now)) { onRetry() }
                     .semantics { role = Role.Button },
                 contentAlignment = Alignment.Center,
             ) {
@@ -686,13 +685,13 @@ private fun RegionTopicFilterSheet(
             verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
         ) {
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text(stringResource(DesignR.string.list_filter), style = MaterialTheme.typography.titleLarge, color = ink, modifier = Modifier.weight(1f))
+                Text(stringResource(Res.string.list_filter), style = MaterialTheme.typography.titleLarge, color = ink, modifier = Modifier.weight(1f))
                 if (filter.region != Region.GLOBAL || !filter.allTopics) {
-                    TextButton(onClick = onClearFilter) { Text(stringResource(DesignR.string.list_clear)) }
+                    TextButton(onClick = onClearFilter) { Text(stringResource(Res.string.list_clear)) }
                 }
             }
 
-            SectionHeading(stringResource(DesignR.string.list_region))
+            SectionHeading(stringResource(Res.string.list_region))
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
                 verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.xxs),
@@ -705,13 +704,13 @@ private fun RegionTopicFilterSheet(
                         fontWeight = if (chosen) FontWeight.Bold else FontWeight.Normal,
                         color = if (chosen) ink else muted,
                         modifier = Modifier
-                            .clickable(onClickLabel = stringResource(DesignR.string.list_filter_region, region.label)) { onSetRegion(region) }
+                            .clickable(onClickLabel = stringResource(Res.string.list_filter_region, region.label)) { onSetRegion(region) }
                             .padding(vertical = Tokens.Spacing.xxs),
                     )
                 }
             }
 
-            SectionHeading(stringResource(DesignR.string.list_topics))
+            SectionHeading(stringResource(Res.string.list_topics))
             FlowRow(
                 horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
                 verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.xxs),
@@ -721,14 +720,14 @@ private fun RegionTopicFilterSheet(
                     val picked = topic.key in filter.topicKeys
                     val chosen = filter.allTopics || picked
                     Text(
-                        stringResource(DesignR.string.list_topic_count, topic.placeholderLabel, count),
+                        stringResource(Res.string.list_topic_count, topic.placeholderLabel, count),
                         style = MaterialTheme.typography.labelLarge,
                         fontWeight = if (picked) FontWeight.Bold else FontWeight.Normal,
                         color = if (chosen) ink else muted,
                         modifier = Modifier
                             .clickable(
                                 enabled = count > 0 || picked,
-                                onClickLabel = stringResource(DesignR.string.list_toggle_topic, topic.placeholderLabel),
+                                onClickLabel = stringResource(Res.string.list_toggle_topic, topic.placeholderLabel),
                             ) { onToggleTopic(topic.key) }
                             .padding(vertical = Tokens.Spacing.xxs),
                     )
@@ -755,8 +754,8 @@ private fun ItemRow(
     // just the title itself dimmed or struck through, per the reader's own
     // Settings choice.
     // Resolved outside the semantics block, which is not a composable scope.
-    val readLabel = stringResource(DesignR.string.list_read)
-    val unreadLabel = stringResource(DesignR.string.list_unread)
+    val readLabel = stringResource(Res.string.list_read)
+    val unreadLabel = stringResource(Res.string.list_unread)
     val strike = read && readMarkStyle == ReadMarkStyle.STRIKETHROUGH
     val titleColor = if (read && readMarkStyle == ReadMarkStyle.GREYED) {
         MaterialTheme.colorScheme.onSurfaceVariant
