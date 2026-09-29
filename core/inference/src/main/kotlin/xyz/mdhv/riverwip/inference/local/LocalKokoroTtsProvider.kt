@@ -111,7 +111,7 @@ class LocalKokoroTtsProvider(
         // it open would corrupt playback rather than just replace the file.
         val outFile = File(context.cacheDir, "nooz_cast_narration_${System.currentTimeMillis()}.wav")
         KokoroAudio.writeWav(combined, outFile)
-        return SynthesisResult.Success(outFile, Provenance.NATIVE)
+        return SynthesisResult.Success(outFile.absolutePath, Provenance.NATIVE)
     }
 
     private fun synthesizeChunk(

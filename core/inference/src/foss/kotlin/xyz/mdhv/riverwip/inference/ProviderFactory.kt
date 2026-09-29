@@ -2,6 +2,7 @@ package xyz.mdhv.riverwip.inference
 
 import android.content.Context
 import java.io.File
+import xyz.mdhv.riverwip.inference.byok.AndroidKeyValueStore
 import xyz.mdhv.riverwip.inference.byok.ByokConfigStore
 import xyz.mdhv.riverwip.inference.byok.ByokProvider
 import xyz.mdhv.riverwip.inference.local.LocalLlamaProvider
@@ -18,7 +19,7 @@ import xyz.mdhv.riverwip.inference.urbana.UrbanaProvider
  */
 object ProviderFactory {
     fun build(context: Context, modelDir: File): List<InferenceProvider> = listOf(
-        ByokProvider(ByokConfigStore(context)),
+        ByokProvider(ByokConfigStore(AndroidKeyValueStore(context))),
         UrbanaProvider(context),
         LocalLlamaProvider(context, modelDir),
     )

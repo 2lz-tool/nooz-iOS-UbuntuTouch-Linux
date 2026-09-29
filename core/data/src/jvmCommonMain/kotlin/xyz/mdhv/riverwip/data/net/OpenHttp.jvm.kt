@@ -14,13 +14,15 @@ import java.util.zip.GZIPInputStream
  */
 actual fun openHttp(request: RawRequest): RawResponse {
     val conn = (URL(request.url).openConnection() as HttpURLConnection).apply {
-        requestMethod = "GET"
+        requestMethod = request.method
         instanceFollowRedirects = false // HttpURLConnection won't cross schemes anyway; HttpClient follows them
         connectTimeout = request.connectTimeoutMs
         readTimeout = request.readTimeoutMs
         for ((k, v) in request.headers) setRequestProperty(k, v)
+        if (request.body != null) doOutput = true
     }
     return try {
+        request.body?.let { payload -> conn.outputStream.use { it.write(payload) } }
         val code = conn.responseCode
         Jvm(conn, code)
     } catch (t: Throwable) {

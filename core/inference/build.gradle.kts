@@ -53,6 +53,7 @@ android {
 
 dependencies {
     api(project(":core:model"))
+    api(project(":core:inference-api"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.kotlinx.coroutines.android)

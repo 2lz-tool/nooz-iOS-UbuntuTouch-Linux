@@ -1,6 +1,5 @@
 package xyz.mdhv.riverwip.inference.byok
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.json.JsonObject
@@ -18,8 +17,10 @@ import xyz.mdhv.riverwip.inference.PromptTemplates
 import xyz.mdhv.riverwip.inference.Provenance
 import xyz.mdhv.riverwip.inference.RewriteRequest
 import xyz.mdhv.riverwip.inference.RewriteResult
-import java.net.HttpURLConnection
-import java.net.URL
+import okio.buffer
+import xyz.mdhv.riverwip.data.IoDispatcher
+import xyz.mdhv.riverwip.data.net.RawRequest
+import xyz.mdhv.riverwip.data.net.openHttp
 
 /**
  * The bring-your-own-key provider (owner's #18): routes a span rewrite to the
@@ -62,7 +63,7 @@ class ByokProvider(private val store: ByokConfigStore) : InferenceProvider {
 
     /** The one HTTP call every capability routes through — same endpoint, same auth, just a different prompt pair. */
     private suspend fun chatComplete(cfg: ByokConfig, systemPrompt: String, userPrompt: String): ChatOutcome =
-        withContext(Dispatchers.IO) {
+        withContext(IoDispatcher) {
             val payload = buildJsonObject {
                 put("model", cfg.model)
                 put("temperature", 0.2)
@@ -79,33 +80,37 @@ class ByokProvider(private val store: ByokConfigStore) : InferenceProvider {
             }
 
             try {
-                val conn = (URL(cfg.chatCompletionsUrl).openConnection() as HttpURLConnection).apply {
-                    requestMethod = "POST"
-                    connectTimeout = 20_000
-                    readTimeout = 40_000
-                    doOutput = true
-                    setRequestProperty("Content-Type", "application/json")
-                    setRequestProperty("Authorization", "Bearer ${cfg.apiKey}")
-                }
+                val response = openHttp(
+                    RawRequest(
+                        url = cfg.chatCompletionsUrl,
+                        headers = mapOf(
+                            "Content-Type" to "application/json",
+                            "Authorization" to "Bearer ${cfg.apiKey}",
+                        ),
+                        connectTimeoutMs = 20_000,
+                        readTimeoutMs = 40_000,
+                        method = "POST",
+                        body = json.encodeToString(JsonObject.serializer(), payload).encodeToByteArray(),
+                    ),
+                )
                 try {
-                    conn.outputStream.use { it.write(json.encodeToString(JsonObject.serializer(), payload).toByteArray()) }
-                    val code = conn.responseCode
+                    val code = response.code
+                    val text = response.body.buffer().readUtf8()
                     if (code !in 200..299) {
-                        val err = conn.errorStream?.bufferedReader()?.use { it.readText() }?.take(300)
-                        return@withContext ChatOutcome.Failed("Your provider returned HTTP $code${if (err.isNullOrBlank()) "" else ": $err"}")
+                        val err = text.take(300)
+                        return@withContext ChatOutcome.Failed("Your provider returned HTTP $code${if (err.isBlank()) "" else ": $err"}")
                     }
-                    val bodyText = conn.inputStream.bufferedReader().use { it.readText() }
-                    val content = parseContent(bodyText)
+                    val content = parseContent(text)
                     if (content.isNullOrBlank()) {
                         ChatOutcome.Failed("Your provider returned no result")
                     } else {
                         ChatOutcome.Success(content.trim())
                     }
                 } finally {
-                    conn.disconnect()
+                    response.close()
                 }
             } catch (e: Exception) {
-                ChatOutcome.Failed("Couldn't reach your provider: ${e.message ?: e.javaClass.simpleName}")
+                ChatOutcome.Failed("Couldn't reach your provider: ${e.message ?: e::class.simpleName}")
             }
         }
 

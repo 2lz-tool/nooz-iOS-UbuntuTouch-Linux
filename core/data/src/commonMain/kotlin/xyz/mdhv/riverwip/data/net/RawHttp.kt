@@ -3,12 +3,14 @@ package xyz.mdhv.riverwip.data.net
 import xyz.mdhv.riverwip.data.IoDispatcher
 import okio.Source
 
-/** One HTTP GET, exactly as sent: redirects are the caller's business (see [HttpClient]). */
+/** One HTTP request, exactly as sent: redirects are the caller's business (see [HttpClient]). A non-null [body] is sent as-is. */
 class RawRequest(
     val url: String,
     val headers: Map<String, String>,
     val connectTimeoutMs: Int,
     val readTimeoutMs: Int,
+    val method: String = "GET",
+    val body: ByteArray? = null,
 )
 
 /**

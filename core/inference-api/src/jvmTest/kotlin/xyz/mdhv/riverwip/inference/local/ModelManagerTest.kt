@@ -1,29 +1,34 @@
 package xyz.mdhv.riverwip.inference.local
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
-import org.junit.Test
+import okio.FileSystem
+import okio.Path.Companion.toPath
 import java.nio.file.Files
 import java.security.MessageDigest
+import kotlin.test.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class ModelManagerTest {
 
+    private val fs = FileSystem.SYSTEM
+
+    private fun tempFile(text: String) = Files.createTempFile("model-test", ".bin").toFile().apply { writeText(text) }
+
     @Test fun checksumMatchesKnownContent() {
-        val file = Files.createTempFile("model-test", ".bin").toFile()
-        file.writeText("hello world")
+        val file = tempFile("hello world")
+        val path = file.absolutePath.toPath()
         val expected = MessageDigest.getInstance("SHA-256").digest("hello world".toByteArray())
             .joinToString("") { "%02x".format(it) }
-        assertEquals(expected, ChecksumVerifier.sha256Hex(file))
-        assertTrue(ChecksumVerifier.verify(file, expected))
-        assertFalse(ChecksumVerifier.verify(file, "0".repeat(64)))
+        assertEquals(expected, ChecksumVerifier.sha256Hex(fs, path))
+        assertTrue(ChecksumVerifier.verify(fs, path, expected))
+        assertFalse(ChecksumVerifier.verify(fs, path, "0".repeat(64)))
         file.delete()
     }
 
     @Test fun blankExpectedChecksumNeverVerifies() {
-        val file = Files.createTempFile("model-test", ".bin").toFile()
-        file.writeText("x")
-        assertFalse(ChecksumVerifier.verify(file, ""))
+        val file = tempFile("x")
+        assertFalse(ChecksumVerifier.verify(fs, file.absolutePath.toPath(), ""))
         file.delete()
     }
 

@@ -26,6 +26,7 @@ rootProject.name = "riverwip"
 include(":app")
 include(":core:model")
 include(":core:data")
+include(":core:inference-api")
 include(":core:inference")
 include(":core:design")
 include(":feature:sources")

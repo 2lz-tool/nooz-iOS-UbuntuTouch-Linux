@@ -22,6 +22,7 @@ import xyz.mdhv.riverwip.inference.InferenceProvider
 import xyz.mdhv.riverwip.inference.InferenceRouter
 import xyz.mdhv.riverwip.inference.ProviderFactory
 import xyz.mdhv.riverwip.inference.TtsProvider
+import xyz.mdhv.riverwip.inference.byok.AndroidKeyValueStore
 import xyz.mdhv.riverwip.inference.byok.ByokConfigStore
 import xyz.mdhv.riverwip.inference.local.LocalKokoroTtsProvider
 
@@ -91,7 +92,7 @@ class AppContainer(appContext: Context) {
     val ttsProvider: TtsProvider = LocalKokoroTtsProvider(appContext, File(appContext.filesDir, "models"))
 
     /** The user's own OpenAI-compatible endpoint config (BYOK, #18). Shared with the provider by prefs name. */
-    val byokConfigStore: ByokConfigStore = ByokConfigStore(appContext)
+    val byokConfigStore: ByokConfigStore = ByokConfigStore(AndroidKeyValueStore(appContext))
 
     /** Real one-click downloadable models (owner's #18 follow-up) — shares `models/` with [inferenceRouter]'s LocalLlamaProvider. */
     val modelCatalogueRepository: ModelCatalogueRepository = ModelCatalogueRepository(platform)
