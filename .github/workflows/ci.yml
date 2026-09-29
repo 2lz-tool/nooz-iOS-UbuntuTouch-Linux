@@ -141,6 +141,8 @@ jobs:
           sudo apt-get update && sudo apt-get install -y adb python3-pip
           pip3 install --user clickable-ut
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Build the core library for arm64
+        run: ./gradlew -Pnooz.skipAndroid=true :core:native-bridge:linkReleaseSharedLinuxArm64
       - name: Build the click package (arm64)
         run: clickable build --arch arm64 --verbose
       - uses: actions/upload-artifact@v4
