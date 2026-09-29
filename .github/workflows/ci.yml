@@ -138,7 +138,7 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Install Clickable
         run: |
-          sudo apt-get update && sudo apt-get install -y docker.io adb python3-pip
+          sudo apt-get update && sudo apt-get install -y adb python3-pip
           pip3 install --user clickable-ut
           echo "$HOME/.local/bin" >> "$GITHUB_PATH"
       - name: Build the click package (arm64)
