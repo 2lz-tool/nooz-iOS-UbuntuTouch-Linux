@@ -24,13 +24,13 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.unit.sp
 import xyz.mdhv.riverwip.design.CandyCaneBar
 import xyz.mdhv.riverwip.design.NoozWordmark
 import xyz.mdhv.riverwip.design.SectionHeading
 import xyz.mdhv.riverwip.design.Tokens
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.inference.byok.ByokConfig
 
 private enum class OnbStep { WELCOME, ADVANCED, TOUR }
@@ -84,7 +84,7 @@ fun OnboardingScreen(
             CandyCaneBar()
             Spacer(Modifier.height(Tokens.Spacing.xs))
             Text(
-                stringResource(DesignR.string.onboarding_loading),
+                stringResource(Res.string.onboarding_loading),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -128,23 +128,23 @@ fun OnboardingScreen(
 @Composable
 private fun WelcomeStep(onQuick: () -> Unit, onAdvanced: () -> Unit, onSkip: () -> Unit) {
     Text(
-        stringResource(DesignR.string.onboarding_headline),
+        stringResource(Res.string.onboarding_headline),
         style = MaterialTheme.typography.headlineSmall,
         color = MaterialTheme.colorScheme.onBackground,
     )
     Text(
-        stringResource(DesignR.string.onboarding_blurb),
+        stringResource(Res.string.onboarding_blurb),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     Button(onClick = onQuick, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(DesignR.string.onboarding_quick_setup))
+        Text(stringResource(Res.string.onboarding_quick_setup))
     }
     OutlinedButton(onClick = onAdvanced, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(DesignR.string.onboarding_advanced_setup))
+        Text(stringResource(Res.string.onboarding_advanced_setup))
     }
     TextButton(onClick = onSkip, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(DesignR.string.onboarding_skip))
+        Text(stringResource(Res.string.onboarding_skip))
     }
 }
 
@@ -152,13 +152,13 @@ private fun WelcomeStep(onQuick: () -> Unit, onAdvanced: () -> Unit, onSkip: () 
 @Composable
 private fun TourStep(onFinish: () -> Unit) {
     Text(
-        stringResource(DesignR.string.tour_title),
+        stringResource(Res.string.tour_title),
         style = MaterialTheme.typography.titleLarge,
         color = MaterialTheme.colorScheme.onBackground,
     )
     FeatureTourContent()
     Button(onClick = onFinish, modifier = Modifier.fillMaxWidth()) {
-        Text(stringResource(DesignR.string.onboarding_start_reading))
+        Text(stringResource(Res.string.onboarding_start_reading))
     }
 }
 
@@ -176,10 +176,10 @@ private fun AdvancedStep(
     var modelPath by rememberSaveable { mutableStateOf(if (byokConfig.isComplete) ModelPath.BYOK else ModelPath.ON_DEVICE) }
     var immersive by rememberSaveable { mutableStateOf(false) }
 
-    Text(stringResource(DesignR.string.onboarding_advanced_setup), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
+    Text(stringResource(Res.string.onboarding_advanced_setup), style = MaterialTheme.typography.titleLarge, color = MaterialTheme.colorScheme.onBackground)
 
     Text(
-        stringResource(DesignR.string.onboarding_lens_question),
+        stringResource(Res.string.onboarding_lens_question),
         style = MaterialTheme.typography.titleMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -193,13 +193,13 @@ private fun AdvancedStep(
     )
 
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
-    SectionHeading(stringResource(DesignR.string.onboarding_reading_mode))
+    SectionHeading(stringResource(Res.string.onboarding_reading_mode))
     Row(horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.sm)) {
-        ModeChip(stringResource(DesignR.string.onboarding_mode_controls), !immersive) { immersive = false }
-        ModeChip(stringResource(DesignR.string.onboarding_mode_immersive), immersive) { immersive = true }
+        ModeChip(stringResource(Res.string.onboarding_mode_controls), !immersive) { immersive = false }
+        ModeChip(stringResource(Res.string.onboarding_mode_immersive), immersive) { immersive = true }
     }
     Text(
-        stringResource(DesignR.string.onboarding_mode_explainer),
+        stringResource(Res.string.onboarding_mode_explainer),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -210,10 +210,10 @@ private fun AdvancedStep(
             onDone()
         },
         modifier = Modifier.fillMaxWidth(),
-    ) { Text(stringResource(DesignR.string.onboarding_done)) }
+    ) { Text(stringResource(Res.string.onboarding_done)) }
     Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        TextButton(onClick = onBack) { Text(stringResource(DesignR.string.onboarding_back)) }
-        TextButton(onClick = onSkip) { Text(stringResource(DesignR.string.onboarding_skip)) }
+        TextButton(onClick = onBack) { Text(stringResource(Res.string.onboarding_back)) }
+        TextButton(onClick = onSkip) { Text(stringResource(Res.string.onboarding_skip)) }
     }
 }
 

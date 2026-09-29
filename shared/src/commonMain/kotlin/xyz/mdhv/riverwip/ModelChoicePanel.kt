@@ -20,13 +20,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import xyz.mdhv.riverwip.data.repo.CatalogueModel
 import xyz.mdhv.riverwip.data.repo.ModelDownloadState
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.design.Tokens
 import xyz.mdhv.riverwip.inference.byok.ByokConfig
 import xyz.mdhv.riverwip.inference.local.StorageBudget
@@ -102,7 +102,7 @@ private fun PathChip(label: String, selected: Boolean, onClick: () -> Unit) {
 @Composable
 private fun OnDeviceStanza() {
     Text(
-        stringResource(DesignR.string.model_on_device_body),
+        stringResource(Res.string.model_on_device_body),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -118,7 +118,7 @@ private fun OnDeviceStanza() {
 fun ModelDownloadList(ui: ModelDownloadUi, modifier: Modifier = Modifier) {
     Column(modifier = modifier) {
         Text(
-            stringResource(DesignR.string.model_download_body),
+            stringResource(Res.string.model_download_body),
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -127,7 +127,7 @@ fun ModelDownloadList(ui: ModelDownloadUi, modifier: Modifier = Modifier) {
         }
         if (ui.models.isEmpty()) {
             Text(
-                stringResource(DesignR.string.model_none_available),
+                stringResource(Res.string.model_none_available),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(top = Tokens.Spacing.xs),
@@ -165,15 +165,15 @@ private fun ModelRow(model: CatalogueModel, ui: ModelDownloadUi) {
             }
             when {
                 state is ModelDownloadState.Downloading -> Text(
-                    stringResource(DesignR.string.model_progress_percent, (state.progress * 100).toInt()),
+                    stringResource(Res.string.model_progress_percent, (state.progress * 100).toInt()),
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 downloaded -> TextButton(onClick = { ui.onDelete(model) }, contentPadding = PaddingValues(0.dp)) {
-                    Text(stringResource(DesignR.string.model_delete))
+                    Text(stringResource(Res.string.model_delete))
                 }
                 else -> TextButton(onClick = { ui.onDownload(model) }, contentPadding = PaddingValues(0.dp)) {
-                    Text(stringResource(DesignR.string.model_download))
+                    Text(stringResource(Res.string.model_download))
                 }
             }
         }
@@ -200,7 +200,7 @@ private fun ByokStanza(
     var model by remember(config) { mutableStateOf(config.model) }
 
     Text(
-        stringResource(DesignR.string.model_byok_body),
+        stringResource(Res.string.model_byok_body),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -212,9 +212,9 @@ private fun ByokStanza(
             onClick = { onSave(baseUrl, apiKey, model) },
             enabled = baseUrl.isNotBlank() && apiKey.isNotBlank() && model.isNotBlank(),
             contentPadding = PaddingValues(0.dp),
-        ) { Text(stringResource(DesignR.string.model_save_key)) }
+        ) { Text(stringResource(Res.string.model_save_key)) }
         if (config.isComplete) {
-            TextButton(onClick = onClear, contentPadding = PaddingValues(0.dp)) { Text(stringResource(DesignR.string.model_remove_key)) }
+            TextButton(onClick = onClear, contentPadding = PaddingValues(0.dp)) { Text(stringResource(Res.string.model_remove_key)) }
         }
     }
 }

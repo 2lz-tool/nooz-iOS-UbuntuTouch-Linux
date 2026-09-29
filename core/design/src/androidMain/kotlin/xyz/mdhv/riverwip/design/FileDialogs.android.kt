@@ -19,7 +19,15 @@ actual fun rememberFileDialogs(): FileDialogs {
     val pendingSave = remember { arrayOfNulls<String>(1) }
     val pendingOpen = remember { arrayOfNulls<(String?) -> Unit>(1) }
 
-    val saveLauncher = rememberLauncherForActivityResult(ActivityResultContracts.CreateDocument("text/xml")) { uri: Uri? ->
+    val pendingMime = remember { arrayOf("text/xml") }
+    // CreateDocument fixes its MIME type at construction; the caller's type is applied when the intent is built.
+    val createDocument = remember {
+        object : ActivityResultContracts.CreateDocument("text/xml") {
+            override fun createIntent(context: android.content.Context, input: String) =
+                super.createIntent(context, input).setType(pendingMime[0])
+        }
+    }
+    val saveLauncher = rememberLauncherForActivityResult(createDocument) { uri: Uri? ->
         val text = pendingSave[0]
         pendingSave[0] = null
         if (uri != null && text != null) scope.launch {
@@ -38,6 +46,7 @@ actual fun rememberFileDialogs(): FileDialogs {
         object : FileDialogs {
             override fun saveText(suggestedName: String, mimeType: String, text: String) {
                 pendingSave[0] = text
+                pendingMime[0] = mimeType
                 saveLauncher.launch(suggestedName)
             }
 

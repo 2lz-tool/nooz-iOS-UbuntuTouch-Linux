@@ -1,8 +1,5 @@
 package xyz.mdhv.riverwip
 
-import androidx.activity.compose.rememberLauncherForActivityResult
-import android.app.Activity
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -47,8 +44,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalClipboardManager
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.AnnotatedString
 import kotlinx.coroutines.Dispatchers
@@ -70,6 +66,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import kotlin.reflect.KClass
+import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.flow.SharingStarted
@@ -83,7 +81,6 @@ import xyz.mdhv.riverwip.data.repo.ModelCatalogueRepository
 import xyz.mdhv.riverwip.data.repo.ModelDownloadState
 import xyz.mdhv.riverwip.data.repo.SettingsRepository
 import xyz.mdhv.riverwip.data.repo.TranslationRepository
-import xyz.mdhv.riverwip.crash.CrashRecovery
 import xyz.mdhv.riverwip.inference.byok.ByokConfig
 import xyz.mdhv.riverwip.inference.byok.ByokConfigStore
 import xyz.mdhv.riverwip.inference.local.StorageBudget
@@ -92,6 +89,7 @@ import xyz.mdhv.riverwip.design.HyleGroteskPlus
 import xyz.mdhv.riverwip.design.HylePrint
 import xyz.mdhv.riverwip.design.SectionHeading
 import xyz.mdhv.riverwip.design.Tokens
+import xyz.mdhv.riverwip.design.rememberFileDialogs
 import xyz.mdhv.riverwip.design.topFadingEdge
 import xyz.mdhv.riverwip.model.AppSettings
 import xyz.mdhv.riverwip.model.DictionaryOption
@@ -99,7 +97,7 @@ import xyz.mdhv.riverwip.model.ImageStyle
 import xyz.mdhv.riverwip.model.Locales
 import xyz.mdhv.riverwip.model.LocaleCoverage
 import xyz.mdhv.riverwip.model.PaperGrain
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 import xyz.mdhv.riverwip.model.ReadMarkStyle
 import xyz.mdhv.riverwip.model.ReadingAsideStyle
 import xyz.mdhv.riverwip.model.ReaderFont
@@ -279,7 +277,7 @@ class SettingsViewModel(
         private val modelCatalogueRepo: ModelCatalogueRepository,
     ) : ViewModelProvider.Factory {
         @Suppress("UNCHECKED_CAST")
-        override fun <T : ViewModel> create(modelClass: Class<T>): T =
+        override fun <T : ViewModel> create(modelClass: KClass<T>, extras: CreationExtras): T =
             SettingsViewModel(repo, dictionaryRepo, translationRepo, dataExporter, byokStore, modelCatalogueRepo) as T
     }
 }
@@ -314,7 +312,7 @@ fun SettingsScreen(
                 title = { Text(if (compact) "READING" else "SETTINGS", style = MaterialTheme.typography.labelLarge.copy(letterSpacing = 2.sp)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(DesignR.string.settings_back))
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = stringResource(Res.string.settings_back))
                     }
                 },
             )
@@ -370,7 +368,7 @@ fun SettingsBody(
             LanguageSection()
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_theme))
+            SectionHeading(stringResource(Res.string.settings_theme))
             Row(
                 modifier = Modifier.selectableGroup(),
                 horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
@@ -378,7 +376,7 @@ fun SettingsBody(
                 // Auto comes first: it is the default, and it is the answer for
                 // a reader whose phone is already in dark mode (D34).
                 SwatchCircle(
-                    label = stringResource(DesignR.string.settings_theme_follow),
+                    label = stringResource(Res.string.settings_theme_follow),
                     selected = settings.themeMode == ThemeMode.SYSTEM,
                     background = Tokens.Palette.paperField,
                     backgroundBrush = Brush.linearGradient(
@@ -394,21 +392,21 @@ fun SettingsBody(
                     onClick = { vm.setTheme(ThemeMode.SYSTEM) },
                 )
                 SwatchCircle(
-                    label = stringResource(DesignR.string.settings_theme_white),
+                    label = stringResource(Res.string.settings_theme_white),
                     selected = settings.themeMode == ThemeMode.WHITE,
                     background = Color(0xFFFFFFFF),
                     letterColor = Tokens.Palette.paperInk,
                     onClick = { vm.setTheme(ThemeMode.WHITE) },
                 )
                 SwatchCircle(
-                    label = stringResource(DesignR.string.settings_theme_paper),
+                    label = stringResource(Res.string.settings_theme_paper),
                     selected = settings.themeMode == ThemeMode.PAPER,
                     background = Tokens.Palette.paperField,
                     letterColor = Tokens.Palette.paperInk,
                     onClick = { vm.setTheme(ThemeMode.PAPER) },
                 )
                 SwatchCircle(
-                    label = stringResource(DesignR.string.settings_theme_dark),
+                    label = stringResource(Res.string.settings_theme_dark),
                     selected = settings.themeMode == ThemeMode.DARK,
                     background = Color(0xFF262624),
                     letterColor = Color(0xFFECEAE6),
@@ -429,7 +427,7 @@ fun SettingsBody(
             )
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_font))
+            SectionHeading(stringResource(Res.string.settings_font))
             // The owner's Settings mock: a list of the font names, each set in
             // its own face, a check on the chosen one (not colour swatches).
             Column(modifier = Modifier.selectableGroup()) {
@@ -454,7 +452,7 @@ fun SettingsBody(
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_text_size))
+            SectionHeading(stringResource(Res.string.settings_text_size))
             Row(
                 modifier = Modifier.selectableGroup(),
                 horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
@@ -485,7 +483,7 @@ fun SettingsBody(
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_paper_grain))
+            SectionHeading(stringResource(Res.string.settings_paper_grain))
             Row(
                 modifier = Modifier.selectableGroup(),
                 horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
@@ -516,7 +514,7 @@ fun SettingsBody(
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_mark_read_as))
+            SectionHeading(stringResource(Res.string.settings_mark_read_as))
             Row(
                 modifier = Modifier.selectableGroup(),
                 horizontalArrangement = Arrangement.spacedBy(Tokens.Spacing.md),
@@ -548,9 +546,9 @@ fun SettingsBody(
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_while_you_read))
+            SectionHeading(stringResource(Res.string.settings_while_you_read))
             Text(
-                stringResource(DesignR.string.settings_while_you_read_body),
+                stringResource(Res.string.settings_while_you_read_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -583,7 +581,7 @@ fun SettingsBody(
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
 
-            SectionHeading(stringResource(DesignR.string.settings_today_in_history))
+            SectionHeading(stringResource(Res.string.settings_today_in_history))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -597,14 +595,14 @@ fun SettingsBody(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        stringResource(DesignR.string.settings_show_the_column),
+                        stringResource(Res.string.settings_show_the_column),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                     // Says where it fetches from, because this is the only
                     // request Nooz makes to somewhere the reader didn't add.
                     Text(
-                        stringResource(DesignR.string.settings_today_in_history_body),
+                        stringResource(Res.string.settings_today_in_history_body),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -625,7 +623,7 @@ fun SettingsBody(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    stringResource(DesignR.string.settings_show_reading_time),
+                    stringResource(Res.string.settings_show_reading_time),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.weight(1f),
@@ -647,12 +645,12 @@ fun SettingsBody(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        stringResource(DesignR.string.settings_highlight_loaded),
+                        stringResource(Res.string.settings_highlight_loaded),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                     Text(
-                        stringResource(DesignR.string.settings_highlight_loaded_body),
+                        stringResource(Res.string.settings_highlight_loaded_body),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -674,12 +672,12 @@ fun SettingsBody(
             ) {
                 Column(modifier = Modifier.weight(1f)) {
                     Text(
-                        stringResource(DesignR.string.settings_immersive),
+                        stringResource(Res.string.settings_immersive),
                         style = MaterialTheme.typography.titleMedium,
                         color = MaterialTheme.colorScheme.onBackground,
                     )
                     Text(
-                        stringResource(DesignR.string.settings_immersive_body),
+                        stringResource(Res.string.settings_immersive_body),
                         style = MaterialTheme.typography.bodySmall,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -693,23 +691,23 @@ fun SettingsBody(
             // single door (owner #2).
             if (compact) {
                 Text(
-                    stringResource(DesignR.string.settings_more),
+                    stringResource(Res.string.settings_more),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .clickable(onClickLabel = stringResource(DesignR.string.settings_open_all)) { onOpenAll() }
+                        .clickable(onClickLabel = stringResource(Res.string.settings_open_all)) { onOpenAll() }
                         .padding(vertical = Tokens.Spacing.sm),
                 )
                 Text(
-                    stringResource(DesignR.string.settings_more_body),
+                    stringResource(Res.string.settings_more_body),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             } else {
-                SectionHeading(stringResource(DesignR.string.settings_dictionary))
+                SectionHeading(stringResource(Res.string.settings_dictionary))
                 Text(
-                    stringResource(DesignR.string.settings_dictionary_body),
+                    stringResource(Res.string.settings_dictionary_body),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -758,9 +756,9 @@ fun SettingsBody(
  */
 @Composable
 private fun CrashSection() {
-    val context = LocalContext.current
+    val crashReports = LocalAppServices.current.crashReports
     val clipboard = LocalClipboardManager.current
-    var report by remember { mutableStateOf(CrashRecovery.pending(context)) }
+    var report by remember { mutableStateOf(crashReports.pending()) }
     var showTrace by remember { mutableStateOf(false) }
     val current = report ?: return
 
@@ -771,10 +769,10 @@ private fun CrashSection() {
             .padding(Tokens.Spacing.md),
         verticalArrangement = Arrangement.spacedBy(Tokens.Spacing.xs),
     ) {
-        Text(stringResource(DesignR.string.settings_crash_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
+        Text(stringResource(Res.string.settings_crash_title), style = MaterialTheme.typography.titleMedium, color = MaterialTheme.colorScheme.onBackground)
         Text(current.headline, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.error)
         Text(
-            stringResource(DesignR.string.settings_crash_body),
+            stringResource(Res.string.settings_crash_body),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -792,11 +790,11 @@ private fun CrashSection() {
             TextButton(
                 onClick = { clipboard.setText(AnnotatedString(current.fullReport)) },
                 contentPadding = PaddingValues(0.dp),
-            ) { Text(stringResource(DesignR.string.settings_copy)) }
+            ) { Text(stringResource(Res.string.settings_copy)) }
             TextButton(
-                onClick = { CrashRecovery.clear(context); report = null },
+                onClick = { crashReports.clear(); report = null },
                 contentPadding = PaddingValues(0.dp),
-            ) { Text(stringResource(DesignR.string.settings_dismiss)) }
+            ) { Text(stringResource(Res.string.settings_dismiss)) }
         }
     }
     HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
@@ -823,10 +821,10 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
     // ever hid the shared model panel beneath them; that partial hide was
     // the confusing part, not a real need to save space on this one tab.
     Column(Modifier.fillMaxWidth().padding(vertical = Tokens.Spacing.xs)) {
-        SectionHeading(stringResource(DesignR.string.settings_reader_intelligence))
+        SectionHeading(stringResource(Res.string.settings_reader_intelligence))
         if (config.isComplete) {
             Text(
-                stringResource(DesignR.string.settings_byok_model, config.model),
+                stringResource(Res.string.settings_byok_model, config.model),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -850,7 +848,7 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
-                stringResource(DesignR.string.settings_flash_body),
+                stringResource(Res.string.settings_flash_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -875,7 +873,7 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
                 color = MaterialTheme.colorScheme.onBackground,
             )
             Text(
-                stringResource(DesignR.string.settings_cast_body),
+                stringResource(Res.string.settings_cast_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -903,7 +901,7 @@ private fun IntelligenceSection(settings: AppSettings, vm: SettingsViewModel) {
     // Cast has no on-device/BYOK trichotomy — a private anchor voice never
     // leaves the device — so its own model gets only the download list,
     // scoped to its own kind rather than Flash's LLM_GGUF default.
-    SectionHeading(stringResource(DesignR.string.settings_cast_model), modifier = Modifier.padding(top = Tokens.Spacing.md))
+    SectionHeading(stringResource(Res.string.settings_cast_model), modifier = Modifier.padding(top = Tokens.Spacing.md))
     ModelDownloadList(
         ModelDownloadUi(
             models = vm.downloadableModels(catalogue, kind = "TTS_ONNX"),
@@ -938,9 +936,9 @@ private fun WhatsInsideSection() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            SectionHeading(stringResource(DesignR.string.tour_title))
+            SectionHeading(stringResource(Res.string.tour_title))
             Text(
-                stringResource(DesignR.string.settings_whats_inside_body),
+                stringResource(Res.string.settings_whats_inside_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -975,15 +973,15 @@ private fun WhatsInsideSection() {
  */
 @Composable
 private fun LanguageSection() {
-    val context = LocalContext.current
+    val localeController = LocalAppServices.current.locale
     var expanded by rememberSaveable { mutableStateOf(false) }
-    var chosen by remember { mutableStateOf(AppLocale.current(context)) }
+    var chosen by remember { mutableStateOf(localeController.current()) }
 
     val offered = remember {
         Locales.ALL.filter { it.tag in LocaleCoverage.SHIPPED }
     }
     val currentName = offered.firstOrNull { it.tag == chosen }?.endonym
-        ?: stringResource(DesignR.string.language_system_default)
+        ?: stringResource(Res.string.language_system_default)
 
     Row(
         modifier = Modifier
@@ -993,7 +991,7 @@ private fun LanguageSection() {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            SectionHeading(stringResource(DesignR.string.language_title))
+            SectionHeading(stringResource(Res.string.language_title))
             Text(
                 currentName,
                 style = MaterialTheme.typography.bodySmall,
@@ -1010,7 +1008,7 @@ private fun LanguageSection() {
     if (!expanded) return
 
     Text(
-        stringResource(DesignR.string.language_explainer),
+        stringResource(Res.string.language_explainer),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
         modifier = Modifier.padding(bottom = Tokens.Spacing.xs),
@@ -1018,22 +1016,22 @@ private fun LanguageSection() {
 
     fun choose(tag: String) {
         chosen = tag
-        if (AppLocale.set(context, tag)) (context as? Activity)?.recreate()
+        localeController.set(tag)
     }
 
     Column(modifier = Modifier.selectableGroup()) {
         LanguageRow(
-            label = stringResource(DesignR.string.language_system_default),
-            selected = chosen == AppLocale.SYSTEM_DEFAULT,
-            onClick = { choose(AppLocale.SYSTEM_DEFAULT) },
+            label = stringResource(Res.string.language_system_default),
+            selected = chosen == LocaleController.SYSTEM_DEFAULT,
+            onClick = { choose(LocaleController.SYSTEM_DEFAULT) },
         )
         for (locale in offered) {
             val percent = LocaleCoverage.percentFor(locale.tag)
             LanguageRow(
                 label = if (percent >= 100) {
-                    stringResource(DesignR.string.language_complete, locale.endonym)
+                    stringResource(Res.string.language_complete, locale.endonym)
                 } else {
-                    stringResource(DesignR.string.language_partial, locale.endonym, percent)
+                    stringResource(Res.string.language_partial, locale.endonym, percent)
                 },
                 selected = chosen == locale.tag,
                 onClick = { choose(locale.tag) },
@@ -1086,9 +1084,9 @@ private fun GesturesSection(settings: AppSettings, vm: SettingsViewModel) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            SectionHeading(stringResource(DesignR.string.settings_gestures))
+            SectionHeading(stringResource(Res.string.settings_gestures))
             Text(
-                stringResource(DesignR.string.settings_gestures_body),
+                stringResource(Res.string.settings_gestures_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -1101,19 +1099,19 @@ private fun GesturesSection(settings: AppSettings, vm: SettingsViewModel) {
     }
     if (expanded) {
         SettingSwitchRow(
-            title = stringResource(DesignR.string.settings_gesture_brightness),
+            title = stringResource(Res.string.settings_gesture_brightness),
             subtitle = "Slide two fingers up or down to dim or brighten the page.",
             checked = settings.twoFingerBrightness,
             onCheckedChange = { vm.setTwoFingerBrightness(it) },
         )
         SettingSwitchRow(
-            title = stringResource(DesignR.string.settings_gesture_theme),
+            title = stringResource(Res.string.settings_gesture_theme),
             subtitle = "Flick two fingers sideways to step the paper tint.",
             checked = settings.twoFingerThemeFlick,
             onCheckedChange = { vm.setTwoFingerThemeFlick(it) },
         )
         SettingSwitchRow(
-            title = stringResource(DesignR.string.settings_gesture_unread),
+            title = stringResource(Res.string.settings_gesture_unread),
             subtitle = "On the Stand's list: pinch in to show only unread, pinch out to show everything again.",
             checked = settings.unreadPinchFilter,
             onCheckedChange = { vm.setUnreadPinchFilter(it) },
@@ -1132,9 +1130,9 @@ private fun GesturesSection(settings: AppSettings, vm: SettingsViewModel) {
  */
 @Composable
 private fun ImagesSection(settings: AppSettings, vm: SettingsViewModel) {
-    SectionHeading(stringResource(DesignR.string.settings_images))
+    SectionHeading(stringResource(Res.string.settings_images))
     SettingSwitchRow(
-        title = stringResource(DesignR.string.settings_show_feed_images),
+        title = stringResource(Res.string.settings_show_feed_images),
         subtitle = "Article thumbnails and hero images, wherever a source's feed supplies one.",
         checked = settings.showFeedImages,
         onCheckedChange = { vm.setShowFeedImages(it) },
@@ -1169,7 +1167,7 @@ private fun ImagesSection(settings: AppSettings, vm: SettingsViewModel) {
             }
         }
         SettingSwitchRow(
-            title = stringResource(DesignR.string.settings_hide_flagged_images),
+            title = stringResource(Res.string.settings_hide_flagged_images),
             subtitle = "Hides an item's image only when its own feed declared it adult/explicit; never this app's own judgment, and never touches a source that declares nothing.",
             checked = settings.hideNsfwImages,
             onCheckedChange = { vm.setHideNsfwImages(it) },
@@ -1194,9 +1192,9 @@ private fun AdvancedSection(onOpenLensWordList: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            SectionHeading(stringResource(DesignR.string.settings_advanced))
+            SectionHeading(stringResource(Res.string.settings_advanced))
             Text(
-                stringResource(DesignR.string.settings_advanced_body),
+                stringResource(Res.string.settings_advanced_body),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -1211,18 +1209,18 @@ private fun AdvancedSection(onOpenLensWordList: () -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .clickable(onClickLabel = stringResource(DesignR.string.settings_open_word_list), onClick = onOpenLensWordList)
+                .clickable(onClickLabel = stringResource(Res.string.settings_open_word_list), onClick = onOpenLensWordList)
                 .padding(vertical = Tokens.Spacing.xs),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Column(Modifier.weight(1f)) {
                 Text(
-                    stringResource(DesignR.string.settings_word_list),
+                    stringResource(Res.string.settings_word_list),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.onBackground,
                 )
                 Text(
-                    stringResource(DesignR.string.settings_word_list_body),
+                    stringResource(Res.string.settings_word_list_body),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -1249,7 +1247,7 @@ private const val FEEDBACK_EMAIL = "nooz@asystemofcells.com"
  * caught here so a device with no mail client configured gets an honest
  * fallback (the address copied to the clipboard) instead of a crash.
  *
- * Shared by [AboutSection]'s stringResource(DesignR.string.settings_contact) (Play's News & Magazines policy
+ * Shared by [AboutSection]'s stringResource(Res.string.settings_contact) (Play's News & Magazines policy
  * requires a clearly labeled, easy-to-find contact section — the app's one
  * contact address needs to live where that reads, not only buried in
  * Advanced settings) and Advanced settings' own "Send feedback" row.
@@ -1262,9 +1260,9 @@ private fun ContactRow(label: String, subtitle: String, emailSubject: String) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .clickable(onClickLabel = stringResource(DesignR.string.settings_contact_email)) {
+            .clickable(onClickLabel = stringResource(Res.string.settings_contact_email)) {
                 try {
-                    uriHandler.openUri("mailto:$FEEDBACK_EMAIL?subject=" + android.net.Uri.encode(emailSubject))
+                    uriHandler.openUri("mailto:$FEEDBACK_EMAIL?subject=" + java.net.URLEncoder.encode(emailSubject, "UTF-8").replace("+", "%20"))
                 } catch (_: Exception) {
                     clipboard.setText(AnnotatedString(FEEDBACK_EMAIL))
                     fallbackMessage = "No email app found; copied $FEEDBACK_EMAIL to your clipboard instead."
@@ -1313,31 +1311,23 @@ private fun SettingSwitchRow(title: String, subtitle: String, checked: Boolean, 
 @Composable
 private fun YourDataSection(vm: SettingsViewModel) {
     val scope = rememberCoroutineScope()
-    val context = LocalContext.current
+    val files = rememberFileDialogs()
     var exporting by remember { mutableStateOf(false) }
-    val exportLauncher = rememberLauncherForActivityResult(
-        ActivityResultContracts.CreateDocument("application/json"),
-    ) { uri ->
-        if (uri != null) {
-            exporting = true
-            scope.launch {
-                val json = vm.exportJson()
-                withContext(Dispatchers.IO) {
-                    context.contentResolver.openOutputStream(uri)?.use { it.write(json.toByteArray()) }
-                }
-                exporting = false
-            }
-        }
-    }
 
-    SectionHeading(stringResource(DesignR.string.settings_your_data))
+    SectionHeading(stringResource(Res.string.settings_your_data))
     Text(
-        stringResource(DesignR.string.settings_your_data_body),
+        stringResource(Res.string.settings_your_data_body),
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
     TextButton(
-        onClick = { exportLauncher.launch("nooz-data.json") },
+        onClick = {
+            exporting = true
+            scope.launch {
+                files.saveText("nooz-data.json", "application/json", vm.exportJson())
+                exporting = false
+            }
+        },
         enabled = !exporting,
         contentPadding = PaddingValues(0.dp),
     ) {
@@ -1352,30 +1342,30 @@ private fun YourDataSection(vm: SettingsViewModel) {
 @Composable
 internal fun AboutSection() {
     val uriHandler = LocalUriHandler.current
-    SectionHeading(stringResource(DesignR.string.settings_about))
+    SectionHeading(stringResource(Res.string.settings_about))
     Text(
-        stringResource(DesignR.string.settings_about_body),
+        stringResource(Res.string.settings_about_body),
         style = MaterialTheme.typography.bodyMedium,
         color = MaterialTheme.colorScheme.onBackground,
     )
     TextButton(onClick = { uriHandler.openUri("https://mdhv.xyz") }, contentPadding = PaddingValues(0.dp)) {
-        Text(stringResource(DesignR.string.settings_visit_studio))
+        Text(stringResource(Res.string.settings_visit_studio))
     }
     TextButton(
         onClick = { uriHandler.openUri("https://github.com/mbaliga/nooz") },
         contentPadding = PaddingValues(0.dp),
     ) {
-        Text(stringResource(DesignR.string.settings_view_source))
+        Text(stringResource(Res.string.settings_view_source))
     }
 
     // Google Play's News & Magazines policy requires a clearly labeled,
     // easy-to-find in-app contact section -- this needs to be right here on
     // the About tab, not several taps deep in Advanced settings.
-    SectionHeading(stringResource(DesignR.string.settings_contact))
+    SectionHeading(stringResource(Res.string.settings_contact))
     ContactRow(FEEDBACK_EMAIL, "Questions, feedback, or a correction: email us directly.", "Nooz")
 
     Text(
-        stringResource(DesignR.string.settings_more_from_studio),
+        stringResource(Res.string.settings_more_from_studio),
         style = MaterialTheme.typography.labelLarge,
         color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
@@ -1446,14 +1436,14 @@ private fun DictionaryRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(option.name, style = MaterialTheme.typography.titleMedium)
             Text(
-                stringResource(DesignR.string.settings_size_license, option.sizeHuman, option.license),
+                stringResource(Res.string.settings_size_license, option.sizeHuman, option.license),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
         // Live region: the download status change is spoken, not silent.
         // Resolved before `semantics { }`, which is not a composable scope.
-        val downloadingLabel = stringResource(DesignR.string.settings_downloading_dictionary)
+        val downloadingLabel = stringResource(Res.string.settings_downloading_dictionary)
         Box(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }, contentAlignment = Alignment.Center) {
             when {
                 downloading -> androidx.compose.material3.CircularProgressIndicator(
@@ -1462,11 +1452,11 @@ private fun DictionaryRow(
                 )
                 downloaded -> Icon(
                     Icons.Filled.Check,
-                    contentDescription = stringResource(DesignR.string.settings_downloaded),
+                    contentDescription = stringResource(Res.string.settings_downloaded),
                     tint = MaterialTheme.colorScheme.onBackground,
                 )
                 else -> androidx.compose.material3.TextButton(onClick = onDownload) {
-                    Text(stringResource(DesignR.string.settings_download))
+                    Text(stringResource(Res.string.settings_download))
                 }
             }
         }
@@ -1496,7 +1486,7 @@ private fun TranslationSection(vm: SettingsViewModel) {
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(Modifier.weight(1f)) {
-            SectionHeading(stringResource(DesignR.string.settings_translation))
+            SectionHeading(stringResource(Res.string.settings_translation))
             Text(
                 installed?.let { "${it.label} — long-press a word as you read." }
                     ?: "Long-press a word and see it in another language.",
@@ -1513,7 +1503,7 @@ private fun TranslationSection(vm: SettingsViewModel) {
 
     if (expanded) {
         Text(
-            stringResource(DesignR.string.settings_translation_body),
+            stringResource(Res.string.settings_translation_body),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
@@ -1523,7 +1513,7 @@ private fun TranslationSection(vm: SettingsViewModel) {
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(installed.label, style = MaterialTheme.typography.titleMedium, modifier = Modifier.weight(1f))
-                TextButton(onClick = { vm.removeTranslation() }) { Text(stringResource(DesignR.string.settings_remove)) }
+                TextButton(onClick = { vm.removeTranslation() }) { Text(stringResource(Res.string.settings_remove)) }
             }
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant)
         }
@@ -1542,7 +1532,7 @@ private fun TranslationSection(vm: SettingsViewModel) {
         // publishes 650 pairs and none of them is an Indian language, which is
         // a real gap for a catalogue that just gained feeds in eleven of them.
         Text(
-            stringResource(DesignR.string.settings_no_indic_pair),
+            stringResource(Res.string.settings_no_indic_pair),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(top = Tokens.Spacing.xs),
@@ -1565,12 +1555,12 @@ private fun TranslationRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(option.label, style = MaterialTheme.typography.titleMedium)
             Text(
-                stringResource(DesignR.string.settings_size_license, option.approxSizeHuman, option.license),
+                stringResource(Res.string.settings_size_license, option.approxSizeHuman, option.license),
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
-        val downloadingLabel = stringResource(DesignR.string.settings_downloading_named, option.label)
+        val downloadingLabel = stringResource(Res.string.settings_downloading_named, option.label)
         Box(modifier = Modifier.semantics { liveRegion = LiveRegionMode.Polite }, contentAlignment = Alignment.Center) {
             when {
                 downloading -> androidx.compose.material3.CircularProgressIndicator(
@@ -1579,10 +1569,10 @@ private fun TranslationRow(
                 )
                 installed -> Icon(
                     Icons.Filled.Check,
-                    contentDescription = stringResource(DesignR.string.settings_installed),
+                    contentDescription = stringResource(Res.string.settings_installed),
                     tint = MaterialTheme.colorScheme.onBackground,
                 )
-                else -> TextButton(onClick = onDownload) { Text(stringResource(DesignR.string.settings_download)) }
+                else -> TextButton(onClick = onDownload) { Text(stringResource(Res.string.settings_download)) }
             }
         }
     }

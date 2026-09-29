@@ -160,10 +160,8 @@ dependencies {
     implementation(project(":core:design"))
     implementation(project(":core:data"))
     implementation(project(":core:inference"))
-    implementation(project(":feature:sources"))
-    implementation(project(":feature:reader"))
-    implementation(project(":feature:river"))
-    implementation(project(":feature:lens"))
+    implementation(project(":core:inference-api"))
+    implementation(project(":shared"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)

@@ -2,8 +2,10 @@ package xyz.mdhv.riverwip
 
 import android.content.Context
 import java.io.File
+import xyz.mdhv.riverwip.crash.CrashRecovery
 import xyz.mdhv.riverwip.data.AndroidDataPlatform
 import xyz.mdhv.riverwip.data.RiverData
+import xyz.mdhv.riverwip.data.net.ImageStore
 import xyz.mdhv.riverwip.data.repo.ArticleRepository
 import xyz.mdhv.riverwip.data.repo.CatalogueRepository
 import xyz.mdhv.riverwip.data.repo.ClippingRepository
@@ -41,29 +43,30 @@ import xyz.mdhv.riverwip.inference.local.LocalKokoroTtsProvider
  *  - P6 catalogue: catalogueRepository (remote refresh, no baked-in default
  *                  URL — see STATE.md decision D4).  ← here
  */
-class AppContainer(appContext: Context) {
+class AppContainer(appContext: Context) : AppServices {
 
     private val platform = AndroidDataPlatform(appContext)
     private val data: RiverData = RiverData.create(platform)
 
-    val sourceRepository: SourceRepository = data.sourceRepository
-    val itemRepository: ItemRepository = data.itemRepository
-    val readEventRepository: ReadEventRepository = data.readEventRepository
-    val weeklyAggregateRepository: WeeklyAggregateRepository = data.weeklyAggregateRepository
-    val articleRepository: ArticleRepository = data.articleRepository
-    val catalogueRepository: CatalogueRepository = data.catalogueRepository
-    val clippingRepository: ClippingRepository = data.clippingRepository
-    val dictionaryRepository: DictionaryRepository = data.dictionaryRepository
-    val translationRepository: TranslationRepository = data.translationRepository
-    val settingsRepository: SettingsRepository = data.settingsRepository
-    val todayInHistoryRepository: TodayInHistoryRepository = data.todayInHistoryRepository
-    val dataExporter: DataExporter = data.dataExporter
+    override val sourceRepository: SourceRepository = data.sourceRepository
+    override val itemRepository: ItemRepository = data.itemRepository
+    override val readEventRepository: ReadEventRepository = data.readEventRepository
+    override val weeklyAggregateRepository: WeeklyAggregateRepository = data.weeklyAggregateRepository
+    override val articleRepository: ArticleRepository = data.articleRepository
+    override val catalogueRepository: CatalogueRepository = data.catalogueRepository
+    override val clippingRepository: ClippingRepository = data.clippingRepository
+    override val dictionaryRepository: DictionaryRepository = data.dictionaryRepository
+    override val translationRepository: TranslationRepository = data.translationRepository
+    override val settingsRepository: SettingsRepository = data.settingsRepository
+    override val todayInHistoryRepository: TodayInHistoryRepository = data.todayInHistoryRepository
+    override val dataExporter: DataExporter = data.dataExporter
+    override val imageStore: ImageStore = data.imageStore
 
     private val inferenceProviders: List<InferenceProvider> =
         ProviderFactory.build(appContext, File(appContext.filesDir, "models"))
 
     /** Downloaded models live in persistent storage (never purged like a cache), never bundled in the APK. */
-    val inferenceRouter: InferenceRouter = InferenceRouter(inferenceProviders)
+    override val inferenceRouter: InferenceRouter = InferenceRouter(inferenceProviders)
 
     /**
      * Nooz Flash (owner's #6: "on-device only, BYOK optional") — a narrower
@@ -72,7 +75,7 @@ class AppContainer(appContext: Context) {
      * broker the way the main lens's rewrite can, only the device or a key the
      * user explicitly typed in themselves.
      */
-    val flashRouter: InferenceRouter = InferenceRouter(
+    override val flashRouter: InferenceRouter = InferenceRouter(
         listOfNotNull(
             inferenceProviders.find { it.id == "local-llama" },
             inferenceProviders.find { it.id == "byok" },
@@ -89,15 +92,28 @@ class AppContainer(appContext: Context) {
      * into (see its own `fileFor()` — files are told apart by name, not by
      * directory).
      */
-    val ttsProvider: TtsProvider = LocalKokoroTtsProvider(appContext, File(appContext.filesDir, "models"))
+    override val ttsProvider: TtsProvider = LocalKokoroTtsProvider(appContext, File(appContext.filesDir, "models"))
 
     /** The user's own OpenAI-compatible endpoint config (BYOK, #18). Shared with the provider by prefs name. */
-    val byokConfigStore: ByokConfigStore = ByokConfigStore(AndroidKeyValueStore(appContext))
+    override val byokConfigStore: ByokConfigStore = ByokConfigStore(AndroidKeyValueStore(appContext))
 
     /** Real one-click downloadable models (owner's #18 follow-up) — shares `models/` with [inferenceRouter]'s LocalLlamaProvider. */
-    val modelCatalogueRepository: ModelCatalogueRepository = ModelCatalogueRepository(platform)
+    override val modelCatalogueRepository: ModelCatalogueRepository = ModelCatalogueRepository(platform)
 
     /** For `Configuration.Provider` on [RiverApplication] — never touched by feature UI. */
     val workerFactory: RiverWorkerFactory =
         RiverWorkerFactory(data.itemRepository, data.weeklyAggregateRepository, data.articleRepository)
+
+    // Filled in by MainActivity for the lifetime of the activity: they act on its window and configuration.
+    override val locale: LocaleController = AndroidLocaleController(appContext)
+    override val window: WindowControls get() = windowControls
+    var windowControls: WindowControls = object : WindowControls {
+        override fun adjustBrightness(delta: Float) {}
+        override fun setDarkSurface(dark: Boolean) {}
+    }
+
+    override val crashReports: CrashReports = object : CrashReports {
+        override fun pending() = CrashRecovery.pending(appContext)
+        override fun clear() = CrashRecovery.clear(appContext)
+    }
 }

@@ -82,6 +82,8 @@ object AppLocale {
         val tag = current(base)
         if (tag == SYSTEM_DEFAULT) return base
         val locale = JavaLocale.forLanguageTag(tag)
+        // Compose resources pick strings from the JVM default locale, which the Context wrapper below does not touch.
+        JavaLocale.setDefault(locale)
         val config = android.content.res.Configuration(base.resources.configuration)
         config.setLocales(LocaleList(locale))
         // setLayoutDirection is what makes Urdu and Kashmiri lay out
@@ -89,4 +91,19 @@ object AppLocale {
         config.setLayoutDirection(locale)
         return ContextWrapper(base.createConfigurationContext(config))
     }
+}
+
+/** [LocaleController] over [AppLocale]: the system's per-app language on API 33+, mirrored prefs below that. */
+class AndroidLocaleController(private val appContext: Context) : LocaleController {
+    /** The foreground activity, so API < 33 can re-create it after a change. Set by MainActivity. */
+    var activity: android.app.Activity? = null
+
+    override fun current(): String = AppLocale.current(activity ?: appContext)
+
+    override fun set(tag: String) {
+        if (AppLocale.set(activity ?: appContext, tag)) activity?.recreate()
+    }
+
+    // Android re-creates the activity, which rebuilds the tree by itself.
+    override val epoch: Int = 0
 }

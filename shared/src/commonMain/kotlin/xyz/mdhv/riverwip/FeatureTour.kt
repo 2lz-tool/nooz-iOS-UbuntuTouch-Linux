@@ -6,10 +6,11 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
+import org.jetbrains.compose.resources.StringResource
+import org.jetbrains.compose.resources.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import xyz.mdhv.riverwip.design.Tokens
-import xyz.mdhv.riverwip.design.R as DesignR
+import xyz.mdhv.riverwip.design.res.*
 
 /**
  * "What's inside" — the short tour of the things a reader will otherwise never
@@ -34,16 +35,16 @@ import xyz.mdhv.riverwip.design.R as DesignR
  * keeps it permanently, because every reader who onboarded before this existed
  * would otherwise never see it at all.
  */
-private data class TourEntry(val name: Int, val body: Int)
+private data class TourEntry(val name: StringResource, val body: StringResource)
 
 // The entries themselves are resource ids, so a translation of this tour is a
 // values-<locale>/strings.xml and nothing else. See core/design's strings.xml.
 private val TOUR_ENTRIES = listOf(
-    TourEntry(DesignR.string.tour_loom_name, DesignR.string.tour_loom_body),
-    TourEntry(DesignR.string.tour_flash_name, DesignR.string.tour_flash_body),
-    TourEntry(DesignR.string.tour_cast_name, DesignR.string.tour_cast_body),
-    TourEntry(DesignR.string.tour_clippings_name, DesignR.string.tour_clippings_body),
-    TourEntry(DesignR.string.tour_history_name, DesignR.string.tour_history_body),
+    TourEntry(Res.string.tour_loom_name, Res.string.tour_loom_body),
+    TourEntry(Res.string.tour_flash_name, Res.string.tour_flash_body),
+    TourEntry(Res.string.tour_cast_name, Res.string.tour_cast_body),
+    TourEntry(Res.string.tour_clippings_name, Res.string.tour_clippings_body),
+    TourEntry(Res.string.tour_history_name, Res.string.tour_history_body),
 )
 
 /**
@@ -71,7 +72,7 @@ fun FeatureTourContent(modifier: Modifier = Modifier) {
             }
         }
         Text(
-            stringResource(DesignR.string.tour_footer),
+            stringResource(Res.string.tour_footer),
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
