@@ -22,3 +22,7 @@ keystore.properties
 
 # Node dependencies for the web reader (web/package.json is the source of truth).
 node_modules/
+
+# Ubuntu Touch / Clickable
+/build/
+/ubuntu-touch/build/

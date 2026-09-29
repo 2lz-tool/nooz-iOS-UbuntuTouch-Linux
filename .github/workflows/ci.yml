@@ -31,7 +31,12 @@ jobs:
       # keeps the core free of JVM-only APIs: the JVM build alone happily accepts them.
       # linuxArm64 (Ubuntu Touch phones) is compiled too; it cannot run on this host.
       - name: Shared core + data layer unit tests (native Linux)
-        run: ./gradlew :core:model:linuxX64Test :core:data:linuxX64Test :core:inference-api:linuxX64Test :core:model:compileKotlinLinuxArm64 :core:data:compileKotlinLinuxArm64 :core:inference-api:compileKotlinLinuxArm64
+        run: |
+          # The native HTTP transport is tested against a local server; its port reaches the test binary by env var.
+          python3 tools/native/testserver.py > /tmp/testserver.port &
+          for _ in $(seq 50); do [ -s /tmp/testserver.port ] && break; sleep 0.1; done
+          export NOOZ_TEST_HTTP_PORT=$(head -1 /tmp/testserver.port)
+          ./gradlew :core:model:linuxX64Test :core:data:linuxX64Test :core:inference-api:linuxX64Test :core:model:compileKotlinLinuxArm64 :core:data:compileKotlinLinuxArm64 :core:inference-api:compileKotlinLinuxArm64
 
   # The Linux desktop app: the Compose UI tests (locale resolution, accessibility semantics, and the
   # adaptive layout at phone / tablet / desktop / ultrawide widths, run against the real app with a
@@ -75,6 +80,73 @@ jobs:
         with:
           name: nooz-linux-portable
           path: nooz-linux-x86_64.tar.gz
+          if-no-files-found: error
+
+  # Ubuntu Touch: the Kotlin/Native core as a C library (tested from plain C over real HTTP), the Qt/QML
+  # app on top of it, and pictures of the real app at phone / tablet / desktop widths with the layout
+  # mode asserted at each. The click package itself is built in the next job.
+  ubuntu-touch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Qt and build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake g++ xvfb qtbase5-dev qtdeclarative5-dev \
+            qml-module-qtquick2 qml-module-qtquick-controls2 qml-module-qtquick-layouts \
+            qml-module-qtquick-window2 qml-module-qtquick-templates2
+      - name: Build the core library (x86-64 for tests, arm64 for the phone)
+        run: ./gradlew -Pnooz.skipAndroid=true :core:native-bridge:linkReleaseSharedLinuxX64 :core:native-bridge:linkReleaseSharedLinuxArm64
+      - name: C API end-to-end check
+        run: |
+          python3 tools/native/testserver.py > /tmp/testserver.port &
+          for _ in $(seq 50); do [ -s /tmp/testserver.port ] && break; sleep 0.1; done
+          LIB=core/native-bridge/build/bin/linuxX64/releaseShared
+          gcc -o /tmp/c_smoke ubuntu-touch/harness/c_smoke.c -ldl
+          /tmp/c_smoke $LIB "http://127.0.0.1:$(head -1 /tmp/testserver.port)"
+      - name: Build the Qt app
+        run: |
+          cmake -S ubuntu-touch -B /tmp/utbuild -DNOOZ_TEST_HOOKS=ON \
+            -DNOOZ_CORE_DIR=$PWD/core/native-bridge/build/bin/linuxX64/releaseShared
+          cmake --build /tmp/utbuild -j4
+      - name: App pictures and layout mode at 8 window sizes
+        run: xvfb-run -a ubuntu-touch/harness/snapshots.sh /tmp/utbuild/nooz /tmp/utshots
+      - name: Upload pictures
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-touch-layout-screenshots
+          path: /tmp/utshots/*.png
+          if-no-files-found: warn
+
+  # The installable .click for arm64 phones, built by Clickable in its container. Best effort until it
+  # has been run on a device: a failure here is reported but does not fail the run.
+  ubuntu-touch-click:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Install Clickable
+        run: |
+          sudo apt-get update && sudo apt-get install -y docker.io adb python3-pip
+          pip3 install --user clickable-ut
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+      - name: Build the click package (arm64)
+        run: clickable build --arch arm64 --verbose
+      - uses: actions/upload-artifact@v4
+        with:
+          name: nooz-ubuntu-touch-click
+          path: build/**/*.click
           if-no-files-found: error
 
   # The web reader had no CI at all until now — its 6,300 lines of JS shipped

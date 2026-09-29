@@ -1,0 +1,6 @@
+singleton Theme 1.0 Theme.qml
+Masthead 1.0 Masthead.qml
+StandList 1.0 StandList.qml
+ReaderView 1.0 ReaderView.qml
+SourcesPage 1.0 SourcesPage.qml
+TextLink 1.0 TextLink.qml

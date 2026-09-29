@@ -1,0 +1,12 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Main.qml</file>
+        <file>Theme.qml</file>
+        <file>qmldir</file>
+        <file>Masthead.qml</file>
+        <file>StandList.qml</file>
+        <file>ReaderView.qml</file>
+        <file>SourcesPage.qml</file>
+        <file>TextLink.qml</file>
+    </qresource>
+</RCC>

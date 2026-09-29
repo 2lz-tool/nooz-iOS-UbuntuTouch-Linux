@@ -1,0 +1,15 @@
+{
+    "name": "nooz.mbaliga",
+    "title": "Nooz",
+    "version": "0.3.1",
+    "description": "Read what's there, and notice what isn't.",
+    "framework": "ubuntu-sdk-20.04",
+    "architecture": "arm64",
+    "maintainer": "mbaliga <noreply@example.invalid>",
+    "hooks": {
+        "nooz": {
+            "apparmor": "nooz.apparmor",
+            "desktop": "nooz.desktop"
+        }
+    }
+}

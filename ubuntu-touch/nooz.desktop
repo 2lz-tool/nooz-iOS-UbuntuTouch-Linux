@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=Nooz
+Comment=Read what's there, and notice what isn't.
+Exec=./nooz
+Icon=nooz.png
+Terminal=false
+Type=Application
+X-Lomiri-Touch=true
+X-Ubuntu-Touch=true

@@ -1,0 +1,10 @@
+clickable_minimum_required: 7.0.0
+# Build the Ubuntu Touch app:  clickable build --arch arm64   (run from the repository root)
+builder: cmake
+src_dir: ubuntu-touch
+kill: nooz
+# libnooz_core.so is Kotlin/Native (linuxArm64), built by Gradle on the host before the click is
+# assembled; CMake then links the app against it and packages it under lib/.
+prebuild: ./gradlew -Pnooz.skipAndroid=true :core:native-bridge:linkReleaseSharedLinuxArm64
+build_args:
+  - -DNOOZ_CORE_DIR=${ROOT}/core/native-bridge/build/bin/linuxArm64/releaseShared
